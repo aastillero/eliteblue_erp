@@ -36,6 +36,7 @@ public class ErpDetachmentListMB implements Serializable {
     public void init() {
         detachments = erpDetachmentService.getAll();
         lazyErpDetachments = new LazyErpDetachmentModel(detachments);
+        lazyErpDetachments.setRowCount(10);
     }
 
     public LazyDataModel<ErpDetachment> getLazyErpDetachments() {

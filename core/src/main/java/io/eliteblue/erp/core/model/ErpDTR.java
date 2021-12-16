@@ -1,5 +1,7 @@
 package io.eliteblue.erp.core.model;
 
+import io.eliteblue.erp.core.constants.ApprovalStatus;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
@@ -21,6 +23,10 @@ public class ErpDTR extends CoreEntity {
     @Column(name = "CUTOFF_END")
     @Temporal(TemporalType.TIMESTAMP)
     private Date cutoffEnd;
+
+    @Column(name = "APPROVAL_STATUS", length = 20)
+    @Enumerated(EnumType.STRING)
+    private ApprovalStatus status;
 
     @ManyToOne
     @JoinColumn(name = "erp_detachment_id", nullable = false)
@@ -67,5 +73,13 @@ public class ErpDTR extends CoreEntity {
 
     public void setAssignments(Set<ErpDTRAssignment> assignments) {
         this.assignments = assignments;
+    }
+
+    public ApprovalStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ApprovalStatus status) {
+        this.status = status;
     }
 }

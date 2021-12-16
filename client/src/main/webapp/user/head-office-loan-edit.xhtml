@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="title">
+        <h1>Edit Loan</h1>
+    </ui:define>
+
+    <ui:define name="description">
+        Update Loan information.
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewParam name="id" value="#{headOfficeLoanForm.id}" converter="javax.faces.Long"/>
+            <f:viewParam name="componentStr" value="#{headOfficeLoanForm.componentStr}"/>
+            <f:event type="preRenderView" listener="#{headOfficeLoanForm.init}"/>
+        </f:metadata>
+
+        <h:form id="form" prependId="false">
+            <h:messages/>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <p:commandButton value="Save" action="#{headOfficeLoanForm.save}" update="@form"
+                                         icon="fa fa-check" styleClass="btn-primary"/>
+                        <p:spacer width="5" rendered="#{headOfficeLoanForm.isNew()}"/>
+                        <p:commandButton value="Clear" action="#{headOfficeLoanForm.clear}" process="@this"
+                                         icon="fa fa-refresh" styleClass="btn-success"
+                                         update="@form" rendered="#{headOfficeLoanForm.isNew()}" resetValues="true"/>
+                        <p:spacer width="5" rendered="#{not headOfficeLoanForm.isNew()}"/>
+
+                        <p:commandButton value="Delete" action="#{headOfficeLoanForm.remove}" process="@this"
+                                         rendered="#{not headOfficeLoanForm.isNew()}" icon="fa fa-trash"
+                                         styleClass="btn-danger">
+                            <f:setPropertyActionListener value="true"
+                                                         target="#{facesContext.externalContext.flash.keepMessages}"/>
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:commandButton>
+                        <p:spacer width="5"/>
+                        <p:commandButton value="Back" action="head-office-loans?faces-redirect=true" icon="fa fa-reply"/>
+                    </div>
+                    <p:splitButton value="Save" rendered="#{headOfficeLoanForm.isEdit()}" action="#{headOfficeLoanForm.save}" update="@form"
+                                   icon="fa fa-check"
+                                   styleClass="hidden-md hidden-lg btn-primary">
+                        <p:menuitem value="Reset" action="#{headOfficeLoanForm.clear}"
+                                    process="@this" update="@form" rendered="#{headOfficeLoanForm.isNew()}"
+                                    resetValues="true" icon="fa fa-refresh"/>
+                        <p:menuitem value="Delete" action="#{headOfficeLoanForm.remove}" process="@this"
+                                    rendered="#{not headOfficeLoanForm.isNew()}" icon="fa fa-trash"
+                        >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:menuitem value="Back" action="head-office-loans?faces-redirect=true"
+                                    process="@this" immediate="true"
+                                    icon="fa fa-reply"/>
+                    </p:splitButton>
+                    <p:separator/>
+
+                    <div class="box-body">
+                        <p:outputPanel rendered="#{headOfficeLoanForm.componentStr eq 'loanAmount'}">
+                        <div class="form-group">
+                            <label for="loanAmount" class="col-sm-2 control-label" style="font-weight:bold;">Loan Amount</label>
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{headOfficeLoanForm.headOfficeLoan.loanAmount}" id="loanAmount" placeholder="10000.00"/>
+                                <span class="ui-inputgroup-addon">php</span>
+                            </div>
+                        </div>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{headOfficeLoanForm.componentStr eq 'deductionAmount'}">
+                        <div class="form-group">
+                            <label for="deductionAmount" class="col-sm-2 control-label" style="font-weight:bold;">Deduction Amount</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{headOfficeLoanForm.headOfficeLoan.deductionAmount}" id="deductionAmount" placeholder="2000.00"/>
+                                <span class="ui-inputgroup-addon">php</span>
+                            </div>
+                        </div>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{headOfficeLoanForm.componentStr eq 'balanceAmount'}">
+                            <div class="form-group">
+                                <label for="balanceAmount" class="col-sm-2 control-label" style="font-weight:bold;">Balance</label>
+
+                                <div class="col-sm-10">
+                                    <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{headOfficeLoanForm.headOfficeLoan.balanceAmount}" id="balanceAmount" placeholder="2000.00"/>
+                                    <span class="ui-inputgroup-addon">php</span>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{headOfficeLoanForm.componentStr eq 'paidAmount'}">
+                            <div class="form-group">
+                                <label for="paidAmount" class="col-sm-2 control-label" style="font-weight:bold;">Paid Amount</label>
+
+                                <div class="col-sm-10">
+                                    <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{headOfficeLoanForm.headOfficeLoan.paidAmount}" id="paidAmount" placeholder="2000.00"/>
+                                    <span class="ui-inputgroup-addon">php</span>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{headOfficeLoanForm.componentStr eq 'dateStarted'}">
+                        <div class="form-group">
+                            <label for="dateStarted" class="col-sm-2 control-label" style="font-weight:bold;">Start Date</label>
+                            <div class="col-sm-10">
+                                <p:datePicker autocomplete="off" id="dateStarted" class="date-input" monthNavigator="true" yearNavigator="true" value="#{headOfficeLoanForm.headOfficeLoan.dateStarted}"/>
+                            </div>
+                        </div>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{headOfficeLoanForm.componentStr eq 'loanDescription'}">
+                            <div class="form-group">
+                                <label for="dateStarted" class="col-sm-2 control-label" style="font-weight:bold;">Loan Description</label>
+                                <div class="col-sm-10">
+                                    <p:inputText autocomplete="off" value="#{headOfficeLoanForm.headOfficeLoan.loanDescription}" class="form-control" id="inputDesc" placeholder="Description"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="reason" class="col-sm-2 control-label">Reason for Update</label>
+                            <div class="col-sm-10">
+                                <p:inputText autocomplete="off" value="#{headOfficeLoanForm.reason}" class="form-control" id="reason" placeholder="Reason"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

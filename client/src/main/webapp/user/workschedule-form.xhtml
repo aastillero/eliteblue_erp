@@ -73,7 +73,7 @@
                                     process="@this" update="@form" rendered="#{workScheduleForm.isNew()}"
                                     resetValues="true" icon="fa fa-refresh"/>
                         <p:menuitem value="Delete" action="#{workScheduleForm.remove}" process="@this"
-                                    rendered="#{not erpPostForm.isNew()}" icon="fa fa-trash"
+                                    rendered="#{not workScheduleForm.isNew()}" icon="fa fa-trash"
                         >
                             <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
                         </p:menuitem>
@@ -111,117 +111,205 @@
                     <p:separator/>
 
                     <sec:authorize access="hasRole('DETACHMENT_COM')">
-                    <div class="box-body">
-                        <p:outputPanel rendered="#{not workScheduleForm.isNew()}">
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label" style="font-weight:bold;">STATUS</label>
-                                <div class="col-sm-10">
-                                    <p:outputPanel rendered="#{workScheduleForm.erpWorkSchedule.status ne null and workScheduleForm.erpWorkSchedule.status == 'PENDING'}">
-                                        <span class="label label-warning" style="font-size:14px;">PENDING</span>
-                                    </p:outputPanel>
-                                    <p:outputPanel rendered="#{workScheduleForm.erpWorkSchedule.status ne null and workScheduleForm.erpWorkSchedule.status == 'REJECTED'}">
-                                        <span class="label label-danger" style="font-size:14px;">REJECTED</span>
-                                    </p:outputPanel>
-                                    <p:outputPanel rendered="#{workScheduleForm.erpWorkSchedule.status ne null and workScheduleForm.erpWorkSchedule.status == 'APPROVED'}">
-                                        <span class="label label-success" style="font-size:14px;">APPROVED</span>
-                                    </p:outputPanel>
+                    <p:tabView>
+                        <p:tab title="Work Schedule Edit">
+                            <div class="box-body">
+                                <p:outputPanel rendered="#{not workScheduleForm.isNew()}">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" style="font-weight:bold;">STATUS</label>
+                                        <div class="col-sm-10">
+                                            <p:outputPanel rendered="#{workScheduleForm.erpWorkSchedule.status ne null and workScheduleForm.erpWorkSchedule.status == 'PENDING'}">
+                                                <span class="label label-warning" style="font-size:14px;">PENDING</span>
+                                            </p:outputPanel>
+                                            <p:outputPanel rendered="#{workScheduleForm.erpWorkSchedule.status ne null and workScheduleForm.erpWorkSchedule.status == 'REJECTED'}">
+                                                <span class="label label-danger" style="font-size:14px;">REJECTED</span>
+                                            </p:outputPanel>
+                                            <p:outputPanel rendered="#{workScheduleForm.erpWorkSchedule.status ne null and workScheduleForm.erpWorkSchedule.status == 'APPROVED'}">
+                                                <span class="label label-success" style="font-size:14px;">APPROVED</span>
+                                            </p:outputPanel>
+                                        </div>
+                                    </div>
+                                    <p:spacer width="5"/>
+                                </p:outputPanel>
+                                <div class="form-group">
+                                    <label for="description" class="col-sm-2 control-label">Schedule Description</label>
+                                    <div class="col-sm-10">
+                                        <p:inputText autocomplete="off" value="#{workScheduleForm.erpWorkSchedule.description}" class="form-control" id="description" placeholder="Description"/>
+                                    </div>
+                                </div>
+                                <p:spacer width="5"/>
+                                <div class="form-group">
+                                    <label for="dateStart" class="col-sm-2 control-label">Schedule Start</label>
+                                    <div class="col-sm-10">
+                                        <p:datePicker autocomplete="off" id="dateStart" value="#{workScheduleForm.erpWorkSchedule.startDate}"/>
+                                    </div>
+                                </div>
+                                <p:spacer width="5"/>
+                                <div class="form-group">
+                                    <label for="dateEnd" class="col-sm-2 control-label">Schedule End</label>
+                                    <div class="col-sm-10">
+                                        <p:datePicker autocomplete="off" id="dateEnd" value="#{workScheduleForm.erpWorkSchedule.stopDate}"/>
+                                    </div>
+                                </div>
+                                <p:spacer width="5"/>
+                                <div class="form-group">
+                                    <label for="scommander" class="col-sm-2 control-label">Shift in Charge</label>
+                                    <div class="col-sm-10">
+                                        <p:inputText autocomplete="off" value="#{workScheduleForm.erpWorkSchedule.shiftCommander}" class="form-control" id="scommander"/>
+                                    </div>
+                                </div>
+                                <p:spacer width="5"/>
+                                <div class="form-group">
+                                    <label for="dcommander" class="col-sm-2 control-label">Detachment Commander</label>
+                                    <div class="col-sm-10">
+                                        <p:inputText autocomplete="off" value="#{workScheduleForm.erpWorkSchedule.detachmentCommander}" class="form-control" id="dcommander"/>
+                                    </div>
+                                </div>
+                                <p:spacer width="5"/>
+                                <div class="form-group">
+                                    <label for="ascommander" class="col-sm-2 control-label">Area Security Commander</label>
+                                    <div class="col-sm-10">
+                                        <p:inputText autocomplete="off" value="#{workScheduleForm.erpWorkSchedule.areaSecurityCommander}" class="form-control" id="ascommander"/>
+                                    </div>
+                                </div>
+                                <p:spacer width="5"/>
+                                <div class="form-group">
+                                    <label for="inputDetachment" class="col-sm-2 control-label">Detachment</label>
+
+                                    <div class="col-sm-10">
+                                        <p:selectOneMenu id="inputDetachment" value="#{workScheduleForm.detachment.id}" style="width:150px"
+                                                         effect="fade" filter="true" filterMatchMode="startsWith">
+                                            <f:selectItems value="#{workScheduleForm.detachments}" var="selectedDetachment"/>
+                                        </p:selectOneMenu>
+                                    </div>
                                 </div>
                             </div>
-                            <p:spacer width="5"/>
-                        </p:outputPanel>
-                        <div class="form-group">
-                            <label for="description" class="col-sm-2 control-label">Schedule Description</label>
-                            <div class="col-sm-10">
-                                <p:inputText autocomplete="off" value="#{workScheduleForm.erpWorkSchedule.description}" class="form-control" id="description" placeholder="Description"/>
-                            </div>
-                        </div>
-                        <p:spacer width="5"/>
-                        <div class="form-group">
-                            <label for="dateStart" class="col-sm-2 control-label">Schedule Start</label>
-                            <div class="col-sm-10">
-                                <p:datePicker autocomplete="off" id="dateStart" value="#{workScheduleForm.erpWorkSchedule.startDate}"/>
-                            </div>
-                        </div>
-                        <p:spacer width="5"/>
-                        <div class="form-group">
-                            <label for="dateEnd" class="col-sm-2 control-label">Schedule End</label>
-                            <div class="col-sm-10">
-                                <p:datePicker autocomplete="off" id="dateEnd" value="#{workScheduleForm.erpWorkSchedule.stopDate}"/>
-                            </div>
-                        </div>
-                        <p:spacer width="5"/>
-                        <div class="form-group">
-                            <label for="scommander" class="col-sm-2 control-label">Shift in Charge</label>
-                            <div class="col-sm-10">
-                                <p:inputText autocomplete="off" value="#{workScheduleForm.erpWorkSchedule.shiftCommander}" class="form-control" id="scommander"/>
-                            </div>
-                        </div>
-                        <p:spacer width="5"/>
-                        <div class="form-group">
-                            <label for="dcommander" class="col-sm-2 control-label">Detachment Commander</label>
-                            <div class="col-sm-10">
-                                <p:inputText autocomplete="off" value="#{workScheduleForm.erpWorkSchedule.detachmentCommander}" class="form-control" id="dcommander"/>
-                            </div>
-                        </div>
-                        <p:spacer width="5"/>
-                        <div class="form-group">
-                            <label for="ascommander" class="col-sm-2 control-label">Area Security Commander</label>
-                            <div class="col-sm-10">
-                                <p:inputText autocomplete="off" value="#{workScheduleForm.erpWorkSchedule.areaSecurityCommander}" class="form-control" id="ascommander"/>
-                            </div>
-                        </div>
-                        <p:spacer width="5"/>
-                        <div class="form-group">
-                            <label for="inputDetachment" class="col-sm-2 control-label">Detachment</label>
 
-                            <div class="col-sm-10">
-                                <p:selectOneMenu id="inputDetachment" value="#{workScheduleForm.detachment.id}" style="width:150px"
-                                         effect="fade" filter="true" filterMatchMode="startsWith">
-                                    <f:selectItems value="#{workScheduleForm.detachments}" var="selectedDetachment"/>
-                                </p:selectOneMenu>
-                            </div>
-                        </div>
-                    </div>
-
-                    <p:outputPanel rendered="#{not workScheduleForm.isNew()}">
-                        <h3>Work Assignments</h3>
-                        <p:separator/>
-                        <div id="secondary-buttons" class="hidden-sm hidden-xs">
-                            <p:commandButton action="#{workScheduleForm.newAssignmentPressed}" icon="fa fa-plus"
-                                             value="Add Work Assignment" styleClass="btn-primary"/>
-                            <p:spacer width="5"/>
-                        </div>
-
-                        <p:dataTable id="workAssignTab" var="assignment" value="#{workScheduleForm.workAssignments}" selectionMode="single"
-                                     paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
-                                     paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                                     emptyMessage="No Work Assignments found with given criteria" globalFilterFunction="#{workScheduleForm.globalFilterFunction}"
-                                     filteredValue="#{workScheduleForm.filteredErpWorkAssignment}" widgetVar="workAssignTable"
-                                     selection="#{workScheduleForm.selectedWorkAssignment}" rowKey="#{assignment.id}">
-
-                            <p:ajax event="rowSelect" listener="#{workScheduleForm.onRowSelect}"/>
-                            <p:ajax event="rowUnselect" listener="#{workScheduleForm.onRowUnselect}"/>
-
-                            <f:facet name="header">
-                                <div class="p-d-flex p-jc-end">
-                                    <p:commandButton onclick="$('#form\\:workAssignTab\\:globalFilter').val('').keyup();PF('workAssignTable').filter()" value="clear"/>
-                                    <p:inputText id="globalFilter" style="width:20rem" placeholder="Search all columns" autocomplete="off"
-                                                 onkeypress="if (event.keyCode === 13)  {PF('workAssignTable').filter(); return false;}"/>
-                                    <p:commandButton  class="ui-button" icon="fa fa-search" onclick="PF('workAssignTable').filter()"/>
+                            <p:outputPanel rendered="#{not workScheduleForm.isNew()}">
+                                <h3>Work Assignments</h3>
+                                <p:separator/>
+                                <div id="secondary-buttons" class="hidden-sm hidden-xs">
+                                    <p:commandButton action="#{workScheduleForm.newAssignmentPressed}" icon="fa fa-plus"
+                                                     value="Add Work Assignment" styleClass="btn-primary"/>
+                                    <p:spacer width="5"/>
                                 </div>
-                            </f:facet>
 
-                            <p:column headerText="First Name">
-                                <h:outputText value="#{assignment.employeeAssigned.firstname}" />
-                            </p:column>
-                            <p:column headerText="Last Name">
-                                <h:outputText value="#{assignment.employeeAssigned.lastname}" />
-                            </p:column>
-                            <p:column headerText="Work Assignment">
-                                <h:outputText value="#{assignment.workAssignment}" />
-                            </p:column>
-                        </p:dataTable>
-                    </p:outputPanel>
+                                <p:dataTable id="workAssignTab" var="assignment" value="#{workScheduleForm.workAssignments}" selectionMode="single"
+                                             paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+                                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                             emptyMessage="No Work Assignments found with given criteria" globalFilterFunction="#{workScheduleForm.globalFilterFunction}"
+                                             filteredValue="#{workScheduleForm.filteredErpWorkAssignment}" widgetVar="workAssignTable"
+                                             selection="#{workScheduleForm.selectedWorkAssignment}" rowKey="#{assignment.id}">
+
+                                    <p:ajax event="rowSelect" listener="#{workScheduleForm.onRowSelect}"/>
+                                    <p:ajax event="rowUnselect" listener="#{workScheduleForm.onRowUnselect}"/>
+
+                                    <f:facet name="header">
+                                        <div class="p-d-flex p-jc-end">
+                                            <p:commandButton onclick="$('#form\\:workAssignTab\\:globalFilter').val('').keyup();PF('workAssignTable').filter()" value="clear"/>
+                                            <p:inputText id="globalFilter" style="width:20rem" placeholder="Search all columns" autocomplete="off"
+                                                         onkeypress="if (event.keyCode === 13)  {PF('workAssignTable').filter(); return false;}"/>
+                                            <p:commandButton  class="ui-button" icon="fa fa-search" onclick="PF('workAssignTable').filter()"/>
+                                        </div>
+                                    </f:facet>
+
+                                    <p:column headerText="First Name">
+                                        <h:outputText value="#{assignment.employeeAssigned.firstname}" />
+                                    </p:column>
+                                    <p:column headerText="Last Name">
+                                        <h:outputText value="#{assignment.employeeAssigned.lastname}" />
+                                    </p:column>
+                                    <p:column headerText="Work Assignment">
+                                        <h:outputText value="#{assignment.workAssignment}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </p:outputPanel>
+                        </p:tab>
+                        <p:tab title="Work Schedule Table View">
+                            <div class="box-body">
+                                <div class="row">
+                                    <label class="col-sm-1 control-label" style="font-weight:bold;">STATUS</label>
+                                    <div class="col-sm-10">
+                                        <p:outputPanel rendered="#{workScheduleForm.erpWorkSchedule.status ne null and workScheduleForm.erpWorkSchedule.status == 'PENDING'}">
+                                            <span class="label label-warning" style="font-size:14px;">PENDING</span>
+                                        </p:outputPanel>
+                                        <p:outputPanel rendered="#{workScheduleForm.erpWorkSchedule.status ne null and workScheduleForm.erpWorkSchedule.status == 'REJECTED'}">
+                                            <span class="label label-danger" style="font-size:14px;">REJECTED</span>
+                                        </p:outputPanel>
+                                        <p:outputPanel rendered="#{workScheduleForm.erpWorkSchedule.status ne null and workScheduleForm.erpWorkSchedule.status == 'APPROVED'}">
+                                            <span class="label label-success" style="font-size:14px;">APPROVED</span>
+                                        </p:outputPanel>
+                                    </div>
+                                </div>
+                                <p:spacer width="5"/>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <label class="control-label" style="font-weight:bold;">SUBMITTED BY: </label>
+                                        <p:spacer width="5"/>
+                                        <label class="control-label" style="font-weight:bold;">#{workScheduleForm.erpWorkSchedule.createdBy}</label>
+                                    </div>
+                                </div>
+                                <p:spacer width="5"/>
+                                <p:spacer width="5"/>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        SHIFT IN CHARGE: #{workScheduleForm.erpWorkSchedule.shiftCommander}
+                                    </div>
+                                    <div class="col-md-4">
+                                        DETACHMENT COMMANDER: #{workScheduleForm.erpWorkSchedule.detachmentCommander}
+                                    </div>
+                                    <div class="col-md-4">
+                                        AREA SEC COMMANDER: #{workScheduleForm.erpWorkSchedule.areaSecurityCommander}
+                                    </div>
+                                </div>
+                                <p:spacer width="5"/>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        WEEK PERIOD: <h:outputText value="#{workScheduleForm.erpWorkSchedule.startDate}"><f:convertDateTime pattern="MMMMM " /></h:outputText>#{workScheduleForm.startDate.getDayOfMonth()}-#{workScheduleForm.stopDate.getDayOfMonth()}<h:outputText value="#{workScheduleForm.erpWorkSchedule.stopDate}"><f:convertDateTime pattern=" yyyy" /></h:outputText>
+                                    </div>
+                                    <div class="col-md-4">
+                                        DETACHMENT: #{workScheduleForm.detachment.name}
+                                    </div>
+                                    <div class="col-md-4">
+                                        AREA OF RESPONSIBILITY: #{workScheduleForm.detachment.location.location}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        MONTH OF: <h:outputText value="#{workScheduleForm.erpWorkSchedule.startDate}"><f:convertDateTime pattern="MMMMM, yyyy" /></h:outputText>
+                                    </div>
+                                </div>
+
+                                <p:spacer width="5"/>
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">NAME</th>
+                                        <th scope="col">WORK ASSIGNMENT</th>
+                                        <ui:repeat var="workingDay" value="#{workScheduleForm.workingDays}">
+                                            <th scope="col">#{workingDay}</th>
+                                        </ui:repeat>
+                                        <th scope="col">Total</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <ui:repeat var="workAssn" value="#{workScheduleForm.workAssignments}">
+                                        <tr>
+                                            <td>#{workAssn.employeeAssigned.lastname}, #{workAssn.employeeAssigned.firstname}</td>
+                                            <td>#{workAssn.workAssignment}</td>
+                                            <ui:repeat var="wd" value="#{workAssn.workDays}">
+                                                <td>
+                                                    #{wd.shiftSchedule}
+                                                </td>
+                                            </ui:repeat>
+                                            <td>#{workAssn.totalWorkDay}</td>
+                                        </tr>
+                                    </ui:repeat>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </p:tab>
+                    </p:tabView>
                     </sec:authorize>
 
                     <sec:authorize access="!hasRole('DETACHMENT_COM')">
@@ -249,6 +337,18 @@
                             </div>
                         </div>
                         <p:spacer width="5"/>
+                        <p:spacer width="5"/>
+                        <div class="row">
+                            <div class="col-md-4">
+                                SHIFT IN CHARGE: #{workScheduleForm.erpWorkSchedule.shiftCommander}
+                            </div>
+                            <div class="col-md-4">
+                                DETACHMENT COMMANDER: #{workScheduleForm.erpWorkSchedule.detachmentCommander}
+                            </div>
+                            <div class="col-md-4">
+                                AREA SEC COMMANDER: #{workScheduleForm.erpWorkSchedule.areaSecurityCommander}
+                            </div>
+                        </div>
                         <p:spacer width="5"/>
                         <div class="row">
                             <div class="col-md-3">
@@ -285,9 +385,11 @@
                                     <td>#{workAssn.employeeAssigned.lastname}, #{workAssn.employeeAssigned.firstname}</td>
                                     <td>#{workAssn.workAssignment}</td>
                                     <ui:repeat var="wd" value="#{workAssn.workDays}">
-                                        <td>#{wd.shiftSchedule}</td>
+                                        <td>
+                                            #{wd.shiftSchedule}
+                                        </td>
                                     </ui:repeat>
-                                    <td>#{workAssn.workDays.size()}</td>
+                                    <td>#{workAssn.totalWorkDay}</td>
                                 </tr>
                             </ui:repeat>
                             </tbody>

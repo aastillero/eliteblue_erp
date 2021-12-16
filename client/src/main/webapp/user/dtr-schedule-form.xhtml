@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="title">
+        <p:outputPanel rendered="#{erpDTRScheduleForm.isNew()}">
+            <h1>New DTR Schedule</h1>
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not erpDTRScheduleForm.isNew()}">
+            <h1>Edit DTR Schedule</h1>
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="description">
+        <p:outputPanel rendered="#{erpDTRScheduleForm.isNew()}">
+            Create a new DTR Schedule.
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not erpDTRScheduleForm.isNew()}">
+            Update DTR Schedule.
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewParam name="erpDTRAssignmentId" value="#{erpDTRScheduleForm.erpDTRAssignmentId}" converter="javax.faces.Long"/>
+            <!--<f:viewParam name="locationId" value="#{erpPostForm.locationId}" converter="javax.faces.Long"/>-->
+            <f:viewParam name="id" value="#{erpDTRScheduleForm.id}" converter="javax.faces.Long"/>
+            <f:event type="preRenderView" listener="#{erpDTRScheduleForm.init}"/>
+        </f:metadata>
+
+        <h:form id="form" prependId="false">
+            <h:messages/>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <p:commandButton value="Save" action="#{erpDTRScheduleForm.save}" update="@form"
+                                         icon="fa fa-check" styleClass="btn-primary"/>
+                        <p:spacer width="5" rendered="#{erpDTRScheduleForm.isNew()}"/>
+                        <p:commandButton value="Clear" action="#{erpDTRScheduleForm.clear}" process="@this"
+                                         icon="fa fa-refresh" styleClass="btn-success"
+                                         update="@form" rendered="#{erpDTRScheduleForm.isNew()}" resetValues="true"/>
+                        <p:spacer width="5" rendered="#{not erpDTRScheduleForm.isNew()}"/>
+
+                        <p:commandButton value="Delete" action="#{erpDTRScheduleForm.remove}" process="@this"
+                                         rendered="#{not erpDTRScheduleForm.isNew()}" icon="fa fa-trash"
+                                         styleClass="btn-danger">
+                            <f:setPropertyActionListener value="true"
+                                                         target="#{facesContext.externalContext.flash.keepMessages}"/>
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:commandButton>
+                        <p:spacer width="5"/>
+                        <p:commandButton value="Back" action="#{erpDTRScheduleForm.backBtnPressed}" icon="fa fa-reply"/>
+                    </div>
+                    <p:splitButton value="Save" action="#{erpDTRScheduleForm.save}" update="@form"
+                                   icon="fa fa-check"
+                                   styleClass="hidden-md hidden-lg btn-primary">
+                        <p:menuitem value="Reset" action="#{erpDTRScheduleForm.clear}"
+                                    process="@this" update="@form" rendered="#{erpDTRScheduleForm.isNew()}"
+                                    resetValues="true" icon="fa fa-refresh"/>
+                        <p:menuitem value="Delete" action="#{erpDTRScheduleForm.remove}" process="@this"
+                                    rendered="#{not erpDTRScheduleForm.isNew()}" icon="fa fa-trash"
+                        >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:menuitem value="Back" action="#{erpDTRScheduleForm.backBtnPressed}" icon="fa fa-reply"/>
+                    </p:splitButton>
+                    <p:separator/>
+
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="dateStart" class="col-sm-2 control-label">Day Shift Start</label>
+                            <div class="col-sm-10">
+                                <p:datePicker autocomplete="off" id="dateStart" showTime="true" value="#{erpDTRScheduleForm.erpDTRSchedule.dayShiftStart}"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="dateEnd" class="col-sm-2 control-label">Day Shift End</label>
+                            <div class="col-sm-10">
+                                <p:datePicker autocomplete="off" id="dateEnd" showTime="true" value="#{erpDTRScheduleForm.erpDTRSchedule.dayShiftEnd}"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="nightStart" class="col-sm-2 control-label">Night Shift Start</label>
+                            <div class="col-sm-10">
+                                <p:datePicker autocomplete="off" id="nightStart" showTime="true" value="#{erpDTRScheduleForm.erpDTRSchedule.nightShiftStart}"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="nightEnd" class="col-sm-2 control-label">Night Shift End</label>
+                            <div class="col-sm-10">
+                                <p:datePicker autocomplete="off" id="nightEnd" showTime="true" value="#{erpDTRScheduleForm.erpDTRSchedule.nightShiftEnd}"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="inputSched" class="col-sm-2 control-label">Shift Schedule</label>
+                            <div class="col-sm-10">
+                                <p:selectOneMenu id="inputSched" value="#{erpDTRScheduleForm.erpDTRSchedule.attendance}" style="width:150px">
+                                    <f:selectItems value="#{erpDTRScheduleForm.workSchedValues}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

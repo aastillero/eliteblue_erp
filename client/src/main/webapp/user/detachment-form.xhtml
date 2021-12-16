@@ -92,6 +92,30 @@
                                 </p:selectOneMenu>
                             </div>
                         </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="phicSG" class="col-sm-2 control-label">PHIC SG</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{erpDetachmentForm.erpDetachment.phicSG}" id="phicSG" placeholder="0"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="phicAC" class="col-sm-2 control-label">PHIC AC</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{erpDetachmentForm.erpDetachment.phicAC}" id="phicAC" placeholder="0"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="phicDC" class="col-sm-2 control-label">PHIC DC</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{erpDetachmentForm.erpDetachment.phicDC}" id="phicDC" placeholder="0"/>
+                            </div>
+                        </div>
                     </div>
 
                     <p:outputPanel rendered="#{not erpDetachmentForm.isNew()}">

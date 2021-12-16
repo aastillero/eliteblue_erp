@@ -69,17 +69,11 @@ public class LazyErpDetachmentModel extends LazyDataModel<ErpDetachment> {
         for (FilterMeta filter : filterBy) {
             FilterConstraint constraint = filter.getConstraint();
             Object filterValue = filter.getFilterValue();
+            String filterText = (filterValue == null) ? null : filterValue.toString().trim().toLowerCase();
 
-            try {
-                Object columnValue = String.valueOf(o.getClass().getField(filter.getField()).get(o));
-                matching = constraint.isMatching(context, columnValue, filterValue, LocaleUtils.getCurrentLocale());
-            } catch (ReflectiveOperationException e) {
-                matching = false;
-            }
-
-            if (!matching) {
-                break;
-            }
+            ErpDetachment erpDetachment = (ErpDetachment) o;
+            return erpDetachment.getName().toLowerCase().contains(filterText)
+                    || erpDetachment.getLocation().getLocation().toLowerCase().contains(filterText);
         }
 
         return matching;

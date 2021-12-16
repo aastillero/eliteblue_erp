@@ -160,7 +160,8 @@ public class ErpUserService implements Serializable {
                 new Date(),
                 false,
                 user.getEnabled(),
-                operationsAreas
+                operationsAreas,
+                user.getErpDetachment()
         );
     }
 

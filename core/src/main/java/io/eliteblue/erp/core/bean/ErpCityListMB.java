@@ -6,6 +6,8 @@ import io.eliteblue.erp.core.model.ErpRegion;
 import io.eliteblue.erp.core.service.RegionCityService;
 import io.eliteblue.erp.core.util.EmpMastProcessUtil;
 import io.eliteblue.erp.core.util.ExcelUtils;
+import io.eliteblue.erp.core.util.HeadOfficeFireArmsBondUtil;
+import io.eliteblue.erp.core.util.ScoutCAUtil;
 import org.omnifaces.util.Faces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -32,6 +34,12 @@ public class ErpCityListMB implements Serializable {
 
     @Autowired
     private EmpMastProcessUtil processUtil;
+
+    @Autowired
+    private ScoutCAUtil scoutCAUtil;
+
+    @Autowired
+    private HeadOfficeFireArmsBondUtil fireArmsBondUtil;
 
     private LazyDataModel<ErpCity> lazyErpCities;
     private List<ErpCity> filteredErpCities;
@@ -111,9 +119,11 @@ public class ErpCityListMB implements Serializable {
     }
 
     public String newCityPressed() throws Exception {
-        return "city-form?regionId="+id+"faces-redirect=true&includeViewParams=true";
+        //return "city-form?regionId="+id+"faces-redirect=true&includeViewParams=true";
         //processUtil.startProcess();
-        //return "cities?id="+id+"faces-redirect=true&includeViewParams=true";
+        //fireArmsBondUtil.startProcessBonds();
+        //scoutCAUtil.startProcess();
+        return "cities?id="+id+"faces-redirect=true&includeViewParams=true";
     }
 
     public boolean globalFilterFunction(Object value, Object filter, Locale locale) {

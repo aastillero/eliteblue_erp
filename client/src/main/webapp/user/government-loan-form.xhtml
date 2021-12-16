@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="title">
+        <p:outputPanel rendered="#{governmentLoanForm.isNew()}">
+            <h1>New Loan</h1>
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not governmentLoanForm.isNew()}">
+            <h1>Edit Loan</h1>
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="description">
+        <p:outputPanel rendered="#{governmentLoanForm.isNew()}">
+            Create a new Loan.
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not governmentLoanForm.isNew()}">
+            Update Loan information.
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewParam name="id" value="#{governmentLoanForm.id}" converter="javax.faces.Long"/>
+            <f:event type="preRenderView" listener="#{governmentLoanForm.init}"/>
+        </f:metadata>
+
+        <h:form id="form" prependId="false">
+            <h:messages/>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <p:commandButton value="Save" rendered="#{governmentLoanForm.isNew()}" action="#{governmentLoanForm.save}" update="@form"
+                                         icon="fa fa-check" styleClass="btn-primary"/>
+                        <p:spacer width="5" rendered="#{governmentLoanForm.isNew()}"/>
+                        <p:commandButton value="Clear" action="#{governmentLoanForm.clear}" process="@this"
+                                         icon="fa fa-refresh" styleClass="btn-success"
+                                         update="@form" rendered="#{governmentLoanForm.isNew()}" resetValues="true"/>
+                        <p:spacer width="5" rendered="#{not governmentLoanForm.isNew()}"/>
+
+                        <p:commandButton value="Delete" action="#{governmentLoanForm.remove}" process="@this"
+                                         rendered="#{not governmentLoanForm.isNew()}" icon="fa fa-trash"
+                                         styleClass="btn-danger">
+                            <f:setPropertyActionListener value="true"
+                                                         target="#{facesContext.externalContext.flash.keepMessages}"/>
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:commandButton>
+                        <p:spacer width="5"/>
+                        <p:commandButton value="Back" action="government-loans?faces-redirect=true" icon="fa fa-reply"/>
+                    </div>
+                    <p:splitButton value="Save" rendered="#{governmentLoanForm.isNew()}" action="#{governmentLoanForm.save}" update="@form"
+                                   icon="fa fa-check"
+                                   styleClass="hidden-md hidden-lg btn-primary">
+                        <p:menuitem value="Reset" action="#{governmentLoanForm.clear}"
+                                    process="@this" update="@form" rendered="#{governmentLoanForm.isNew()}"
+                                    resetValues="true" icon="fa fa-refresh"/>
+                        <p:menuitem value="Delete" action="#{governmentLoanForm.remove}" process="@this"
+                                    rendered="#{not governmentLoanForm.isNew()}" icon="fa fa-trash"
+                        >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:menuitem value="Back" action="government-loans?faces-redirect=true"
+                                    process="@this" immediate="true"
+                                    icon="fa fa-reply"/>
+                    </p:splitButton>
+                    <p:separator/>
+
+                    <p:outputPanel rendered="#{governmentLoanForm.isNew()}">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="inputEmp" class="col-sm-2 control-label">Borrower</label>
+
+                            <div class="col-sm-10">
+                                <p:selectOneMenu id="inputEmp" value="#{governmentLoanForm.employee.id}" style="width:150px"
+                                                 effect="fade" filter="true" filterMatchMode="startsWith">
+                                    <f:selectItems value="#{governmentLoanForm.employees}" var="selectedEmployee"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="loanAmount" class="col-sm-2 control-label">Loan Amount</label>
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{governmentLoanForm.governmentLoan.loanAmount}" id="loanAmount" placeholder="10000.00"/>
+                                <span class="ui-inputgroup-addon">php</span>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="deductionAmount" class="col-sm-2 control-label">Deduction Amount</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{governmentLoanForm.governmentLoan.deductionAmount}" id="deductionAmount" placeholder="2000.00"/>
+                                <span class="ui-inputgroup-addon">php</span>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="dateStarted" class="col-sm-2 control-label">Start Date</label>
+                            <div class="col-sm-10">
+                                <p:datePicker autocomplete="off" id="dateStarted" class="date-input" monthNavigator="true" yearNavigator="true" value="#{governmentLoanForm.governmentLoan.dateStarted}"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="loanType" class="col-sm-2 control-label">Loan Type</label>
+                            <div class="col-sm-10">
+                                <p:selectOneMenu id="loanType" value="#{governmentLoanForm.governmentLoan.loanType}" style="width:150px">
+                                    <f:selectItems value="#{governmentLoanForm.governmentLoanValues}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                    </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{not governmentLoanForm.isNew()}">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" style="font-weight:bold;">Borrower:</label>
+                                <div class="col-sm-10">
+                                    <label class="control-label">#{governmentLoanForm.employee.firstname} #{governmentLoanForm.employee.lastname}</label>
+                                </div>
+                            </div>
+                            <p:spacer width="5"/>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" style="font-weight:bold;">Loan Amount:</label>
+                                <div class="col-sm-10">
+                                    <label class="control-label">#{governmentLoanForm.governmentLoan.loanAmount}</label>
+                                    <p:spacer width="10"/>
+                                    <p:commandButton class="rounded-button" icon="pi pi-pencil" value="Edit"
+                                                     action="#{governmentLoanForm.editPressed('loanAmount')}"/>
+                                </div>
+                            </div>
+                            <p:spacer width="5"/>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" style="font-weight:bold;">Deduction Amount:</label>
+                                <div class="col-sm-10">
+                                    <label class="control-label">#{governmentLoanForm.governmentLoan.deductionAmount}</label>
+                                    <p:spacer width="10"/>
+                                    <p:commandButton class="rounded-button" icon="pi pi-pencil" value="Edit"
+                                                     action="#{governmentLoanForm.editPressed('deductionAmount')}"/>
+                                </div>
+                            </div>
+                            <p:spacer width="5"/>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" style="font-weight:bold;">Balance:</label>
+                                <div class="col-sm-10">
+                                    <label class="control-label">#{governmentLoanForm.governmentLoan.balanceAmount}</label>
+                                    <p:spacer width="10"/>
+                                    <p:commandButton class="rounded-button" icon="pi pi-pencil" value="Edit"
+                                                     action="#{governmentLoanForm.editPressed('balanceAmount')}"/>
+                                </div>
+                            </div>
+                            <p:spacer width="5"/>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" style="font-weight:bold;">Paid Amount:</label>
+                                <div class="col-sm-10">
+                                    <label class="control-label">#{governmentLoanForm.governmentLoan.paidAmount}</label>
+                                    <p:spacer width="10"/>
+                                    <p:commandButton class="rounded-button" icon="pi pi-pencil" value="Edit"
+                                                     action="#{governmentLoanForm.editPressed('paidAmount')}"/>
+                                </div>
+                            </div>
+                            <p:spacer width="5"/>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" style="font-weight:bold;">Start Date:</label>
+                                <div class="col-sm-10">
+                                    <label class="control-label">#{governmentLoanForm.governmentLoan.dateStarted}</label>
+                                    <p:spacer width="10"/>
+                                    <p:commandButton class="rounded-button" icon="pi pi-pencil" value="Edit"
+                                                     action="#{governmentLoanForm.editPressed('dateStarted')}"/>
+                                </div>
+                            </div>
+                            <p:spacer width="5"/>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" style="font-weight:bold;">Loan Type:</label>
+                                <div class="col-sm-10">
+                                    <label class="control-label">#{governmentLoanForm.governmentLoan.loanType}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{not governmentLoanForm.isNew()}">
+                        <p:spacer width="5"/>
+                        <p:spacer width="5"/>
+                        <p:spacer width="5"/>
+                        <div class="row">
+                            <div class="col-md-10" style="margin-left:20px;margin-bottom:5px;">
+                                <label class="control-label" style="font-weight:bold;">LOAN HISTORY</label>
+                            </div>
+                        </div>
+                        <div class="col-md-11" style="overflow-x: auto">
+                            <table class="table table-striped table-bordered" style="width:auto">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        History Logs
+                                    </th>
+                                    <th>
+                                        Made By
+                                    </th>
+                                    <th>
+                                        Reason
+                                    </th>
+                                    <th>
+                                        Date Changed
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <ui:repeat var="hist" value="#{governmentLoanForm.governmentLoanHistory}">
+                                    <tr>
+                                        <td>
+                                            #{hist.changes}
+                                        </td>
+                                        <td>
+                                            #{hist.lastEditedBy}
+                                        </td>
+                                        <td>
+                                            #{hist.reason}
+                                        </td>
+                                        <td>
+                                            #{hist.lastUpdate}
+                                        </td>
+                                    </tr>
+                                </ui:repeat>
+                                </tbody>
+                            </table>
+                        </div>
+                    </p:outputPanel>
+                </div>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

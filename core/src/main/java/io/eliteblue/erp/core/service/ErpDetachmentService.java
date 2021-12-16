@@ -8,6 +8,7 @@ import io.eliteblue.erp.core.util.CurrentUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +27,12 @@ public class ErpDetachmentService extends CoreErpServiceImpl implements CoreErpS
 
     public List<ErpDetachment> getAllFilteredLocation() {
         List<OperationsArea> assignedLocations = CurrentUserUtil.getOperationsAreas();
+        ErpDetachment detachment = CurrentUserUtil.getDetachment();
+        if(detachment != null) {
+            List<ErpDetachment> detachments = new ArrayList<>();
+            detachments.add(detachment);
+            return detachments;
+        }
         return repository.getAllFiltered(assignedLocations);
     }
 

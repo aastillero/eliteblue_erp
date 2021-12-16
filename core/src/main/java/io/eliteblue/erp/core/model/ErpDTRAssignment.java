@@ -26,6 +26,12 @@ public class ErpDTRAssignment extends CoreEntity {
     @OneToMany(mappedBy = "erpDTRAssignment", cascade = CascadeType.MERGE, orphanRemoval = true)
     private Set<ErpDTRSchedule> schedules;
 
+    @Column(name = "TOTAL_WORK_HOURS")
+    private Integer totalWorkHours;
+
+    @Column(name = "TOTAL_WORK_DAYS")
+    private Integer totalWorkDays;
+
     public Long getId() {
         return id;
     }
@@ -56,5 +62,21 @@ public class ErpDTRAssignment extends CoreEntity {
 
     public void setSchedules(Set<ErpDTRSchedule> schedules) {
         this.schedules = schedules;
+    }
+
+    public Integer getTotalWorkHours() {
+        return totalWorkHours;
+    }
+
+    public void setTotalWorkHours(Integer totalWorkHours) {
+        this.totalWorkHours = totalWorkHours;
+    }
+
+    public Integer getTotalWorkDays() {
+        return totalWorkDays;
+    }
+
+    public void setTotalWorkDays(Integer totalWorkDays) {
+        this.totalWorkDays = totalWorkDays;
     }
 }

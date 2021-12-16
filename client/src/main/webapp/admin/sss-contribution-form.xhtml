@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="title">
+        <p:outputPanel rendered="#{erpSSSContributionForm.isNew()}">
+            <h1>New SSS Contribution</h1>
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not erpSSSContributionForm.isNew()}">
+            <h1>Edit SSS Contribution</h1>
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="description">
+        <p:outputPanel rendered="#{erpSSSContributionForm.isNew()}">
+            Create a new SSS Contribution.
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not erpSSSContributionForm.isNew()}">
+            Update SSS Contribution.
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewParam name="id" value="#{erpSSSContributionForm.id}" converter="javax.faces.Long"/>
+            <f:event type="preRenderView" listener="#{erpSSSContributionForm.init}"/>
+        </f:metadata>
+
+        <h:form id="form" prependId="false">
+            <h:messages/>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <p:commandButton value="Save" action="#{erpSSSContributionForm.save}" update="@form"
+                                         icon="fa fa-check" styleClass="btn-primary"/>
+                        <p:spacer width="5" rendered="#{erpSSSContributionForm.isNew()}"/>
+                        <p:commandButton value="Clear" action="#{erpSSSContributionForm.clear}" process="@this"
+                                         icon="fa fa-refresh" styleClass="btn-success"
+                                         update="@form" rendered="#{erpSSSContributionForm.isNew()}" resetValues="true"/>
+                        <p:spacer width="5" rendered="#{not erpSSSContributionForm.isNew()}"/>
+
+                        <p:commandButton value="Delete" action="#{erpSSSContributionForm.remove}" process="@this"
+                                         rendered="#{not erpSSSContributionForm.isNew()}" icon="fa fa-trash"
+                                         styleClass="btn-danger">
+                            <f:setPropertyActionListener value="true"
+                                                         target="#{facesContext.externalContext.flash.keepMessages}"/>
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:commandButton>
+                        <p:spacer width="5"/>
+                        <p:commandButton value="Back" action="sss-contributions?faces-redirect=true" icon="fa fa-reply"/>
+                    </div>
+                    <p:splitButton value="Save" action="#{erpSSSContributionForm.save}" update="@form"
+                                   icon="fa fa-check"
+                                   styleClass="hidden-md hidden-lg btn-primary">
+                        <p:menuitem value="Reset" action="#{erpSSSContributionForm.clear}"
+                                    process="@this" update="@form" rendered="#{erpSSSContributionForm.isNew()}"
+                                    resetValues="true" icon="fa fa-refresh"/>
+                        <p:menuitem value="Delete" action="#{erpSSSContributionForm.remove}" process="@this"
+                                    rendered="#{not erpSSSContributionForm.isNew()}" icon="fa fa-trash"
+                        >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:menuitem value="Back" action="sss-contributions?faces-redirect=true"
+                                    process="@this" immediate="true"
+                                    icon="fa fa-reply"/>
+                    </p:splitButton>
+                    <p:separator/>
+
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="fromVal" class="col-sm-2 control-label">Range From</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{erpSSSContributionForm.erpSSSContribution.rangeFrom}" id="fromVal" placeholder="0"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="toVal" class="col-sm-2 control-label">Range To</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{erpSSSContributionForm.erpSSSContribution.rangeTo}" id="toVal" placeholder="0"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="er" class="col-sm-2 control-label">ER</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{erpSSSContributionForm.erpSSSContribution.er}" id="er" placeholder="0"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="ee" class="col-sm-2 control-label">EE</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{erpSSSContributionForm.erpSSSContribution.ee}" id="ee" placeholder="0"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                    </div>
+                </div>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

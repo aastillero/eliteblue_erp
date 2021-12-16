@@ -1,6 +1,7 @@
 package io.eliteblue.erp.core.service;
 
 import io.eliteblue.erp.core.constants.DataOperation;
+import io.eliteblue.erp.core.model.ErpDetachment;
 import io.eliteblue.erp.core.model.ErpWorkSchedule;
 import io.eliteblue.erp.core.model.OperationsArea;
 import io.eliteblue.erp.core.repository.WorkScheduleRepository;
@@ -27,7 +28,12 @@ public class WorkScheduleService extends CoreErpServiceImpl implements CoreErpSe
 
     public List<ErpWorkSchedule> getAllFilteredLocation() {
         List<OperationsArea> assignedLocations = CurrentUserUtil.getOperationsAreas();
-        return repository.getAllFiltered(assignedLocations, new Date());
+        ErpDetachment detachment = CurrentUserUtil.getDetachment();
+        if(detachment != null) {
+            return repository.getAllFilteredDetachment(detachment, new Date());
+        } else {
+            return repository.getAllFiltered(assignedLocations, new Date());
+        }
     }
 
     @Override

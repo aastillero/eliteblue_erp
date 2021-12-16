@@ -1,5 +1,6 @@
 package io.eliteblue.erp.core.model.security;
 
+import io.eliteblue.erp.core.model.ErpDetachment;
 import io.eliteblue.erp.core.model.OperationsArea;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,10 +25,11 @@ public class ErpUserDetails implements UserDetails, Serializable {
     private Date lastLogged;
     private Boolean locked;
     private Boolean enabled;
+    private ErpDetachment detachment;
 
     public ErpUserDetails(){}
 
-    public ErpUserDetails(String username, String firstname, String lastname, String email, String password, List<Authority> authorities, Date lastLogged, Boolean locked, Boolean enabled, List<OperationsArea> areas) {
+    public ErpUserDetails(String username, String firstname, String lastname, String email, String password, List<Authority> authorities, Date lastLogged, Boolean locked, Boolean enabled, List<OperationsArea> areas, ErpDetachment detachment) {
         this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -38,6 +40,7 @@ public class ErpUserDetails implements UserDetails, Serializable {
         this.locked = locked;
         this.enabled = enabled;
         this.operationsAreas = areas;
+        this.detachment = detachment;
     }
 
     @Override
@@ -153,5 +156,13 @@ public class ErpUserDetails implements UserDetails, Serializable {
 
     public void setOperationsAreas(List<OperationsArea> operationsAreas) {
         this.operationsAreas = operationsAreas;
+    }
+
+    public ErpDetachment getDetachment() {
+        return detachment;
+    }
+
+    public void setDetachment(ErpDetachment detachment) {
+        this.detachment = detachment;
     }
 }

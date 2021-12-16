@@ -1,24 +1,13 @@
 package io.eliteblue.erp.core.model.security;
 
 import io.eliteblue.erp.core.model.CoreEntity;
+import io.eliteblue.erp.core.model.ErpDetachment;
 import io.eliteblue.erp.core.model.OperationsArea;
 
 import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -79,6 +68,10 @@ public class ErpUser extends CoreEntity {
             joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
             inverseJoinColumns = {@JoinColumn(name = "AUTHORITY_ID", referencedColumnName = "ID")})
     private Set<Authority> authorities;
+
+    @ManyToOne
+    @JoinColumn(name = "erp_detachment_id")
+    private ErpDetachment erpDetachment;
 
     public Long getId() {
         return id;
@@ -158,5 +151,13 @@ public class ErpUser extends CoreEntity {
 
     public void setLocations(Set<OperationsArea> locations) {
         this.locations = locations;
+    }
+
+    public ErpDetachment getErpDetachment() {
+        return erpDetachment;
+    }
+
+    public void setErpDetachment(ErpDetachment erpDetachment) {
+        this.erpDetachment = erpDetachment;
     }
 }

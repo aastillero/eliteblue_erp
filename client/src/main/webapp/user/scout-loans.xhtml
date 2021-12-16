@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="metadata">
+        <ui:param name="title" value="Scout Tuazon Loans list"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: right !important;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="title">
+        <h2 class="align-left">
+            Scout Tuazon Loan Management
+        </h2>
+    </ui:define>
+
+    <ui:define name="description">
+        You can add, edit and delete Scout Tuazon Loans.
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="form">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons">
+                        <p:commandButton action="scout-loan-form?faces-redirect=true" icon="fa fa-plus"
+                                         value="New Loan" styleClass="btn-primary"/>
+                        <p:spacer width="5"/>
+                    </div>
+
+                    <p:separator/>
+
+                    <p:dataTable id="scoutLoanTab" var="scoutLoan" value="#{scoutLoanList.lazyScoutLoans}" selectionMode="single"
+                        paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+                        paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                        emptyMessage="No Loans found with given criteria"
+                        widgetVar="scoutLoanTable"
+                        selection="#{scoutLoanList.selectedScoutLoan}" rowKey="#{scoutLoan.id}">
+
+                        <p:ajax event="rowSelect" listener="#{scoutLoanList.onRowSelect}"/>
+                        <p:ajax event="rowUnselect" listener="#{scoutLoanList.onRowUnselect}"/>
+
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-end">
+                                <p:commandButton onclick="$('#form\\:scoutLoanTab\\:globalFilter').val('').keyup();PF('scoutLoanTable').filter()" value="clear"/>
+                                <p:inputText id="globalFilter" style="width:20rem" placeholder="Search all columns" autocomplete="off"
+                                             onkeypress="if (event.keyCode === 13)  {PF('scoutLoanTable').filter(); return false;}"/>
+                                <p:commandButton  class="ui-button" icon="fa fa-search" onclick="PF('scoutLoanTable').filter()"/>
+                            </div>
+                        </f:facet>
+
+                        <p:column headerText="Borrower Name">
+                            <h:outputText value="#{scoutLoan.employeeBorrower.firstname} #{scoutLoan.employeeBorrower.lastname}" />
+                        </p:column>
+                        <p:column headerText="Amount">
+                            <h:outputText value="#{scoutLoan.loanAmount}" />
+                        </p:column>
+                        <p:column headerText="Loan Type">
+                            <h:outputText value="#{scoutLoan.loanType}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

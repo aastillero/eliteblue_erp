@@ -76,6 +76,47 @@ public class ExcelUtils {
             _cell.setCellValue((Integer) val);
     }
 
+    public static void setCellFormula(int row, int cell, String val, CellStyle... style) throws Exception {
+        initializeWorkbook();
+        Row _row = worksheet.getRow(row);
+        Cell _cell;
+        if(_row == null) {
+            _row = worksheet.createRow(row);
+            _cell = _row.createCell(cell);
+        }
+        else {
+            _cell = _row.getCell(cell);
+            if(_cell == null) {
+                _cell = _row.createCell(cell);
+            }
+        }
+        if(style != null && style.length > 0)
+            _cell.setCellStyle(style[0]);
+        _cell.setCellFormula(val);
+    }
+
+    public static void setCellTime(int row, int cell, String val) throws Exception {
+        initializeWorkbook();
+        Row _row = worksheet.getRow(row);
+        Cell _cell;
+        if(_row == null) {
+            _row = worksheet.createRow(row);
+            _cell = _row.createCell(cell);
+        }
+        else {
+            _cell = _row.getCell(cell);
+            if(_cell == null) {
+                _cell = _row.createCell(cell);
+            }
+        }
+        double time = DateUtil.convertTime(val);
+        CellStyle cellStyle = workbook.createCellStyle();
+        CreationHelper createHelper1 = workbook.getCreationHelper();
+        cellStyle.setDataFormat(createHelper1.createDataFormat().getFormat("HH:MM"));
+        _cell.setCellValue(time);
+        _cell.setCellStyle(cellStyle);
+    }
+
     public static void evaluateCell(int row, int cell) throws Exception {
         initializeWorkbook();
         Cell _cell = worksheet.getRow(row).getCell(cell);
@@ -92,7 +133,7 @@ public class ExcelUtils {
 
     public static CellStyle getCellStyle(int row, int cell) throws Exception {
         initializeWorkbook();
-        Cell _cell = worksheet.getRow(row).getCell(cell);
+        Cell _cell = worksheet.getRow(row).getCell(cell, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
         return _cell.getCellStyle();
     }
 
@@ -100,6 +141,11 @@ public class ExcelUtils {
         initializeWorkbook();
         FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
         evaluator.evaluateAll();
+    }
+
+    public static void copyRange(int srcStartRow, int srcEndRow, int destRow) throws Exception {
+        initializeWorkbook();
+        ((XSSFSheet) worksheet).copyRows(srcStartRow, srcEndRow, destRow, new CellCopyPolicy());
     }
 
     public static Integer getRowCount() throws Exception {

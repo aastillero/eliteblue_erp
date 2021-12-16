@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="metadata">
+        <ui:param name="title" value="Area list"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: right !important;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="title">
+        <h2 class="align-left">
+            Payroll Configuration Management
+        </h2>
+    </ui:define>
+
+    <ui:define name="description">
+        You can add, edit and delete Payroll Configurations.
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="form">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons">
+                        <p:commandButton action="config-form?faces-redirect=true" icon="fa fa-plus"
+                                         value="New Configuration" styleClass="btn-primary"/>
+                        <p:spacer width="5"/>
+                    </div>
+
+                    <p:separator/>
+
+                    <p:outputPanel rendered="#{empty erpConfigListMB.erpConfigs}">
+                        There were no Configurations Added.
+                    </p:outputPanel>
+
+                    <ui:repeat var="erpConf" value="#{erpConfigListMB.erpConfigs}">
+                        <div class="row">
+                            <div class="tab-content">
+                                <div class="tab-pane-active">
+                                    <div class="col-md-12" style="font-size: 16px; margin: 5px;">
+                                        <p:commandButton class="rounded-button" icon="pi pi-pencil" value="Edit"
+                                                         action="#{erpConfigListMB.editConfPressed(erpConf.id)}"/>
+                                        <p:spacer width="10"/>
+                                        <label style="font-weight:bold;">#{erpConf.name}:</label> #{erpConfigListMB.getConfigValue(erpConf)}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ui:repeat>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

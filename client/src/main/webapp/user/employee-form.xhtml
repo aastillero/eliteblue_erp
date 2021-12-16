@@ -257,6 +257,14 @@
                                                 </div>
                                             </div>
                                         </p:outputPanel>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Employment</label>
+                                                <p:selectOneMenu id="inputEmployment" value="#{erpEmployeeForm.erpEmployee.employment}" style="width:150px">
+                                                    <f:selectItems value="#{erpEmployeeForm.employmentValues}"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
                                         <p:outputPanel rendered="#{erpEmployeeForm.erpEmployee.resignedDate != null}">
                                         <div class="col-md-2">
                                             <div class="form-group">
@@ -277,6 +285,14 @@
                                             <div class="form-group">
                                                 <label for="bankAccNum">Bank Account Number</label>
                                                 <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.bankAccountNumber}" class="form-control" id="bankAccNum" placeholder="Account Number"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="salaryRate">Salary</label>
+                                                <div class="ui-inputgroup">
+                                                    <p:inputNumber minValue="0" decimalPlaces="0" autocomplete="off" value="#{erpEmployeeForm.erpEmployee.salaryRate}" id="salaryRate" placeholder="0.00"/>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

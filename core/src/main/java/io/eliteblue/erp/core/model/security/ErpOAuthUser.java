@@ -1,5 +1,6 @@
 package io.eliteblue.erp.core.model.security;
 
+import io.eliteblue.erp.core.model.ErpDetachment;
 import io.eliteblue.erp.core.model.OperationsArea;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -21,6 +22,7 @@ public class ErpOAuthUser implements OAuth2User {
     private Boolean enabled;
     private String clientname;
     private List<OperationsArea> operationsAreas;
+    private ErpDetachment detachment;
 
     public ErpOAuthUser(OAuth2User oauth2User, String clientName) {
         this.oAuth2User = oauth2User;
@@ -136,5 +138,13 @@ public class ErpOAuthUser implements OAuth2User {
 
     public void setOperationsAreas(List<OperationsArea> operationsAreas) {
         this.operationsAreas = operationsAreas;
+    }
+
+    public ErpDetachment getDetachment() {
+        return detachment;
+    }
+
+    public void setDetachment(ErpDetachment detachment) {
+        this.detachment = detachment;
     }
 }

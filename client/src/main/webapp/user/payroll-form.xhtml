@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="title">
+        <p:outputPanel rendered="#{erpPayrollForm.isNew()}">
+            <h1>New Payroll</h1>
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not erpPayrollForm.isNew()}">
+            <h1>Edit Payroll</h1>
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="description">
+        <p:outputPanel rendered="#{erpPayrollForm.isNew()}">
+            Create a new Payroll.
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not erpPayrollForm.isNew()}">
+            Update Payroll.
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewParam name="id" value="#{erpPayrollForm.id}" converter="javax.faces.Long"/>
+            <f:event type="preRenderView" listener="#{erpPayrollForm.init}"/>
+        </f:metadata>
+
+        <h:form id="form" prependId="false">
+            <h:messages/>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <p:commandButton value="Save" action="#{erpPayrollForm.save}" update="@form"
+                                         icon="fa fa-check" styleClass="btn-primary"/>
+                    </div>
+                    <p:separator/>
+
+                    <p:outputPanel rendered="#{erpPayrollForm.isNew()}">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="startPeriod" class="col-sm-3 control-label">Payroll Cover Period Start</label>
+
+                            <div class="col-sm-9">
+                                <p:datePicker autocomplete="off" id="startPeriod" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpPayrollForm.erpPayroll.coverPeriodStart}"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="endPeriod" class="col-sm-3 control-label">Payroll Cover Period End</label>
+
+                            <div class="col-sm-9">
+                                <p:datePicker autocomplete="off" id="endPeriod" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpPayrollForm.erpPayroll.coverPeriodEnd}"/>
+                            </div>
+                        </div>
+                    </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{not erpPayrollForm.isNew()}">
+                        <h3>Detachments</h3>
+                        <p:separator/>
+
+                            <p:dataTable id="erpDetachmentTab" var="detachment" value="#{erpPayrollForm.lazyPayrollDetachments}" selectionMode="single"
+                                paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+                                paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                emptyMessage="No Detachments found with given criteria"
+                                widgetVar="erpDetachmentTable"
+                                selection="#{erpPayrollForm.selectedPayrollDetachment}" rowKey="#{detachment.id}">
+
+                                <p:ajax event="rowSelect" listener="#{erpPayrollForm.onRowSelect}"/>
+                                <p:ajax event="rowUnselect" listener="#{erpPayrollForm.onRowUnselect}"/>
+
+                                <f:facet name="header">
+                                    <div class="p-d-flex p-jc-end">
+                                        <p:commandButton onclick="$('#form\\:erpDetachmentTab\\:globalFilter').val('').keyup();PF('erpDetachmentTable').filter()" value="clear"/>
+                                        <p:inputText id="globalFilter" style="width:20rem" placeholder="Search all columns" autocomplete="off"
+                                                     onkeypress="if (event.keyCode === 13)  {PF('erpDetachmentTable').filter(); return false;}"/>
+                                        <p:commandButton  class="ui-button" icon="fa fa-search" onclick="PF('erpDetachmentTable').filter()"/>
+                                    </div>
+                                </f:facet>
+
+                                <p:column headerText="Detachment Name">
+                                    <h:outputText value="#{detachment.detachment.name}" />
+                                </p:column>
+                            </p:dataTable>
+                    </p:outputPanel>
+                </div>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

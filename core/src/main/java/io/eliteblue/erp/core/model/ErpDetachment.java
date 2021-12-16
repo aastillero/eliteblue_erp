@@ -20,6 +20,15 @@ public class ErpDetachment extends CoreEntity {
     @Size(min = 1, max = 50)
     private String name;
 
+    @Column(name = "PHIC_SG")
+    private Double phicSG;
+
+    @Column(name = "PHIC_AC")
+    private Double phicAC;
+
+    @Column(name = "PHIC_DC")
+    private Double phicDC;
+
     @OneToOne
     @JoinColumn(name = "AREA_ID", referencedColumnName = "id")
     private OperationsArea location;
@@ -91,5 +100,29 @@ public class ErpDetachment extends CoreEntity {
 
     public void setAssignedEmployees(Set<ErpEmployee> assignedEmployees) {
         this.assignedEmployees = assignedEmployees;
+    }
+
+    public Double getPhicSG() {
+        return phicSG;
+    }
+
+    public void setPhicSG(Double phicSG) {
+        this.phicSG = phicSG;
+    }
+
+    public Double getPhicAC() {
+        return phicAC;
+    }
+
+    public void setPhicAC(Double phicAC) {
+        this.phicAC = phicAC;
+    }
+
+    public Double getPhicDC() {
+        return phicDC;
+    }
+
+    public void setPhicDC(Double phicDC) {
+        this.phicDC = phicDC;
     }
 }

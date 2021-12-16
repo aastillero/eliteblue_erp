@@ -57,8 +57,11 @@ public class WorkScheduleForm implements Serializable {
     private LocalDate startDate;
     private LocalDate stopDate;
 
+    private WorkSchedLegend legend;
+
     public void init() {
         workingDays = new ArrayList<>();
+        legend = WorkSchedLegend.DO;
         if(Faces.isAjaxRequest()) {
             return;
         }
@@ -103,6 +106,14 @@ public class WorkScheduleForm implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public WorkSchedLegend getLegend() {
+        return legend;
+    }
+
+    public void setLegend(WorkSchedLegend legend) {
+        this.legend = legend;
     }
 
     public ErpWorkSchedule getErpWorkSchedule() {
@@ -272,6 +283,7 @@ public class WorkScheduleForm implements Serializable {
                                 workDays.add(workDay);
                             }
                             workAssignment.setWorkDays(workDays);
+                            workAssignment.setTotalWorkDay(workDays.size());
                             workAssignments.add(workAssignment);
                         }
                     }

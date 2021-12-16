@@ -1,8 +1,10 @@
 package io.eliteblue.erp.core.bean;
 
+import io.eliteblue.erp.core.model.ErpDetachment;
 import io.eliteblue.erp.core.model.security.Authority;
 import io.eliteblue.erp.core.model.security.AuthorityName;
 import io.eliteblue.erp.core.model.security.ErpUser;
+import io.eliteblue.erp.core.service.ErpDetachmentService;
 import io.eliteblue.erp.core.service.ErpUserService;
 import io.eliteblue.erp.core.constants.DataOperation;
 import io.eliteblue.erp.core.model.OperationsArea;
@@ -29,6 +31,9 @@ public class ErpUserFormMB implements Serializable {
     @Autowired
     private OperationsAreaService operationsAreaService;
 
+    @Autowired
+    private ErpDetachmentService erpDetachmentService;
+
     private Long id;
     private ErpUser user;
     private Map<String, Boolean> enabledValues;
@@ -36,6 +41,8 @@ public class ErpUserFormMB implements Serializable {
     private List<String> selectedRoles;
     private List<String> locations;
     private List<String> selectedLocations;
+    private Map<String, Long> detachments;
+    private ErpDetachment detachment;
 
     public void init() {
         if(Faces.isAjaxRequest()) {
@@ -43,8 +50,14 @@ public class ErpUserFormMB implements Serializable {
         }
         if(has(id)) {
             user = erpUserService.findById(Long.valueOf(id));
+            if(has(user.getErpDetachment())) {
+                detachment = user.getErpDetachment();
+            } else {
+                detachment = new ErpDetachment();
+            }
         } else {
             user = new ErpUser();
+            detachment = new ErpDetachment();
         }
         enabledValues = new HashMap<>();
         enabledValues.put("YES", true);
@@ -54,6 +67,10 @@ public class ErpUserFormMB implements Serializable {
         locations = new ArrayList<>();
         for(OperationsArea o: areas) {
             locations.add(o.getLocation());
+        }
+        detachments = new HashMap<>();
+        for(ErpDetachment edp: erpDetachmentService.getAll()) {
+            detachments.put(edp.getName(), edp.getId());
         }
 
         userRoles = new ArrayList<>();
@@ -128,6 +145,22 @@ public class ErpUserFormMB implements Serializable {
         this.locations = locations;
     }
 
+    public Map<String, Long> getDetachments() {
+        return detachments;
+    }
+
+    public void setDetachments(Map<String, Long> detachments) {
+        this.detachments = detachments;
+    }
+
+    public ErpDetachment getDetachment() {
+        return detachment;
+    }
+
+    public void setDetachment(ErpDetachment detachment) {
+        this.detachment = detachment;
+    }
+
     public void clear() {
         user = new ErpUser();
         id = null;
@@ -148,6 +181,10 @@ public class ErpUserFormMB implements Serializable {
 
     public void save() throws Exception {
         if(user != null) {
+            if(has(detachment.getId())) {
+                detachment = erpDetachmentService.findById(detachment.getId());
+                user.setErpDetachment(detachment);
+            }
             if(selectedRoles != null && selectedRoles.size() > 0) {
                 user.setAuthorities(new HashSet<>());
                 for(String r: selectedRoles) {

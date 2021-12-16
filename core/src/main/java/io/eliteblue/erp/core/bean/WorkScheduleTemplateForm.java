@@ -85,7 +85,7 @@ public class WorkScheduleTemplateForm implements Serializable {
 
     public void fileUpload() throws Exception {
         System.out.println("FILE: "+file);
-        if (file != null) {
+        if (has(file) && file.getSize() > 0) {
             ExcelUtils.initializeWithInputStream(file.getInputStream(), "Sheet1");
             String detachmentStringId = (String) ExcelUtils.getCellData(0,1);
             if(!has(detachmentStringId) || detachmentStringId.isEmpty()) {
@@ -156,6 +156,7 @@ public class WorkScheduleTemplateForm implements Serializable {
                                 LocalDate _startDate = convertToLocalDateViaInstant(erpWorkSchedule.getStartDate());
                                 LocalDate _stopDate = convertToLocalDateViaInstant(erpWorkSchedule.getStopDate());
                                 int y = 2;
+                                int totalDO = 0;
                                 for (LocalDate date = _startDate; (date.isBefore(_stopDate) || date.isEqual(_stopDate)); date = date.plusDays(1), y++) {
                                     ErpWorkDay workDay = new ErpWorkDay();
                                     workDay.setWorkAssignment(workAssignment);
@@ -164,22 +165,36 @@ public class WorkScheduleTemplateForm implements Serializable {
                                         if(has(legendValue) && !legendValue.isEmpty()) {
                                             WorkSchedLegend legend = WorkSchedLegend.valueOf(legendValue);
                                             ErpTimeSchedule timeSchedule = findByLegend(detachment.getErpTimeSchedules(), legend);
-                                            LocalDateTime ldt_start = date.atTime(timeSchedule.getStartTime().toLocalTime());
-                                            LocalDateTime ldt_stop = date.atTime(timeSchedule.getEndTime().toLocalTime());
+                                            LocalDateTime ldt_start = date.atTime(0, 0, 0);
+                                            LocalDateTime ldt_stop = date.atTime(0, 0, 0);
+                                            if(has(timeSchedule)) {
+                                                ldt_start = date.atTime(timeSchedule.getStartTime().toLocalTime());
+                                                ldt_stop = date.atTime(timeSchedule.getEndTime().toLocalTime());
+                                            } else {
+                                                totalDO += 1;
+                                            }
                                             workDay.setShiftStart(convertToDateViaInstant(ldt_start));
                                             workDay.setShiftEnd(convertToDateViaInstant(ldt_stop));
                                             workDay.setShiftSchedule(legend);
                                             //System.out.println("ldt_start: "+ldt_start.getDayOfMonth());
                                             //System.out.println("ldt_stop: "+ldt_stop.getDayOfMonth());
-                                            System.out.println("WD START: "+ldt_start);
-                                            System.out.println("WD STOP: "+ldt_stop);
+                                            //System.out.println("WD START: " + ldt_start);
+                                            //System.out.println("WD STOP: " + ldt_stop);
                                             //System.out.println("WD LEGEND: "+legend.name());
+                                        } else {
+                                            System.out.println("HAS NO LEGEND VALUE!");
                                         }
+                                    } else {
+                                        System.out.println("HAS NO TIME SCHEDULE");
                                     }
                                     workDays.add(workDay);
                                 }
                                 workAssignment.setWorkDays(workDays);
+                                workAssignment.setTotalWorkDay((y-2)-totalDO);
                                 workAssignments.add(workAssignment);
+                                //System.out.println("Total DO: "+totalDO);
+                                //System.out.println("WorkDays: "+(y-2));
+                                //System.out.println("Total workdays:"+workAssignment.getTotalWorkDay());
                                 x++;
                             }
 
@@ -321,6 +336,7 @@ public class WorkScheduleTemplateForm implements Serializable {
                     CellStyle style = ExcelUtils.workbook.createCellStyle();
                     style.setAlignment(HorizontalAlignment.LEFT);
                     ExcelUtils.setCell(x, 18, y-2, style);
+                    ExcelUtils.setCellFormula(x, 18, (y-2)+"-COUNTIF(C"+(x+1)+":Q"+(x+1)+",\"*DO*\")", style);
                     style = ExcelUtils.workbook.createCellStyle();
                     Font font = ExcelUtils.workbook.createFont();
                     font.setColor(HSSFColor.HSSFColorPredefined.WHITE.getIndex());

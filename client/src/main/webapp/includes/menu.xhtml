@@ -46,10 +46,22 @@
 						</a>
 					</li>
 					<li>
-						<a href="#">
+						<p:link outcome="/admin/configs">
 							<i class="fa fa-cog nav-icon"/>
 							<span>Payroll Settings</span>
-						</a>
+						</p:link>
+					</li>
+					<li>
+						<p:link outcome="/admin/sss-contributions">
+							<i class="fa fa-table nav-icon"/>
+							<span>SSS Contribution Table</span>
+						</p:link>
+					</li>
+					<li>
+						<p:link outcome="/admin/holidays">
+							<i class="fa fa-calendar nav-icon"/>
+							<span>Holiday Table</span>
+						</p:link>
 					</li>
 				</ul>
 			</li>
@@ -127,16 +139,22 @@
 					</p:link>
 				</li>
 				<li>
-					<a href="#">
+					<p:link outcome="/user/government-loans">
 						<i class="fa fa-credit-card nav-icon"/>
-						<span>Loans / Deductions</span>
-					</a>
+						<span>Government Loans</span>
+					</p:link>
 				</li>
 				<li>
-					<a href="#">
-						<i class="fa fa-calendar nav-icon"/>
-						<span>Holidays</span>
-					</a>
+					<p:link outcome="/user/head-office-loans">
+						<i class="fa fa-credit-card nav-icon"/>
+						<span>Eliteblue Loans</span>
+					</p:link>
+				</li>
+				<li>
+					<p:link outcome="/user/scout-loans">
+						<i class="fa fa-credit-card nav-icon"/>
+						<span>Scout Tuazon Loans</span>
+					</p:link>
 				</li>
 			</ul>
 		</li>
@@ -156,20 +174,20 @@
 					</p:link>
 				</li>
 				<li>
-					<a href="#">
+					<p:link outcome="/user/dtr-list">
 						<i class="fa fa-table nav-icon"/>
 						<span>DTR</span>
-					</a>
+					</p:link>
 				</li>
 			</ul>
 		</li>
 		</sec:authorize>
 		<sec:authorize access="hasAnyRole('SYS_ADMIN', 'PAYROLL')">
 		<li>
-			<a href="#">
+			<p:link outcome="/user/payroll-list">
 				<i class="fa fa-money nav-icon"/>
 				<span>Payroll</span>
-			</a>
+			</p:link>
 		</li>
 		</sec:authorize>
 	</ul>

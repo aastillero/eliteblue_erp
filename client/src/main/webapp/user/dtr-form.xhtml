@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                xmlns:sec="http://www.springframework.org/security/tags"
+                template="#{layoutMB.template}">
+
+    <ui:define name="title">
+        <sec:authorize access="hasRole('DETACHMENT_COM')">
+            <p:outputPanel rendered="#{erpDTRForm.isNew()}">
+                <h1>New DTR</h1>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{not erpDTRForm.isNew()}">
+                <h1>Edit DTR</h1>
+            </p:outputPanel>
+        </sec:authorize>
+        <sec:authorize access="!hasRole('DETACHMENT_COM')">
+            <h1>DTR Management</h1>
+        </sec:authorize>
+    </ui:define>
+
+    <ui:define name="description">
+        <sec:authorize access="hasRole('DETACHMENT_COM')">
+            <p:outputPanel rendered="#{erpDTRForm.isNew()}">
+                Create a new DTR.
+            </p:outputPanel>
+            <p:outputPanel rendered="#{not erpDTRForm.isNew()}">
+                Update DTR.
+            </p:outputPanel>
+        </sec:authorize>
+        <sec:authorize access="!hasRole('DETACHMENT_COM')">
+            Approve or Reject DTR.
+        </sec:authorize>
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewParam name="detachmentId" value="#{erpDTRForm.detachmentId}" converter="javax.faces.Long"/>
+            <!--<f:viewParam name="locationId" value="#{erpPostForm.locationId}" converter="javax.faces.Long"/>-->
+            <f:viewParam name="id" value="#{erpDTRForm.id}" converter="javax.faces.Long"/>
+            <f:event type="preRenderView" listener="#{erpDTRForm.init}"/>
+        </f:metadata>
+
+        <h:form id="form" prependId="false">
+            <h:messages/>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <sec:authorize access="hasRole('DETACHMENT_COM')">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <p:commandButton value="Save" action="#{erpDTRForm.save}" update="@form"
+                                         icon="fa fa-check" styleClass="btn-primary"/>
+                        <p:spacer width="5" rendered="#{erpDTRForm.isNew()}"/>
+                        <p:commandButton value="Clear" action="#{erpDTRForm.clear}" process="@this"
+                                         icon="fa fa-refresh" styleClass="btn-success"
+                                         update="@form" rendered="#{erpDTRForm.isNew()}" resetValues="true"/>
+                        <p:spacer width="5" rendered="#{not erpDTRForm.isNew()}"/>
+
+                        <p:commandButton value="Delete" action="#{erpDTRForm.remove}" process="@this"
+                                         rendered="#{not erpDTRForm.isNew()}" icon="fa fa-trash"
+                                         styleClass="btn-danger">
+                            <f:setPropertyActionListener value="true"
+                                                         target="#{facesContext.externalContext.flash.keepMessages}"/>
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:commandButton>
+                        <p:spacer width="5"/>
+                        <p:commandButton value="Back" action="#{erpDTRForm.backBtnPressed}" icon="fa fa-reply"/>
+                    </div>
+                    <p:splitButton value="Save" action="#{erpDTRForm.save}" update="@form"
+                                   icon="fa fa-check"
+                                   styleClass="hidden-md hidden-lg btn-primary">
+                        <p:menuitem value="Reset" action="#{erpDTRForm.clear}"
+                                    process="@this" update="@form" rendered="#{erpDTRForm.isNew()}"
+                                    resetValues="true" icon="fa fa-refresh"/>
+                        <p:menuitem value="Delete" action="#{erpDTRForm.remove}" process="@this"
+                                    rendered="#{not erpDTRForm.isNew()}" icon="fa fa-trash"
+                        >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:menuitem value="Back" action="#{erpDTRForm.backBtnPressed}" icon="fa fa-reply"/>
+                    </p:splitButton>
+                    </sec:authorize>
+                    <sec:authorize access="!hasRole('DETACHMENT_COM')">
+                    <div id="ws-buttons" class="hidden-sm hidden-xs">
+                        <p:commandButton value="Approve" action="#{erpDTRForm.approve}" update="@form"
+                                         icon="fa fa-check" styleClass="btn-primary"/>
+                        <p:spacer width="5" rendered="#{erpDTRForm.isNew()}"/>
+                        <p:commandButton value="Reject" action="#{erpDTRForm.reject}" process="@this"
+                                         rendered="#{not erpDTRForm.isNew()}" icon="fa fa-trash"
+                                         styleClass="btn-danger">
+                            <f:setPropertyActionListener value="true"
+                                                         target="#{facesContext.externalContext.flash.keepMessages}"/>
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:commandButton>
+                        <p:spacer width="5"/>
+                        <p:commandButton value="Back" action="#{erpDTRForm.backBtnPressed}" icon="fa fa-reply"/>
+                    </div>
+                    <p:splitButton value="Approve" action="#{erpDTRForm.approve}" update="@form"
+                                   icon="fa fa-check"
+                                   styleClass="hidden-md hidden-lg btn-primary">
+                        <p:menuitem value="Reject" action="#{erpDTRForm.reject}" process="@this"
+                                    rendered="#{not erpDTRForm.isNew()}" icon="fa fa-trash"
+                        >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:menuitem value="Back" action="#{erpDTRForm.backBtnPressed}" icon="fa fa-reply"/>
+                    </p:splitButton>
+                    </sec:authorize>
+                    <p:separator/>
+
+                    <sec:authorize access="hasRole('DETACHMENT_COM')">
+                    <p:tabView>
+                        <p:tab title="DTR Edit">
+                            <div class="box-body">
+                                <p:outputPanel rendered="#{not erpDTRForm.isNew()}">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" style="font-weight:bold;">STATUS</label>
+                                        <div class="col-sm-10">
+                                            <p:outputPanel rendered="#{erpDTRForm.erpDTR.status ne null and erpDTRForm.erpDTR.status == 'PENDING'}">
+                                                <span class="label label-warning" style="font-size:14px;">PENDING</span>
+                                            </p:outputPanel>
+                                            <p:outputPanel rendered="#{erpDTRForm.erpDTR.status ne null and erpDTRForm.erpDTR.status == 'REJECTED'}">
+                                                <span class="label label-danger" style="font-size:14px;">REJECTED</span>
+                                            </p:outputPanel>
+                                            <p:outputPanel rendered="#{erpDTRForm.erpDTR.status ne null and erpDTRForm.erpDTR.status == 'APPROVED'}">
+                                                <span class="label label-success" style="font-size:14px;">APPROVED</span>
+                                            </p:outputPanel>
+                                        </div>
+                                    </div>
+                                    <p:spacer width="5"/>
+                                </p:outputPanel>
+                                <div class="form-group">
+                                    <label for="dateStart" class="col-sm-2 control-label">Cut-off Start</label>
+                                    <div class="col-sm-10">
+                                        <p:datePicker autocomplete="off" id="dateStart" value="#{erpDTRForm.erpDTR.cutoffStart}"/>
+                                    </div>
+                                </div>
+                                <p:spacer width="5"/>
+                                <div class="form-group">
+                                    <label for="dateEnd" class="col-sm-2 control-label">Cut-off End</label>
+                                    <div class="col-sm-10">
+                                        <p:datePicker autocomplete="off" id="dateEnd" value="#{erpDTRForm.erpDTR.cutoffEnd}"/>
+                                    </div>
+                                </div>
+                                <p:spacer width="5"/>
+                                <div class="form-group">
+                                    <label for="inputDetachment" class="col-sm-2 control-label">Detachment</label>
+
+                                    <div class="col-sm-10">
+                                        <p:selectOneMenu id="inputDetachment" value="#{erpDTRForm.detachment.id}" style="width:150px"
+                                                         effect="fade" filter="true" filterMatchMode="startsWith">
+                                            <f:selectItems value="#{erpDTRForm.detachments}" var="selectedDetachment"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p:outputPanel rendered="#{not erpDTRForm.isNew()}">
+                                <h3>DTR Assignments</h3>
+                                <p:separator/>
+                                <div id="secondary-buttons" class="hidden-sm hidden-xs">
+                                    <p:commandButton action="#{erpDTRForm.newAssignmentPressed}" icon="fa fa-plus"
+                                                     value="Add DTR Assignment" styleClass="btn-primary"/>
+                                    <p:spacer width="5"/>
+                                </div>
+
+                                <p:dataTable id="dtrAssignTab" var="assignment" value="#{erpDTRForm.erpDTRAssignments}" selectionMode="single"
+                                             paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+                                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                             emptyMessage="No DTR Assignments found with given criteria" globalFilterFunction="#{erpDTRForm.globalFilterFunction}"
+                                             filteredValue="#{erpDTRForm.filteredErpDTRAssignment}" widgetVar="dtrAssignTable"
+                                             selection="#{erpDTRForm.selectedDTRAssignment}" rowKey="#{assignment.id}">
+
+                                    <p:ajax event="rowSelect" listener="#{erpDTRForm.onRowSelect}"/>
+                                    <p:ajax event="rowUnselect" listener="#{erpDTRForm.onRowUnselect}"/>
+
+                                    <f:facet name="header">
+                                        <div class="p-d-flex p-jc-end">
+                                            <p:commandButton onclick="$('#form\\:dtrAssignTab\\:globalFilter').val('').keyup();PF('dtrAssignTable').filter()" value="clear"/>
+                                            <p:inputText id="globalFilter" style="width:20rem" placeholder="Search all columns" autocomplete="off"
+                                                         onkeypress="if (event.keyCode === 13)  {PF('dtrAssignTable').filter(); return false;}"/>
+                                            <p:commandButton  class="ui-button" icon="fa fa-search" onclick="PF('dtrAssignTable').filter()"/>
+                                        </div>
+                                    </f:facet>
+
+                                    <p:column headerText="First Name">
+                                        <h:outputText value="#{assignment.employeeAssigned.firstname}" />
+                                    </p:column>
+                                    <p:column headerText="Last Name">
+                                        <h:outputText value="#{assignment.employeeAssigned.lastname}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </p:outputPanel>
+                        </p:tab>
+                        <p:tab title="DTR Table View">
+                            <div class="box-body">
+                                <div class="row">
+                                    <label class="col-sm-1 control-label" style="font-weight:bold;">STATUS</label>
+                                    <div class="col-sm-10">
+                                        <p:outputPanel rendered="#{erpDTRForm.erpDTR.status ne null and erpDTRForm.erpDTR.status == 'PENDING'}">
+                                            <span class="label label-warning" style="font-size:14px;">PENDING</span>
+                                        </p:outputPanel>
+                                        <p:outputPanel rendered="#{erpDTRForm.erpDTR.status ne null and erpDTRForm.erpDTR.status == 'REJECTED'}">
+                                            <span class="label label-danger" style="font-size:14px;">REJECTED</span>
+                                        </p:outputPanel>
+                                        <p:outputPanel rendered="#{erpDTRForm.erpDTR.status ne null and erpDTRForm.erpDTR.status == 'APPROVED'}">
+                                            <span class="label label-success" style="font-size:14px;">APPROVED</span>
+                                        </p:outputPanel>
+                                    </div>
+                                </div>
+                                <p:spacer width="5"/>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <label class="control-label" style="font-weight:bold;">SUBMITTED BY: </label>
+                                        <p:spacer width="5"/>
+                                        <label class="control-label" style="font-weight:bold;">#{erpDTRForm.erpDTR.createdBy}</label>
+                                    </div>
+                                </div>
+                                <p:spacer width="5"/>
+                                <p:spacer width="5"/>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        WEEK PERIOD: <h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMMMM " /></h:outputText>#{erpDTRForm.startDate.getDayOfMonth()}-#{erpDTRForm.stopDate.getDayOfMonth()}<h:outputText value="#{erpDTRForm.erpDTR.cutoffEnd}"><f:convertDateTime pattern=" yyyy" /></h:outputText>
+                                    </div>
+                                    <div class="col-md-4">
+                                        DETACHMENT: #{erpDTRForm.detachment.name}
+                                    </div>
+                                    <div class="col-md-4">
+                                        AREA OF RESPONSIBILITY: #{erpDTRForm.detachment.location.location}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        MONTH OF: <h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMMMM, yyyy" /></h:outputText>
+                                    </div>
+                                </div>
+
+                                <p:spacer width="5"/>
+                                <p:spacer width="5"/>
+                                <p:spacer width="5"/>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <label class="control-label" style="font-weight:bold;">DAY SHIFT</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-11" style="overflow-x: auto">
+                                    <table class="table table-striped table-bordered" style="width:auto">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col" colspan="2" rowspan="2">NAME</th>
+                                            <ui:repeat var="workingDay" value="#{erpDTRForm.workingDays}">
+                                                <th scope="col" colspan="3" style="text-align:center"><h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMM" /></h:outputText> #{workingDay}</th>
+                                            </ui:repeat>
+                                            <th scope="col" rowspan="2">Total Working Hours</th>
+                                        </tr>
+                                        <tr>
+                                            <ui:repeat var="workingDay" value="#{erpDTRForm.workingDays}">
+                                                <th scope="col">Start</th>
+                                                <th scope="col">End</th>
+                                                <th scope="col">Total</th>
+                                            </ui:repeat>
+                                            <!--<th scope="col">Total</th>-->
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <ui:repeat var="workAssn" value="#{erpDTRForm.erpDTRAssignments}">
+                                            <tr>
+                                                <td colspan="2">#{workAssn.employeeAssigned.lastname}, #{workAssn.employeeAssigned.firstname}</td>
+                                                <ui:repeat var="wd" value="#{workAssn.schedules}">
+                                                    <td>
+                                                        <h:outputText value="#{wd.dayShiftStart}"><f:convertDateTime pattern="HH:mm" timeZone="Asia/Manila" /></h:outputText>
+                                                        <!--#{wd.dayShiftStart}-->
+                                                    </td>
+                                                    <td>
+                                                        <h:outputText value="#{wd.dayShiftEnd}"><f:convertDateTime pattern="HH:mm" timeZone="Asia/Manila"/></h:outputText>
+                                                        <!--#{wd.dayShiftEnd}-->
+                                                    </td>
+                                                    <td>
+                                                        #{wd.totalHoursDay}
+                                                    </td>
+                                                </ui:repeat>
+                                                <td>#{workAssn.totalWorkHours}</td>
+                                            </tr>
+                                        </ui:repeat>
+                                        </tbody>
+                                    </table>
+                                    <p:spacer width="5"/>
+                                    <p:spacer width="5"/>
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <label class="control-label" style="font-weight:bold;">NIGHT SHIFT</label>
+                                        </div>
+                                    </div>
+                                    <table class="table table-striped table-bordered" style="width:auto">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col" colspan="2" rowspan="2">NAME</th>
+                                            <ui:repeat var="workingDay" value="#{erpDTRForm.workingDays}">
+                                                <th scope="col" colspan="3" style="text-align:center"><h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMM" /></h:outputText> #{workingDay}</th>
+                                            </ui:repeat>
+                                            <th scope="col" rowspan="2">Total Working Hours</th>
+                                        </tr>
+                                        <tr>
+                                            <ui:repeat var="workingDay" value="#{erpDTRForm.workingDays}">
+                                                <th scope="col">Start</th>
+                                                <th scope="col">End</th>
+                                                <th scope="col">Total</th>
+                                            </ui:repeat>
+                                            <!--<th scope="col">Total</th>-->
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <ui:repeat var="workAssn" value="#{erpDTRForm.erpDTRAssignments}">
+                                            <tr>
+                                                <td colspan="2">#{workAssn.employeeAssigned.lastname}, #{workAssn.employeeAssigned.firstname}</td>
+                                                <ui:repeat var="wd" value="#{workAssn.schedules}">
+                                                    <td>
+                                                        <h:outputText value="#{wd.nightShiftStart}"><f:convertDateTime pattern="HH:mm" timeZone="Asia/Manila" /></h:outputText>
+                                                        <!--#{wd.dayShiftStart}-->
+                                                    </td>
+                                                    <td>
+                                                        <h:outputText value="#{wd.nightShiftEnd}"><f:convertDateTime pattern="HH:mm" timeZone="Asia/Manila"/></h:outputText>
+                                                        <!--#{wd.dayShiftEnd}-->
+                                                    </td>
+                                                    <td>
+                                                        #{wd.totalHoursNight}
+                                                    </td>
+                                                </ui:repeat>
+                                                <td>#{workAssn.totalWorkHours}</td>
+                                            </tr>
+                                        </ui:repeat>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </p:tab>
+                    </p:tabView>
+                    </sec:authorize>
+
+                    <sec:authorize access="!hasRole('DETACHMENT_COM')">
+                        <div class="box-body">
+                            <div class="row">
+                                <label class="col-sm-1 control-label" style="font-weight:bold;">STATUS</label>
+                                <div class="col-sm-10">
+                                    <p:outputPanel rendered="#{erpDTRForm.erpDTR.status ne null and erpDTRForm.erpDTR.status == 'PENDING'}">
+                                        <span class="label label-warning" style="font-size:14px;">PENDING</span>
+                                    </p:outputPanel>
+                                    <p:outputPanel rendered="#{erpDTRForm.erpDTR.status ne null and erpDTRForm.erpDTR.status == 'REJECTED'}">
+                                        <span class="label label-danger" style="font-size:14px;">REJECTED</span>
+                                    </p:outputPanel>
+                                    <p:outputPanel rendered="#{erpDTRForm.erpDTR.status ne null and erpDTRForm.erpDTR.status == 'APPROVED'}">
+                                        <span class="label label-success" style="font-size:14px;">APPROVED</span>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                            <p:spacer width="5"/>
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <label class="control-label" style="font-weight:bold;">SUBMITTED BY: </label>
+                                    <p:spacer width="5"/>
+                                    <label class="control-label" style="font-weight:bold;">#{erpDTRForm.erpDTR.createdBy}</label>
+                                </div>
+                            </div>
+                            <p:spacer width="5"/>
+                            <p:spacer width="5"/>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    WEEK PERIOD: <h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMMMM " /></h:outputText>#{erpDTRForm.startDate.getDayOfMonth()}-#{erpDTRForm.stopDate.getDayOfMonth()}<h:outputText value="#{erpDTRForm.erpDTR.cutoffEnd}"><f:convertDateTime pattern=" yyyy" /></h:outputText>
+                                </div>
+                                <div class="col-md-4">
+                                    DETACHMENT: #{erpDTRForm.detachment.name}
+                                </div>
+                                <div class="col-md-4">
+                                    AREA OF RESPONSIBILITY: #{erpDTRForm.detachment.location.location}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    MONTH OF: <h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMMMM, yyyy" /></h:outputText>
+                                </div>
+                            </div>
+
+                            <p:spacer width="5"/>
+                            <p:spacer width="5"/>
+                            <p:spacer width="5"/>
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <label class="control-label" style="font-weight:bold;">DAY SHIFT</label>
+                                </div>
+                            </div>
+                            <div class="col-md-11" style="overflow-x: auto">
+                                <table class="table table-striped table-bordered" style="width:auto">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" colspan="2" rowspan="2">NAME</th>
+                                        <ui:repeat var="workingDay" value="#{erpDTRForm.workingDays}">
+                                            <th scope="col" colspan="3" style="text-align:center"><h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMM" /></h:outputText> #{workingDay}</th>
+                                        </ui:repeat>
+                                        <th scope="col" rowspan="2">Total Working Hours</th>
+                                    </tr>
+                                    <tr>
+                                        <ui:repeat var="workingDay" value="#{erpDTRForm.workingDays}">
+                                            <th scope="col">Start</th>
+                                            <th scope="col">End</th>
+                                            <th scope="col">Total</th>
+                                        </ui:repeat>
+                                        <!--<th scope="col">Total</th>-->
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <ui:repeat var="workAssn" value="#{erpDTRForm.erpDTRAssignments}">
+                                        <tr>
+                                            <td colspan="2">#{workAssn.employeeAssigned.lastname}, #{workAssn.employeeAssigned.firstname}</td>
+                                            <ui:repeat var="wd" value="#{workAssn.schedules}">
+                                                <td>
+                                                    <h:outputText value="#{wd.dayShiftStart}"><f:convertDateTime pattern="HH:mm" timeZone="Asia/Manila" /></h:outputText>
+                                                    <!--#{wd.dayShiftStart}-->
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{wd.dayShiftEnd}"><f:convertDateTime pattern="HH:mm" timeZone="Asia/Manila"/></h:outputText>
+                                                    <!--#{wd.dayShiftEnd}-->
+                                                </td>
+                                                <td>
+                                                    #{wd.totalHoursDay}
+                                                </td>
+                                            </ui:repeat>
+                                            <td>#{workAssn.totalWorkHours}</td>
+                                        </tr>
+                                    </ui:repeat>
+                                    </tbody>
+                                </table>
+                                <p:spacer width="5"/>
+                                <p:spacer width="5"/>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <label class="control-label" style="font-weight:bold;">NIGHT SHIFT</label>
+                                    </div>
+                                </div>
+                                <table class="table table-striped table-bordered" style="width:auto">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" colspan="2" rowspan="2">NAME</th>
+                                        <ui:repeat var="workingDay" value="#{erpDTRForm.workingDays}">
+                                            <th scope="col" colspan="3" style="text-align:center"><h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMM" /></h:outputText> #{workingDay}</th>
+                                        </ui:repeat>
+                                        <th scope="col" rowspan="2">Total Working Hours</th>
+                                    </tr>
+                                    <tr>
+                                        <ui:repeat var="workingDay" value="#{erpDTRForm.workingDays}">
+                                            <th scope="col">Start</th>
+                                            <th scope="col">End</th>
+                                            <th scope="col">Total</th>
+                                        </ui:repeat>
+                                        <!--<th scope="col">Total</th>-->
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <ui:repeat var="workAssn" value="#{erpDTRForm.erpDTRAssignments}">
+                                        <tr>
+                                            <td colspan="2">#{workAssn.employeeAssigned.lastname}, #{workAssn.employeeAssigned.firstname}</td>
+                                            <ui:repeat var="wd" value="#{workAssn.schedules}">
+                                                <td>
+                                                    <h:outputText value="#{wd.nightShiftStart}"><f:convertDateTime pattern="HH:mm" timeZone="Asia/Manila" /></h:outputText>
+                                                    <!--#{wd.dayShiftStart}-->
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{wd.nightShiftEnd}"><f:convertDateTime pattern="HH:mm" timeZone="Asia/Manila"/></h:outputText>
+                                                    <!--#{wd.dayShiftEnd}-->
+                                                </td>
+                                                <td>
+                                                    #{wd.totalHoursNight}
+                                                </td>
+                                            </ui:repeat>
+                                            <td>#{workAssn.totalWorkHours}</td>
+                                        </tr>
+                                    </ui:repeat>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </sec:authorize>
+                </div>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -26,6 +26,9 @@ public class ErpWorkAssignment extends CoreEntity {
     @OneToMany(mappedBy = "workAssignment", cascade = CascadeType.MERGE, orphanRemoval = true)
     private Set<ErpWorkDay> workDays;
 
+    @Column(name = "TOTAL_WORKDAY")
+    private Integer totalWorkDay;
+
     @ManyToOne
     @JoinColumn(name = "work_schedule_id", nullable = false)
     private ErpWorkSchedule workSchedule;
@@ -36,6 +39,14 @@ public class ErpWorkAssignment extends CoreEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getTotalWorkDay() {
+        return totalWorkDay;
+    }
+
+    public void setTotalWorkDay(Integer totalWorkDay) {
+        this.totalWorkDay = totalWorkDay;
     }
 
     public ErpEmployee getEmployeeAssigned() {

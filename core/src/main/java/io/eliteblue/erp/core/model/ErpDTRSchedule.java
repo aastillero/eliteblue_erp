@@ -1,5 +1,7 @@
 package io.eliteblue.erp.core.model;
 
+import io.eliteblue.erp.core.constants.AttendanceType;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -14,15 +16,38 @@ public class ErpDTRSchedule extends CoreEntity {
     @SequenceGenerator(name = "dtr_sched_seq", sequenceName = "dtr_sched_seq", allocationSize = 1, initialValue = 1)
     private Long id;
 
-    @Column(name = "SHIFT_START")
+    @Column(name = "DAY_SHIFT_START")
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
-    private Date shiftStart;
+    private Date dayShiftStart;
 
-    @Column(name = "SHIFT_END")
+    @Column(name = "DAY_SHIFT_END")
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
-    private Date shiftEnd;
+    private Date dayShiftEnd;
+
+    @Column(name = "NIGHT_SHIFT_START")
+    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
+    private Date nightShiftStart;
+
+    @Column(name = "NIGHT_SHIFT_END")
+    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
+    private Date nightShiftEnd;
+
+    @Column(name = "ATTENDANCE", length = 20)
+    @Enumerated(EnumType.STRING)
+    private AttendanceType attendance;
+
+    @Column(name = "TOTAL_HOURS")
+    private Integer totalHours;
+
+    @Column(name = "TOTAL_HOURS_DAY")
+    private Integer totalHoursDay;
+
+    @Column(name = "TOTAL_HOURS_NIGHT")
+    private Integer totalHoursNight;
 
     @ManyToOne
     @JoinColumn(name = "dtr_assn_id", nullable = false)
@@ -36,20 +61,36 @@ public class ErpDTRSchedule extends CoreEntity {
         this.id = id;
     }
 
-    public Date getShiftStart() {
-        return shiftStart;
+    public Date getDayShiftStart() {
+        return dayShiftStart;
     }
 
-    public void setShiftStart(Date shiftStart) {
-        this.shiftStart = shiftStart;
+    public void setDayShiftStart(Date dayShiftStart) {
+        this.dayShiftStart = dayShiftStart;
     }
 
-    public Date getShiftEnd() {
-        return shiftEnd;
+    public Date getDayShiftEnd() {
+        return dayShiftEnd;
     }
 
-    public void setShiftEnd(Date shiftEnd) {
-        this.shiftEnd = shiftEnd;
+    public void setDayShiftEnd(Date dayShiftEnd) {
+        this.dayShiftEnd = dayShiftEnd;
+    }
+
+    public Date getNightShiftStart() {
+        return nightShiftStart;
+    }
+
+    public void setNightShiftStart(Date nightShiftStart) {
+        this.nightShiftStart = nightShiftStart;
+    }
+
+    public Date getNightShiftEnd() {
+        return nightShiftEnd;
+    }
+
+    public void setNightShiftEnd(Date nightShiftEnd) {
+        this.nightShiftEnd = nightShiftEnd;
     }
 
     public ErpDTRAssignment getErpDTRAssignment() {
@@ -58,5 +99,37 @@ public class ErpDTRSchedule extends CoreEntity {
 
     public void setErpDTRAssignment(ErpDTRAssignment erpDTRAssignment) {
         this.erpDTRAssignment = erpDTRAssignment;
+    }
+
+    public Integer getTotalHours() {
+        return totalHours;
+    }
+
+    public void setTotalHours(Integer totalHours) {
+        this.totalHours = totalHours;
+    }
+
+    public AttendanceType getAttendance() {
+        return attendance;
+    }
+
+    public void setAttendance(AttendanceType attendance) {
+        this.attendance = attendance;
+    }
+
+    public Integer getTotalHoursDay() {
+        return totalHoursDay;
+    }
+
+    public void setTotalHoursDay(Integer totalHoursDay) {
+        this.totalHoursDay = totalHoursDay;
+    }
+
+    public Integer getTotalHoursNight() {
+        return totalHoursNight;
+    }
+
+    public void setTotalHoursNight(Integer totalHoursNight) {
+        this.totalHoursNight = totalHoursNight;
     }
 }

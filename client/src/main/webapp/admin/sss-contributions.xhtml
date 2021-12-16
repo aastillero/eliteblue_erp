@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="metadata">
+        <ui:param name="title" value="Contri list"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: right !important;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="title">
+        <h2 class="align-left">
+            SSS Contribution Table
+        </h2>
+    </ui:define>
+
+    <ui:define name="description">
+        Contribution Table for SSS.
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="form">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons">
+                        <p:commandButton action="sss-contribution-form?faces-redirect=true" icon="fa fa-plus"
+                                         value="New Contribution" styleClass="btn-primary"/>
+                        <p:spacer width="5"/>
+                    </div>
+
+                    <p:separator/>
+
+                    <p:dataTable id="erpSSSContri" var="contri" value="#{erpSSSContriListMB.lazyErpContributions}" selectionMode="single"
+                        paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+                        paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                        emptyMessage="No SSS Contributions found with given criteria"
+                        widgetVar="erpContriTable"
+                        selection="#{erpSSSContriListMB.selectedErpContribution}" rowKey="#{contri.id}">
+
+                        <p:ajax event="rowSelect" listener="#{erpSSSContriListMB.onRowSelect}"/>
+                        <p:ajax event="rowUnselect" listener="#{erpSSSContriListMB.onRowUnselect}"/>
+
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-end">
+                                <p:commandButton onclick="$('#form\\:erpSSSContri\\:globalFilter').val('').keyup();PF('erpContriTable').filter()" value="clear"/>
+                                <p:inputText id="globalFilter" style="width:20rem" placeholder="Search all columns" autocomplete="off"
+                                             onkeypress="if (event.keyCode === 13)  {PF('erpContriTable').filter(); return false;}"/>
+                                <p:commandButton  class="ui-button" icon="fa fa-search" onclick="PF('erpContriTable').filter()"/>
+                            </div>
+                        </f:facet>
+
+                        <p:column headerText="Range From">
+                            <h:outputText value="#{contri.rangeFrom}" />
+                        </p:column>
+                        <p:column headerText="Range To">
+                            <h:outputText value="#{contri.rangeTo}" />
+                        </p:column>
+                        <p:column headerText="ER">
+                            <h:outputText value="#{contri.er}" />
+                        </p:column>
+                        <p:column headerText="EE">
+                            <h:outputText value="#{contri.ee}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

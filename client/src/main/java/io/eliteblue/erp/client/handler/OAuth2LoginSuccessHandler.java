@@ -59,6 +59,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                     oAuthUser.setLocked(false);
                     oAuthUser.setEnabled(erpUser.getEnabled());
                     oAuthUser.setOperationsAreas(new ArrayList<>(erpUser.getLocations()));
+                    oAuthUser.setDetachment(erpUser.getErpDetachment());
                 } else {
                     isLogout = true;
                 }
@@ -74,6 +75,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                 oAuthUser.setLastLogged(new Date());
                 oAuthUser.setLocked(false);
                 oAuthUser.setEnabled(false);
+                oAuthUser.setDetachment(null);
 
                 // save ErpUser
                 ErpUser user = new ErpUser();
@@ -90,6 +92,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                 user.setOperation(DataOperation.CREATED.name());
                 user.setLastPasswordResetDate(new Date());
                 user.setEnabled(false);
+                user.setErpDetachment(null);
                 OperationsArea area = erpUserService.findAreaByLocation("FIELD OFFICE");
                 if(area != null) {
                     user.setLocations(new HashSet<>());

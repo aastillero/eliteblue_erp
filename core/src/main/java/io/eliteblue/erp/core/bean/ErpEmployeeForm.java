@@ -1,9 +1,6 @@
 package io.eliteblue.erp.core.bean;
 
-import io.eliteblue.erp.core.constants.BloodType;
-import io.eliteblue.erp.core.constants.CivilStatus;
-import io.eliteblue.erp.core.constants.EmployeeStatus;
-import io.eliteblue.erp.core.constants.Gender;
+import io.eliteblue.erp.core.constants.*;
 import io.eliteblue.erp.core.model.ErpEmployee;
 import io.eliteblue.erp.core.service.ErpEmployeeService;
 import io.eliteblue.erp.core.util.DateTimeUtil;
@@ -33,6 +30,7 @@ public class ErpEmployeeForm implements Serializable {
     private Long id;
     private ErpEmployee erpEmployee;
     private Map<String, Gender> genderValues;
+    private Map<String, EmploymentType> employmentValues;
     private Map<String, CivilStatus> maritalValues;
     private Map<String, EmployeeStatus> empStatusValues;
     private Map<String, BloodType> bloodValues;
@@ -59,6 +57,10 @@ public class ErpEmployeeForm implements Serializable {
         genderValues = new HashMap<>();
         for(Gender g: Gender.values()) {
             genderValues.put(g.name(), g);
+        }
+        employmentValues = new HashMap<>();
+        for(EmploymentType et: EmploymentType.values()) {
+            employmentValues.put(et.name(), et);
         }
         maritalValues = new HashMap<>();
         for(CivilStatus c: CivilStatus.values()) {
@@ -111,6 +113,14 @@ public class ErpEmployeeForm implements Serializable {
 
     public void setGenderValues(Map<String, Gender> genderValues) {
         this.genderValues = genderValues;
+    }
+
+    public Map<String, EmploymentType> getEmploymentValues() {
+        return employmentValues;
+    }
+
+    public void setEmploymentValues(Map<String, EmploymentType> employmentValues) {
+        this.employmentValues = employmentValues;
     }
 
     public Map<String, CivilStatus> getMaritalValues() {

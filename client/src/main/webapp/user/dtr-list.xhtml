@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                xmlns:sec="http://www.springframework.org/security/tags"
+                template="#{layoutMB.template}">
+
+    <ui:define name="metadata">
+        <ui:param name="title" value="DTR list"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: right !important;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="title">
+        <h2 class="align-left">
+            DTR Management
+        </h2>
+    </ui:define>
+
+    <ui:define name="description">
+        You can add, edit and delete DTRs.
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="form">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <sec:authorize access="hasAnyRole('DETACHMENT_COM')">
+                        <div id="main-buttons" class="hidden-sm hidden-xs">
+                            <p:commandButton action="dtr-form?faces-redirect=true" icon="fa fa-plus"
+                                             value="New DTR" styleClass="btn-primary"/>
+                            <p:spacer width="5"/>
+                            <p:commandButton action="#{erpDTRListMB.downloadTemplate}" icon="fa fa-download"
+                                             value="Download/Upload" styleClass="btn-success"/>
+                            <p:spacer width="5"/>
+                        </div>
+                    </sec:authorize>
+
+                    <p:dataTable id="dtrTab" var="dtr" value="#{erpDTRListMB.erpDTRs}" selectionMode="single"
+                        paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+                        paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                        emptyMessage="No DTR found with given criteria"
+                        filteredValue="#{erpDTRListMB.filteredErpDTRs}" widgetVar="dtrTable"
+                        selection="#{erpDTRListMB.selectedErpDTR}" rowKey="#{dtr.id}">
+
+                        <p:ajax event="rowSelect" listener="#{erpDTRListMB.onRowSelect}"/>
+                        <p:ajax event="rowUnselect" listener="#{erpDTRListMB.onRowUnselect}"/>
+
+                        <p:column headerText="Cut-off Start Date">
+                            <h:outputText value="#{dtr.cutoffStart}">
+                                <!--<f:convertDateTime type="date" pattern="MM/dd/yyyy" timeZone="GMT-8"/>-->
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Cut-off End Date">
+                            <h:outputText value="#{dtr.cutoffEnd}">
+                                <!--<f:convertDateTime type="date" pattern="MM/dd/yyyy" />-->
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Status">
+                            <h:outputText value="#{dtr.status}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

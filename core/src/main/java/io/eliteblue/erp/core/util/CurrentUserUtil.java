@@ -1,5 +1,6 @@
 package io.eliteblue.erp.core.util;
 
+import io.eliteblue.erp.core.model.ErpDetachment;
 import io.eliteblue.erp.core.model.OperationsArea;
 import io.eliteblue.erp.core.model.security.ErpOAuthUser;
 import io.eliteblue.erp.core.model.security.ErpUserDetails;
@@ -88,5 +89,16 @@ public class CurrentUserUtil {
             }
         }
         return false;
+    }
+
+    public static ErpDetachment getDetachment() {
+        Object principal = getPrincipal();
+        if(principal instanceof ErpUserDetails) {
+            ErpUserDetails details = getUserDetails(principal);
+            return details.getDetachment();
+        } else {
+            ErpOAuthUser oAuthUser = getOAuthUser(principal);
+            return oAuthUser.getDetachment();
+        }
     }
 }

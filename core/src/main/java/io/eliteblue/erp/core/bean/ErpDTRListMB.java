@@ -57,6 +57,10 @@ public class ErpDTRListMB implements Serializable {
         this.selectedErpDTR = selectedErpDTR;
     }
 
+    public String downloadTemplate() {
+        return "dtr-download-templates?faces-redirect=true&includeViewParams=true";
+    }
+
     public void onRowSelect(SelectEvent<ErpDTR> event) throws Exception {
         FacesContext.getCurrentInstance().getExternalContext().redirect("dtr-form.xhtml?id="+selectedErpDTR.getId());
     }

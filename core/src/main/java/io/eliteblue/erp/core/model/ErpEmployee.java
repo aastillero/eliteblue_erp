@@ -1,9 +1,6 @@
 package io.eliteblue.erp.core.model;
 
-import io.eliteblue.erp.core.constants.BloodType;
-import io.eliteblue.erp.core.constants.CivilStatus;
-import io.eliteblue.erp.core.constants.EmployeeStatus;
-import io.eliteblue.erp.core.constants.Gender;
+import io.eliteblue.erp.core.constants.*;
 import io.eliteblue.erp.core.generator.EmployeeIDGenerator;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
@@ -67,6 +64,10 @@ public class ErpEmployee extends CoreEntity {
     @Enumerated(EnumType.STRING)
     private EmployeeStatus status;
 
+    @Column(name = "EMPLOYMENT", length = 20)
+    @Enumerated(EnumType.STRING)
+    private EmploymentType employment;
+
     @Column(name = "GENDER", length = 20)
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -100,6 +101,9 @@ public class ErpEmployee extends CoreEntity {
 
     @Column(name = "BANK_ACC_NUM", length = 50)
     private String bankAccountNumber;
+
+    @Column(name = "SALARY_RATE")
+    private Double salaryRate;
 
     @OneToOne
     @JoinColumn(name = "AREA_ID", referencedColumnName = "id")
@@ -212,6 +216,14 @@ public class ErpEmployee extends CoreEntity {
 
     public void setStatus(EmployeeStatus status) {
         this.status = status;
+    }
+
+    public EmploymentType getEmployment() {
+        return employment;
+    }
+
+    public void setEmployment(EmploymentType employment) {
+        this.employment = employment;
     }
 
     public Gender getGender() {
@@ -332,5 +344,13 @@ public class ErpEmployee extends CoreEntity {
 
     public void setErpEmployeeIDList(Set<ErpEmployeeID> erpEmployeeIDList) {
         this.erpEmployeeIDList = erpEmployeeIDList;
+    }
+
+    public Double getSalaryRate() {
+        return salaryRate;
+    }
+
+    public void setSalaryRate(Double salaryRate) {
+        this.salaryRate = salaryRate;
     }
 }
