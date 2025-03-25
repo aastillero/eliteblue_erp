@@ -9,10 +9,7 @@ import org.primefaces.model.filter.FilterConstraint;
 import org.primefaces.util.LocaleUtils;
 
 import javax.faces.context.FacesContext;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class LazyErpDetachmentModel extends LazyDataModel<ErpDetachment> {
@@ -44,19 +41,22 @@ public class LazyErpDetachmentModel extends LazyDataModel<ErpDetachment> {
 
         // apply offset & filters
         List<ErpDetachment> erpDetachments = dataSource.stream()
-                .skip(first)
                 .filter(o -> filter(FacesContext.getCurrentInstance(), filterBy.values(), o))
+                .skip(first)
                 .limit(pageSize)
                 .collect(Collectors.toList());
 
+        // sort source
+        Collections.sort(erpDetachments, (o1, o2) -> (o1.getName().compareTo(o2.getName())));
+
         // sort
-        if (!sortBy.isEmpty()) {
+        /*if (!sortBy.isEmpty()) {
             List<Comparator<ErpDetachment>> comparators = sortBy.values().stream()
                     .map(o -> new ErpDetachmentLazySorter(o.getField(), o.getOrder()))
                     .collect(Collectors.toList());
             Comparator<ErpDetachment> cp = ComparatorUtils.chainedComparator(comparators); // from apache
             erpDetachments.sort(cp);
-        }
+        }*/
 
         setRowCount((int) rowCount);
 

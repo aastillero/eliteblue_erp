@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                xmlns:sec="http://www.springframework.org/security/tags"
+                template="#{layoutMB.template}">
+
+    <ui:define name="title">
+        <p:outputPanel rendered="#{contractedManHoursForm.isNew()}">
+            <h1>New Contracted Form</h1>
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not contractedManHoursForm.isNew()}">
+            <h1>Edit Contracted Form</h1>
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="description">
+        <p:outputPanel rendered="#{contractedManHoursForm.isNew()}">
+            Create a new Contracted Man Hours.
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not contractedManHoursForm.isNew()}">
+            Update Contracted Man Hours.
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewParam name="detachmentId" value="#{contractedManHoursForm.detachmentId}" converter="javax.faces.Long"/>
+            <f:viewParam name="id" value="#{contractedManHoursForm.id}" converter="javax.faces.Long"/>
+            <f:event type="preRenderView" listener="#{contractedManHoursForm.init}"/>
+        </f:metadata>
+
+        <h:form id="form" prependId="false">
+            <h:messages/>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <sec:authorize access="hasAnyRole('CRM', 'SYS_ADMIN')">
+                        <p:commandButton value="Save" action="#{contractedManHoursForm.save}" update="@form"
+                                         icon="fa fa-check" styleClass="btn-primary"/>
+                        <p:spacer width="5" rendered="#{contractedManHoursForm.isNew()}"/>
+                        <p:commandButton value="Clear" action="#{contractedManHoursForm.clear}" process="@this"
+                                         icon="fa fa-refresh" styleClass="btn-success"
+                                         update="@form" rendered="#{contractedManHoursForm.isNew()}" resetValues="true"/>
+                        <p:spacer width="5" rendered="#{not contractedManHoursForm.isNew()}"/>
+
+                        <p:commandButton value="Delete" action="#{contractedManHoursForm.remove}" process="@this"
+                                         rendered="#{not contractedManHoursForm.isNew()}" icon="fa fa-trash"
+                                         styleClass="btn-danger">
+                            <f:setPropertyActionListener value="true"
+                                                         target="#{facesContext.externalContext.flash.keepMessages}"/>
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:commandButton>
+                        <p:spacer width="5"/>
+                        </sec:authorize>
+                        <p:commandButton value="Back" action="#{contractedManHoursForm.backBtnPressed}" icon="fa fa-reply"/>
+                    </div>
+                    <p:splitButton access="hasAnyRole('CRM', 'SYS_ADMIN')" value="Save" action="#{contractedManHoursForm.save}" update="@form"
+                                   icon="fa fa-check"
+                                   styleClass="hidden-md hidden-lg btn-primary">
+                        <p:menuitem access="hasAnyRole('CRM', 'SYS_ADMIN')" value="Reset" action="#{contractedManHoursForm.clear}"
+                                    process="@this" update="@form" rendered="#{contractedManHoursForm.isNew()}"
+                                    resetValues="true" icon="fa fa-refresh"/>
+                        <p:menuitem access="hasAnyRole('CRM', 'SYS_ADMIN')" value="Delete" action="#{contractedManHoursForm.remove}" process="@this"
+                                    rendered="#{not contractedManHoursForm.isNew()}" icon="fa fa-trash"
+                        >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:menuitem value="Back" action="#{contractedManHoursForm.backBtnPressed}" icon="fa fa-reply"/>
+                    </p:splitButton>
+                    <p:separator/>
+
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="inputDetachment" class="col-sm-2 control-label">Detachment</label>
+
+                            <div class="col-sm-10">
+                                <p:selectOneMenu id="inputDetachment" value="#{contractedManHoursForm.detachment.id}" style="width:150px"
+                                                 effect="fade" filter="true" filterMatchMode="startsWith">
+                                    <f:selectItems value="#{contractedManHoursForm.detachments}" var="selectedDetachment"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="startPeriod" class="col-sm-2 control-label">Cover Period Start</label>
+
+                            <div class="col-sm-10">
+                                <p:datePicker autocomplete="off" id="startPeriod" class="date-input" monthNavigator="true" yearNavigator="true" value="#{contractedManHoursForm.contractedManHours.coverPeriodStart}"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="endPeriod" class="col-sm-2 control-label">Cover Period End</label>
+
+                            <div class="col-sm-10">
+                                <p:datePicker autocomplete="off" id="endPeriod" class="date-input" monthNavigator="true" yearNavigator="true" value="#{contractedManHoursForm.contractedManHours.coverPeriodEnd}"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="totalManHours" class="col-sm-2 control-label">Total Contracted Man Hours</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{contractedManHoursForm.contractedManHours.totalManHours}" id="totalManHours" placeholder="0.0"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="totalAdjustedManHours" class="col-sm-2 control-label">Total Adjusted Man Hours</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{contractedManHoursForm.contractedManHours.totalAdjustedManHours}" id="totalAdjustedManHours" placeholder="0.0"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

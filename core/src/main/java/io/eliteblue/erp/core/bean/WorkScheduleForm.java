@@ -95,7 +95,7 @@ public class WorkScheduleForm implements Serializable {
             }
         }
         detachments = new HashMap<>();
-        for(ErpDetachment edp: erpDetachmentService.getAllFilteredLocation()) {
+        for(ErpDetachment edp: erpDetachmentService.getAllCurrentDetachment()) {
             detachments.put(edp.getName(), edp.getId());
         }
     }

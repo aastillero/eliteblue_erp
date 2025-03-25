@@ -16,13 +16,13 @@ public interface ErpEmployeeRepository extends JpaRepository<ErpEmployee, Long> 
     ErpEmployee findByFirstname(String firstname);
     ErpEmployee findByLastname(String lastname);
 
-    @Query(value = "SELECT e FROM ErpEmployee e WHERE LOWER(e.status) != 'deleted' AND e.assignedLocation IN ?1")
+    @Query(value = "SELECT e FROM ErpEmployee e WHERE LOWER(e.status) != 'deleted' AND e.assignedLocation IN ?1 ORDER BY e.lastname ASC")
     List<ErpEmployee> getAllFiltered(List<OperationsArea> areas);
 
-    @Query(value = "SELECT e FROM ErpEmployee e WHERE LOWER(e.status) = 'hired'")
+    @Query(value = "SELECT e FROM ErpEmployee e WHERE LOWER(e.status) = 'hired' ORDER BY e.lastname ASC")
     List<ErpEmployee> getAllHired();
 
-    @Query(value = "SELECT e FROM ErpEmployee e WHERE LOWER(e.status) != 'deleted'")
+    @Query(value = "SELECT e FROM ErpEmployee e WHERE LOWER(e.status) != 'deleted' ORDER BY e.lastname ASC")
     List<ErpEmployee> getAllFilteredByDeleted();
 
     List<ErpEmployee> findByAssignedLocation(OperationsArea assignedLocation);
@@ -39,4 +39,8 @@ public interface ErpEmployeeRepository extends JpaRepository<ErpEmployee, Long> 
 
     @Query(value = "SELECT CASE WHEN EXISTS (SELECT * FROM erp_employee LIMIT 1) THEN 1 ELSE 0 END", nativeQuery = true)
     public Integer getIsEmpty();
+
+    List<ErpEmployee> findByFirstnameContainingIgnoreCaseOrLastnameContainingIgnoreCase(String firstName, String lastName);
+
+    List<ErpEmployee> findByLastnameIgnoreCaseAndFirstnameIgnoreCase(String lastName, String firstName);
 }

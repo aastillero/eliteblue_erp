@@ -23,6 +23,10 @@ public class ErpClient extends CoreEntity {
     @OneToMany(mappedBy = "erpClient", cascade = CascadeType.MERGE, orphanRemoval = true)
     private Set<ErpDetachment> erpDetachments;
 
+    @OneToOne
+    @JoinColumn(name = "CLIENT_STATUS", referencedColumnName = "id")
+    private ClientStatus clientStatus;
+
     public Long getId() {
         return id;
     }
@@ -45,5 +49,13 @@ public class ErpClient extends CoreEntity {
 
     public void setErpDetachments(Set<ErpDetachment> erpDetachments) {
         this.erpDetachments = erpDetachments;
+    }
+
+    public ClientStatus getClientStatus() {
+        return clientStatus;
+    }
+
+    public void setClientStatus(ClientStatus clientStatus) {
+        this.clientStatus = clientStatus;
     }
 }

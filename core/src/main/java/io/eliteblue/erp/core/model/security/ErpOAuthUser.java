@@ -22,7 +22,9 @@ public class ErpOAuthUser implements OAuth2User {
     private Boolean enabled;
     private String clientname;
     private List<OperationsArea> operationsAreas;
-    private ErpDetachment detachment;
+    private List<ErpDetachment> detachments;
+
+    private List<ErpDetachment> relieverDetachments;
 
     public ErpOAuthUser(OAuth2User oauth2User, String clientName) {
         this.oAuth2User = oauth2User;
@@ -140,11 +142,19 @@ public class ErpOAuthUser implements OAuth2User {
         this.operationsAreas = operationsAreas;
     }
 
-    public ErpDetachment getDetachment() {
-        return detachment;
+    public List<ErpDetachment> getDetachments() {
+        return detachments;
     }
 
-    public void setDetachment(ErpDetachment detachment) {
-        this.detachment = detachment;
+    public void setDetachments(List<ErpDetachment> detachments) {
+        this.detachments = detachments;
+    }
+
+    public List<ErpDetachment> getRelieverDetachments() {
+        return relieverDetachments;
+    }
+
+    public void setRelieverDetachments(List<ErpDetachment> relieverDetachments) {
+        this.relieverDetachments = relieverDetachments;
     }
 }

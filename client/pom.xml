@@ -6,7 +6,7 @@
 
     <artifactId>client</artifactId>
     <version>0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <name>client</name>
 
     <parent>
@@ -24,7 +24,7 @@
     </dependencies>
 
     <build>
-        <finalName>admin-starter</finalName>
+        <finalName>erp</finalName>
         <resources>
             <resource>
                 <filtering>true</filtering>

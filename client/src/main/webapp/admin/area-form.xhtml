@@ -83,6 +83,17 @@
                         </div>
                         <p:spacer width="5"/>
                         <div class="form-group">
+                            <label for="inputArchipelago" class="col-sm-2 control-label">Archipelago</label>
+
+                            <div class="col-sm-10">
+                                <p:selectOneMenu id="inputArchipelago" value="#{operationsAreaForm.area.archipelago}" style="width:150px">
+                                    <f:selectItem itemLabel="Select One" itemValue=""/>
+                                    <f:selectItems value="#{operationsAreaForm.archipelagoValues}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
                             <label for="rateSG" class="col-sm-2 control-label">Rate SG</label>
 
                             <div class="col-sm-10">
@@ -122,6 +133,43 @@
                             </div>
                         </div>
                     </div>
+
+                    <p:outputPanel rendered="#{not operationsAreaForm.isNew()}">
+                        <h3>Local Holidays</h3>
+                        <p:separator/>
+                        <div id="secondary-buttons" class="hidden-sm hidden-xs">
+                            <p:commandButton action="#{operationsAreaForm.newHolidayPressed}" icon="fa fa-plus"
+                                             value="New Holiday" styleClass="btn-primary"/>
+                            <p:spacer width="5"/>
+                        </div>
+
+                        <p:dataTable id="erpLocalHoliday" var="holiday" value="#{operationsAreaForm.localHolidays}" selectionMode="single"
+                                     paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+                                     paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                     emptyMessage="No Holidays found with given criteria" globalFilterFunction="#{operationsAreaForm.globalFilterFunction}"
+                                     filteredValue="#{operationsAreaForm.filteredLocalHolidays}" widgetVar="holidayTable"
+                                     selection="#{operationsAreaForm.selectedLocalHoliday}" rowKey="#{holiday.id}">
+
+                            <p:ajax event="rowSelect" listener="#{operationsAreaForm.onRowSelect}"/>
+                            <p:ajax event="rowUnselect" listener="#{operationsAreaForm.onRowUnselect}"/>
+
+                            <f:facet name="header">
+                                <div class="p-d-flex p-jc-end">
+                                    <p:commandButton onclick="$('#form\\:erpLocalHoliday\\:globalFilter').val('').keyup();PF('holidayTable').filter()" value="clear"/>
+                                    <p:inputText id="globalFilter" style="width:20rem" placeholder="Search all columns" autocomplete="off"
+                                                 onkeypress="if (event.keyCode === 13)  {PF('holidayTable').filter(); return false;}"/>
+                                    <p:commandButton  class="ui-button" icon="fa fa-search" onclick="PF('holidayTable').filter()"/>
+                                </div>
+                            </f:facet>
+
+                            <p:column headerText="Holiday Name">
+                                <h:outputText value="#{holiday.name}" />
+                            </p:column>
+                            <p:column headerText="Date">
+                                <h:outputText value="#{holiday.holidayDate}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:outputPanel>
                 </div>
             </div>
 

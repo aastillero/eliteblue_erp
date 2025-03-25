@@ -75,7 +75,11 @@ public class LazyGovernmentLoanModel extends LazyDataModel<GovernmentLoan> {
             String filterText = (filterValue == null) ? null : filterValue.toString().trim().toLowerCase();
 
             GovernmentLoan governmentLoan = (GovernmentLoan) o;
+            /*if(governmentLoan.getEmployeeBorrower().getErpDetachment() != null && governmentLoan.getEmployeeBorrower().getErpDetachment().getName().toLowerCase().contains(filterText)) {
+                System.out.println(governmentLoan.getEmployeeBorrower().getFirstname()+" "+governmentLoan.getEmployeeBorrower().getLastname());
+            }*/
             return governmentLoan.getLoanType().name().contains(filterText)
+                    || (governmentLoan.getEmployeeBorrower().getErpDetachment() != null && governmentLoan.getEmployeeBorrower().getErpDetachment().getName().toLowerCase().contains(filterText))
                     || governmentLoan.getEmployeeBorrower().getFirstname().toLowerCase().contains(filterText)
                     || governmentLoan.getEmployeeBorrower().getLastname().toLowerCase().contains(filterText)
                     || (governmentLoan.getEmployeeBorrower().getFirstname().toLowerCase()+" "+governmentLoan.getEmployeeBorrower().getLastname().toLowerCase()).contains(filterText);

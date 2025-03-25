@@ -1,7 +1,11 @@
 package io.eliteblue.erp.core.bean;
 
 import io.eliteblue.erp.core.constants.*;
+import io.eliteblue.erp.core.model.CompanyPosition;
+import io.eliteblue.erp.core.model.EmploymentHistory;
 import io.eliteblue.erp.core.model.ErpEmployee;
+import io.eliteblue.erp.core.service.CompanyPositionService;
+import io.eliteblue.erp.core.service.EmploymentHistoryService;
 import io.eliteblue.erp.core.service.ErpEmployeeService;
 import io.eliteblue.erp.core.util.DateTimeUtil;
 import org.omnifaces.util.Faces;
@@ -9,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -24,6 +29,12 @@ public class ErpEmployeeForm implements Serializable {
     @Autowired
     private ErpEmployeeService employeeService;
 
+    @Autowired
+    private CompanyPositionService companyPositionService;
+
+    @Autowired
+    private EmploymentHistoryService employmentHistoryService;
+
     private final String pattern = "dd MMM yyyy";
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
@@ -34,9 +45,17 @@ public class ErpEmployeeForm implements Serializable {
     private Map<String, CivilStatus> maritalValues;
     private Map<String, EmployeeStatus> empStatusValues;
     private Map<String, BloodType> bloodValues;
+    private Map<String, SalaryType> salaryTypes;
+    private Map<String, String> bankTypes;
+    private Map<String, ContributionType> contributionTypes;
     private EmployeeStatus initialStatus;
     private String joinedDate;
     private String lastUpdate;
+    private List<EmploymentHistory> employmentHistory;
+
+    private List<SelectItem> companyPositions;
+
+    private String positionValue;
 
     public void init() {
         if(Faces.isAjaxRequest()) {
@@ -44,13 +63,18 @@ public class ErpEmployeeForm implements Serializable {
         }
         if(has(id)) {
             erpEmployee = employeeService.findById(Long.valueOf(id));
+            employmentHistory = new ArrayList<>(erpEmployee.getEmploymentHistory());
             initialStatus = erpEmployee.getStatus();
+            if(has(erpEmployee.getCompanyPosition())) {
+                positionValue = erpEmployee.getCompanyPosition().getName();
+            }
             if(erpEmployee.getJoinedDate() != null) {
                 joinedDate = "Joined " +simpleDateFormat.format(erpEmployee.getJoinedDate());
             }
             lastUpdate = DateTimeUtil.timeAgo(new Date(), erpEmployee.getLastUpdate());
         } else {
             erpEmployee = new ErpEmployee();
+            employmentHistory = new ArrayList<>();
             initialStatus = EmployeeStatus.CREATED;
             joinedDate = "Joined 09 Dec 2017";
         }
@@ -73,6 +97,24 @@ public class ErpEmployeeForm implements Serializable {
         bloodValues = new HashMap<>();
         for(BloodType b: BloodType.values()) {
             bloodValues.put(b.toString(), b);
+        }
+        salaryTypes = new HashMap<>();
+        for(SalaryType st: SalaryType.values()) {
+            salaryTypes.put(st.name(), st);
+        }
+        bankTypes = new HashMap<>();
+        for(BankType bt: BankType.values()) {
+            bankTypes.put(bt.name().replaceAll("_", " "), bt.name().replaceAll("_", " "));
+        }
+        contributionTypes = new HashMap<>();
+        for(ContributionType ct: ContributionType.values()) {
+            contributionTypes.put(ct.name(), ct);
+        }
+        List<CompanyPosition> positionsList = companyPositionService.getAll();
+        companyPositions = new ArrayList<SelectItem>();
+        for (CompanyPosition cp: positionsList) {
+            SelectItem itm = new SelectItem(cp.getName(), cp.getName());
+            companyPositions.add(itm);
         }
         /*if(erpEmployee.getBirthDate() != null) {
             System.out.println("BIRTHDATE: "+simpleDateFormat.format(erpEmployee.getBirthDate()));
@@ -151,6 +193,62 @@ public class ErpEmployeeForm implements Serializable {
         this.erpEmployee = erpEmployee;
     }
 
+    public Map<String, SalaryType> getSalaryTypes() {
+        return salaryTypes;
+    }
+
+    public void setSalaryTypes(Map<String, SalaryType> salaryTypes) {
+        this.salaryTypes = salaryTypes;
+    }
+
+    public Map<String, String> getBankTypes() {
+        return bankTypes;
+    }
+
+    public void setBankTypes(Map<String, String> bankTypes) {
+        this.bankTypes = bankTypes;
+    }
+
+    public EmployeeStatus getInitialStatus() {
+        return initialStatus;
+    }
+
+    public void setInitialStatus(EmployeeStatus initialStatus) {
+        this.initialStatus = initialStatus;
+    }
+
+    public Map<String, ContributionType> getContributionTypes() {
+        return contributionTypes;
+    }
+
+    public void setContributionTypes(Map<String, ContributionType> contributionTypes) {
+        this.contributionTypes = contributionTypes;
+    }
+
+    public List<SelectItem> getCompanyPositions() {
+        return companyPositions;
+    }
+
+    public void setCompanyPositions(List<SelectItem> companyPositions) {
+        this.companyPositions = companyPositions;
+    }
+
+    public String getPositionValue() {
+        return positionValue;
+    }
+
+    public void setPositionValue(String positionValue) {
+        this.positionValue = positionValue;
+    }
+
+    public List<EmploymentHistory> getEmploymentHistory() {
+        return employmentHistory;
+    }
+
+    public void setEmploymentHistory(List<EmploymentHistory> employmentHistory) {
+        this.employmentHistory = employmentHistory;
+    }
+
     public String newIDPressed() {
         return "employee-id-form?employeeId="+id+"faces-redirect=true&includeViewParams=true";
     }
@@ -196,15 +294,32 @@ public class ErpEmployeeForm implements Serializable {
     public void save() throws Exception {
         if(erpEmployee != null) {
             List<ErpEmployee> results = employeeService.findByFirstnameAndLastname(erpEmployee.getFirstname().toUpperCase(), erpEmployee.getLastname().toUpperCase());
+            EmploymentHistory hist = new EmploymentHistory();
+            boolean hasEmploymentHistory = false;
             if(erpEmployee.getWeightPound() != null) {
                 erpEmployee.setWeightKilo(erpEmployee.getWeightPound() * 0.454);
             }
+            if(has(positionValue)) {
+                CompanyPosition pos = companyPositionService.findByName(positionValue);
+                erpEmployee.setCompanyPosition(pos);
+            }
             if(!initialStatus.equals(erpEmployee.getStatus())) {
+                hist.setEmployee(erpEmployee);
+                hist.setChanges("Employment Status changed from "+(initialStatus != null ? initialStatus.name() : "empty")+" to "+erpEmployee.getStatus().name());
+                if(erpEmployee.getEmploymentHistory() == null) {
+                    erpEmployee.setEmploymentHistory(new HashSet<>());
+                }
                 if(erpEmployee.getStatus().equals(EmployeeStatus.HIRED) && erpEmployee.getJoinedDate() == null) {
                     erpEmployee.setJoinedDate(new Date());
                 }
                 if(erpEmployee.getStatus().equals(EmployeeStatus.RESIGNED) && erpEmployee.getResignedDate() == null) {
                     erpEmployee.setResignedDate(new Date());
+                }
+                erpEmployee.getEmploymentHistory().add(hist);
+                if(erpEmployee.getId() != null) {
+                    employmentHistoryService.save(hist);
+                } else {
+                    hasEmploymentHistory = true;
                 }
             }
             // camelize names: firstname, lastname, middlename
@@ -215,6 +330,9 @@ public class ErpEmployeeForm implements Serializable {
             }
             else {
                 employeeService.save(erpEmployee);
+                if(hasEmploymentHistory) {
+                    employmentHistoryService.save(hist);
+                }
                 String userFullName = erpEmployee.getFirstname() + " " + erpEmployee.getLastname();
                 addDetailMessage("EMPLOYEE SAVED", userFullName + ".", FacesMessage.SEVERITY_INFO);
                 FacesContext.getCurrentInstance().getExternalContext().redirect("employees.xhtml");

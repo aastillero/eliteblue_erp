@@ -1,6 +1,7 @@
 package io.eliteblue.erp.core.bean;
 
 import io.eliteblue.erp.core.constants.ApprovalStatus;
+import io.eliteblue.erp.core.constants.EmployeeStatus;
 import io.eliteblue.erp.core.constants.WorkSchedLegend;
 import io.eliteblue.erp.core.model.*;
 import io.eliteblue.erp.core.service.ErpDetachmentService;
@@ -35,6 +36,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.github.adminfaces.template.util.Assert.has;
 
@@ -60,9 +62,34 @@ public class WorkScheduleTemplateForm implements Serializable {
 
     private UploadedFile file;
 
+    private LocalDate localStart;
+
+    private List<LocalDate> localStarts;
+
+    private List<LocalDate> localEnds;
+
+    private LocalDate localEnd;
+
     @PostConstruct
     public void init() {
-        detachments = erpDetachmentService.getAllFilteredLocation();
+        detachments = erpDetachmentService.getAllCurrentDetachment();
+        localStarts = new ArrayList<>();
+        localEnds = new ArrayList<>();
+        for(ErpDetachment det: detachments) {
+            LocalDate today = LocalDate.now();
+            localStart = LocalDate.now();
+            localEnd = LocalDate.now();
+            if (today.getDayOfMonth() <= 14) {
+                localStart = LocalDate.of(today.getYear(), today.getMonth().minus(1), 16);
+                LocalDate monthstart = LocalDate.of(today.getYear(), today.getMonth().minus(1), 1);
+                localEnd = monthstart.plusDays(monthstart.lengthOfMonth() - 1);
+            } else {
+                localStart = LocalDate.of(today.getYear(), today.getMonth(), 1);
+                localEnd = LocalDate.of(today.getYear(), today.getMonth(), 15);
+            }
+            localStarts.add(localStart);
+            localEnds.add(localEnd);
+        }
     }
 
     public List<ErpDetachment> getDetachments() {
@@ -79,6 +106,38 @@ public class WorkScheduleTemplateForm implements Serializable {
 
     public void setFile(UploadedFile file) {
         this.file = file;
+    }
+
+    public LocalDate getLocalStart() {
+        return localStart;
+    }
+
+    public void setLocalStart(LocalDate localStart) {
+        this.localStart = localStart;
+    }
+
+    public LocalDate getLocalEnd() {
+        return localEnd;
+    }
+
+    public void setLocalEnd(LocalDate localEnd) {
+        this.localEnd = localEnd;
+    }
+
+    public List<LocalDate> getLocalStarts() {
+        return localStarts;
+    }
+
+    public void setLocalStarts(List<LocalDate> localStarts) {
+        this.localStarts = localStarts;
+    }
+
+    public List<LocalDate> getLocalEnds() {
+        return localEnds;
+    }
+
+    public void setLocalEnds(List<LocalDate> localEnds) {
+        this.localEnds = localEnds;
     }
 
     public String backBtnPressed() { return "workschedules?faces-redirect=true&includeViewParams=true"; }
@@ -129,6 +188,7 @@ public class WorkScheduleTemplateForm implements Serializable {
 
                         if(has(detachment.getAssignedEmployees()) && detachment.getAssignedEmployees().size() > 0) {
                             List<ErpEmployee> employees = new ArrayList<>(detachment.getAssignedEmployees());
+                            employees = employees.stream().filter(itm -> itm.getStatus().equals(EmployeeStatus.HIRED)).collect(Collectors.toList());
                             employees.sort(Comparator.comparing(ErpEmployee::getLastname));
                             int x = 11;
                             for(int e = 0; e < employees.size(); e++) {
@@ -243,39 +303,45 @@ public class WorkScheduleTemplateForm implements Serializable {
         return null;
     }
 
-    public void downloadFile(String detachId) throws Exception {
-        //System.out.println("DETACHMENT ID: " + detachId);
+    public void downloadFile(String detachId, LocalDate startParam, LocalDate endParam) throws Exception {
+        System.out.println("START: "+startParam+" END: "+endParam);
         if(has(detachId)) {
             Long detId = Long.parseLong(detachId);
             ErpDetachment detachment = erpDetachmentService.findById(detId);
             boolean hasAssignedEmployees = (has(detachment) && detachment.getAssignedEmployees() != null && detachment.getAssignedEmployees().size() > 0);
             boolean hasSchedules = (has(detachment) && detachment.getErpTimeSchedules() != null && detachment.getErpTimeSchedules().size() > 0);
             LocalDate today = LocalDate.now();
-            LocalDate startSched = null;
-            LocalDate stopSched = null;
+            LocalDate startSched = startParam;
+            LocalDate stopSched = endParam;
             List<String> legends = new ArrayList<>();
 
-            if(today.getDayOfMonth() <= 14) {
+            /*if(today.getDayOfMonth() <= 14) {
                 startSched = LocalDate.of(today.getYear(), today.getMonth(), 16);
                 LocalDate monthstart = LocalDate.of(today.getYear(),today.getMonth(),1);
                 stopSched = monthstart.plusDays(monthstart.lengthOfMonth()-1);
             } else {
                 startSched = LocalDate.of(today.getYear(), today.getMonth().plus(1), 1);
                 stopSched = LocalDate.of(today.getYear(), today.getMonth().plus(1), 15);
-            }
+            }*/
 
             ExcelUtils.initializeWithFilename("work_schedule.xlsx", "Sheet1");
             // locked style cells
             CellStyle locked = ExcelUtils.workbook.createCellStyle();
-            locked.setLocked(true);
+            ExcelUtils.worksheet.protectSheet("3l1t3blue2010");
+            locked.setLocked(false);
             ExcelUtils.setCell(0,1, detachment.getId());
             ExcelUtils.setCell(7,2, "DETACHMENT: "+detachment.getName());
             ExcelUtils.setCell(7,8, "AREA OF RESPONSIBILITY: "+detachment.getLocation().getLocation());
             ExcelUtils.setCell(2,3, "");
+            ExcelUtils.getCellStyle(2,3).setLocked(false);
             ExcelUtils.setCell(2,8, "");
+            ExcelUtils.getCellStyle(2,8).setLocked(false);
             ExcelUtils.setCell(2,13, "");
+            ExcelUtils.getCellStyle(2,13).setLocked(false);
             ExcelUtils.setCell(1,1, startSched.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+            ExcelUtils.getCellStyle(1,1).setLocked(false);
             ExcelUtils.setCell(2,1, stopSched.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+            ExcelUtils.getCellStyle(2,1).setLocked(false);
             for(ErpTimeSchedule ts: detachment.getErpTimeSchedules()) {
                 if(ts.getLegend().equals(WorkSchedLegend.DS)) {
                     CellStyle quotedPrefix = ExcelUtils.getCellStyle(4,5);
@@ -297,22 +363,29 @@ public class WorkScheduleTemplateForm implements Serializable {
             }
             if(has(legends) && legends.size() > 0) {
                 legends.add(WorkSchedLegend.DO.name());
+                legends.add(WorkSchedLegend.H24.name());
+                legends.add(WorkSchedLegend.L.name());
             }
             ExcelUtils.evaluateCell(7,0);
             ExcelUtils.evaluateCell(4,1);
             ExcelUtils.evaluateCell(8,0);
             // loop from start date to end date
             int y = 2;
+            int totalDays = 0;
             for (LocalDate date = startSched; (date.isBefore(stopSched) || date.isEqual(stopSched)); date = date.plusDays(1), y++) {
                 ExcelUtils.setCell(10, y, date.getDayOfMonth());
+                totalDays += 1;
             }
             ExcelUtils.setCell(10, 18, "NO. DAYS");
             if(hasAssignedEmployees && hasSchedules){
                 int x = 11;
                 List<ErpEmployee> employees = new ArrayList<>(detachment.getAssignedEmployees());
+                employees = employees.stream().filter(itm -> itm.getStatus().equals(EmployeeStatus.HIRED)).collect(Collectors.toList());
                 employees.sort(Comparator.comparing(ErpEmployee::getLastname));
                 for(ErpEmployee emp: employees) {
-                    //System.out.println("EMPLOYEE: "+emp.getFirstname() + " " + emp.getLastname());
+                    // check if employee is not hired do not include
+
+                    //System.out.println("EMPLOYEE: "+emp.getFirstname() + " " + emp.getLastname()+" "+emp.getStatus().name());
                     if(has(emp.getFirstname()) && has(emp.getLastname())) {
                         ExcelUtils.setCell(x, 0, emp.getLastname() + ", " + emp.getFirstname());
                     }
@@ -326,8 +399,9 @@ public class WorkScheduleTemplateForm implements Serializable {
                         CellStyle style = ExcelUtils.workbook.createCellStyle();
                         style.setAlignment(HorizontalAlignment.CENTER);
                         ExcelUtils.setCell(x, y, "DS", style);
+                        ExcelUtils.getCellStyle(x,y).setLocked(false);
                         DataValidationHelper dvHelper = ExcelUtils.worksheet.getDataValidationHelper();
-                        DataValidationConstraint dvConstraint = dvHelper.createExplicitListConstraint((has(detachment.getErpTimeSchedules()) && detachment.getErpTimeSchedules().size() > 0) ? legends.toArray(new String[0]) : new String[]{"DS", "NS", "DO"});
+                        DataValidationConstraint dvConstraint = dvHelper.createExplicitListConstraint((has(detachment.getErpTimeSchedules()) && detachment.getErpTimeSchedules().size() > 0) ? legends.toArray(new String[0]) : new String[]{"DS", "NS", "DO", "H24", "L"});
                         CellRangeAddressList addressList = new CellRangeAddressList(x, x, y, y);
                         DataValidation validation = dvHelper.createValidation(dvConstraint, addressList);
                         validation.setShowErrorBox(true);
@@ -336,7 +410,8 @@ public class WorkScheduleTemplateForm implements Serializable {
                     CellStyle style = ExcelUtils.workbook.createCellStyle();
                     style.setAlignment(HorizontalAlignment.LEFT);
                     ExcelUtils.setCell(x, 18, y-2, style);
-                    ExcelUtils.setCellFormula(x, 18, (y-2)+"-COUNTIF(C"+(x+1)+":Q"+(x+1)+",\"*DO*\")", style);
+                    //System.out.println("FORMULA: "+(totalDays)+"+COUNTIF(C"+(x+1)+":Q"+(x+1)+",\"*H24*\")-COUNTIF(C"+(x+1)+":Q"+(x+1)+",\"*DO*\")");
+                    ExcelUtils.setCellFormula(x, 18, (totalDays)+"+COUNTIF(C"+(x+1)+":Q"+(x+1)+",\"*H24*\")-COUNTIF(C"+(x+1)+":Q"+(x+1)+",\"*DO*\")", style);
                     style = ExcelUtils.workbook.createCellStyle();
                     Font font = ExcelUtils.workbook.createFont();
                     font.setColor(HSSFColor.HSSFColorPredefined.WHITE.getIndex());
@@ -347,6 +422,9 @@ public class WorkScheduleTemplateForm implements Serializable {
             }
 
             String detachmentName = detachment.getName().replaceAll(" ", "_");
+            if(detachmentName.length() > 8) {
+                detachmentName = detachmentName.substring(0, 7);
+            }
             generateFile(ExcelUtils.workbook, "work_schedule_"+detachmentName+today.format(DateTimeFormatter.ofPattern("MMddyyyy")));
             ExcelUtils.workbook.close();
             //FacesContext.getCurrentInstance().getExternalContext().redirect("ws-download-templates.xhtml");

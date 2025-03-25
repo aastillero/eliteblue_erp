@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                xmlns:sec="http://www.springframework.org/security/tags"
+                template="#{layoutMB.template}">
+
+    <ui:define name="metadata">
+        <ui:param name="title" value="Items list"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: right !important;
+            }
+            .scrollable-menu {
+                height: auto;
+                max-height: 200px;
+                overflow-x: hidden;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="title">
+        <h2 class="align-left">
+            Equipments List
+        </h2>
+    </ui:define>
+
+    <ui:define name="description">
+        You can add, edit and delete Equipments.
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="form">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons">
+                        <sec:authorize access="hasAnyRole('MATERIAL_REQ', 'SYS_ADMIN')">
+                        <p:commandButton action="equipment-form?faces-redirect=true" icon="fa fa-plus"
+                                         value="New Equipment" styleClass="btn-primary"/>
+                        <p:spacer width="5"/>
+                        </sec:authorize>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success">Download File</button>
+                            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu scrollable-menu" role="menu">
+                                <li><p:commandLink ajax="false" action="#{erpEquipmentList.downloadSummary}">Equipment Summary</p:commandLink></li>
+                                <li><p:commandLink ajax="false" action="#{erpEquipmentList.downloadAllEquipments}">All Equipments</p:commandLink></li>
+                                <ui:repeat var="det" value="#{erpEquipmentList.detachments}">
+                                    <li><p:commandLink ajax="false" action="#{erpEquipmentList.downloadDetachmentEquipment(det.id)}">#{det.name}</p:commandLink></li>
+                                </ui:repeat>
+                            </ul>
+                        </div>
+                        <p:spacer width="5"/>
+                    </div>
+
+                    <p:separator/>
+
+                    <p:dataTable id="erpEquipTab" var="equip" value="#{erpEquipmentList.lazyErpEquipments}" selectionMode="single"
+                        paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+                        paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                        emptyMessage="No Equipments found with given criteria"
+                        widgetVar="erpEquipTable"
+                        selection="#{erpEquipmentList.selectedErpEquipment}" rowKey="#{equip.id}">
+
+                        <p:ajax event="rowSelect" listener="#{erpEquipmentList.onRowSelect}"/>
+                        <p:ajax event="rowUnselect" listener="#{erpEquipmentList.onRowUnselect}"/>
+
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-end">
+                                <p:commandButton onclick="$('#form\\:erpEquipTab\\:globalFilter').val('').keyup();PF('erpEquipTable').filter()" value="clear"/>
+                                <p:inputText id="globalFilter" style="width:20rem" placeholder="Search all columns" autocomplete="off"
+                                             onkeypress="if (event.keyCode === 13)  {PF('erpEquipTable').filter(); return false;}"/>
+                                <p:commandButton  class="ui-button" icon="fa fa-search" onclick="PF('erpEuipTable').filter()"/>
+                            </div>
+                        </f:facet>
+
+                        <p:column headerText="Equipment Name">
+                            <h:outputText value="#{equip.name}" />
+                        </p:column>
+                        <p:column headerText="Type">
+                            <h:outputText value="#{equip.equipmentType.name}" />
+                        </p:column>
+                        <p:column headerText="Ref Code">
+                            <h:outputText value="#{equip.refNum}" />
+                        </p:column>
+                        <p:column headerText="Serial No.">
+                            <h:outputText value="#{equip.serialNo}" />
+                        </p:column>
+                        <p:column headerText="Detachment">
+                            <h:outputText value="#{equip.detachment.name}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

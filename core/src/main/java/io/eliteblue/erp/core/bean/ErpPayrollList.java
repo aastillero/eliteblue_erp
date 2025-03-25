@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,6 +36,7 @@ public class ErpPayrollList implements Serializable {
     @PostConstruct
     public void init() {
         payrolls = erpPayrollService.getAll();
+        payrolls.sort(Comparator.comparing(ErpPayroll::getCoverPeriodStart).reversed());
         lazyErpPayrolls = new LazyErpPayrollModel(payrolls);
         lazyErpPayrolls.setRowCount(10);
     }

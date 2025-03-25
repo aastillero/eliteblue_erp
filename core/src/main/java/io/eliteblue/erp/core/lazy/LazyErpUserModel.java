@@ -44,20 +44,26 @@ public class LazyErpUserModel extends LazyDataModel<ErpUser> {
                 .count();
 
         // apply offset & filters
-        List<ErpUser> erpUsers = dataSource.stream()
+        /*List<ErpUser> erpUsers = dataSource.stream()
                 .skip(first)
                 .filter(o -> filter(FacesContext.getCurrentInstance(), filterBy.values(), o))
                 .limit(pageSize)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+        Collections.sort(dataSource, (o1, o2) -> (o1.getUsername().compareTo(o2.getUsername())));
 
         // sort
-        if (!sortBy.isEmpty()) {
+        /*if (!sortBy.isEmpty()) {
             List<Comparator<ErpUser>> comparators = sortBy.values().stream()
                     .map(o -> new ErpUserLazySorter(o.getField(), o.getOrder()))
                     .collect(Collectors.toList());
             Comparator<ErpUser> cp = ComparatorUtils.chainedComparator(comparators); // from apache
             erpUsers.sort(cp);
-        }
+        }*/
+        List<ErpUser> erpUsers = dataSource.stream()
+                .skip(first)
+                .filter(o -> filter(FacesContext.getCurrentInstance(), filterBy.values(), o))
+                .limit(pageSize)
+                .collect(Collectors.toList());
 
         setRowCount((int) rowCount);
 
@@ -80,17 +86,10 @@ public class LazyErpUserModel extends LazyDataModel<ErpUser> {
         for (FilterMeta filter : filterBy) {
             FilterConstraint constraint = filter.getConstraint();
             Object filterValue = filter.getFilterValue();
+            String filterText = (filterValue == null) ? null : filterValue.toString().trim().toLowerCase();
 
-            try {
-                Object columnValue = String.valueOf(o.getClass().getField(filter.getField()).get(o));
-                matching = constraint.isMatching(context, columnValue, filterValue, LocaleUtils.getCurrentLocale());
-            } catch (ReflectiveOperationException e) {
-                matching = false;
-            }
-
-            if (!matching) {
-                break;
-            }
+            ErpUser erpUser = (ErpUser) o;
+            return erpUser.getUsername().toLowerCase().contains(filterText);
         }
 
         return matching;

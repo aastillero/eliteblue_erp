@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="metadata">
+        <ui:param name="title" value="Detachment list"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: right !important;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="title">
+        <h2 class="align-left">
+            SIL Management
+        </h2>
+        <h4>
+            #{silList.erpDetachment.name}
+        </h4>
+    </ui:define>
+
+    <ui:define name="description">
+        You can add and remove SILs.
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewParam name="id" value="#{silList.id}" converter="javax.faces.Long"/>
+            <f:event type="preRenderView" listener="#{silList.init}"/>
+        </f:metadata>
+
+        <h:form id="form">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <!--<div id="main-buttons" class="hidden-sm hidden-xs">
+                        <p:commandButton action="detachment-form?faces-redirect=true" icon="fa fa-plus"
+                                         value="New Detachment" styleClass="btn-primary"/>
+                        <p:spacer width="5"/>
+                    </div>-->
+
+                    <p:dataTable id="erpSilTab" var="sil" value="#{silList.lazyErpSils}" selectionMode="single"
+                        paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+                        paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                        emptyMessage="No SIL found with given criteria"
+                        widgetVar="erpSilTable"
+                        selection="#{silList.selectedSil}" rowKey="#{sil.id}">
+
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-end">
+                                <p:commandButton onclick="$('#form\\:erpSilTab\\:globalFilter').val('').keyup();PF('erpSilTable').filter()" value="clear"/>
+                                <p:inputText id="globalFilter" style="width:20rem" placeholder="Search all columns" autocomplete="off"
+                                             onkeypress="if (event.keyCode === 13)  {PF('erpSilTable').filter(); return false;}"/>
+                                <p:commandButton  class="ui-button" icon="fa fa-search" onclick="PF('erpSilTable').filter()"/>
+                            </div>
+                        </f:facet>
+
+                        <p:column headerText="Employment Status">
+                            <h:outputText value="#{sil.employee.status.name()}" />
+                        </p:column>
+                        <p:column headerText="Last Name">
+                            <h:outputText value="#{sil.employee.lastname}" />
+                        </p:column>
+                        <p:column headerText="First Name">
+                            <h:outputText value="#{sil.employee.firstname}" />
+                        </p:column>
+                        <p:column headerText="Date Hired">
+                            <h:outputText value="#{sil.employee.joinedDate}" converter="customDateConverter"/>
+                        </p:column>
+                        <p:column headerText="Days Availed">
+                            <h:outputText value="#{sil.noDaysAvailed}"/>
+                        </p:column>
+                        <p:column headerText="Days Unavailed">
+                            <h:outputText value="#{sil.noDaysUnAvailed}"/>
+                        </p:column>
+                        <p:column headerText="Amount Availed">
+                            <h:outputText value="#{sil.amountAvailed}"/>
+                        </p:column>
+                        <p:column headerText="Amount Unavailed">
+                            <h:outputText value="#{sil.amountUnAvailed}"/>
+                        </p:column>
+                        <p:column headerText="Date Availed">
+                            <h:outputText value="#{sil.dateAvailedStart}"><f:convertDateTime type="date" pattern="MMM dd-" timeZone="Asia/Manila"/></h:outputText>
+                            <h:outputText value="#{sil.dateAvailedStop}"><f:convertDateTime type="date" pattern="dd, yyyy" timeZone="Asia/Manila"/></h:outputText>
+                        </p:column>
+                        <p:column headerText="Payment Date">
+                            <h:outputText value="#{sil.dateOfPaymentStart}"><f:convertDateTime type="date" pattern="MMM dd-" timeZone="Asia/Manila"/></h:outputText>
+                            <h:outputText value="#{sil.dateOfPaymentStop}"><f:convertDateTime type="date" pattern="dd, yyyy" timeZone="Asia/Manila"/></h:outputText>
+                        </p:column>
+                        <p:column headerText="Payment Mode">
+                            <h:outputText value="#{sil.modeOfPayment.name()}"/>
+                        </p:column>
+
+                        <p:column exportable="false" width="50">
+                            <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash" process="@this"
+                                             oncomplete="PF('deleteSilDialog').show()" styleClass="btn-danger">
+                                <f:setPropertyActionListener value="#{sil}" target="#{silList.selectedSil}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+
+            <p:confirmDialog widgetVar="deleteSilDialog" showEffect="fade" hideEffect="fade"
+                             message="Remove SIL record?" header="Confirmation" severity="warn" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" icon="pi pi-check" actionListener="#{silList.removeSil}"
+                                 process="@this" oncomplete="PF('deleteSilDialog').hide()"
+                                 styleClass="btn-material btn-primary ui-confirmdialog-yes"/>
+                <p:commandButton value="No" type="button" icon="pi pi-times"
+                                 onclick="PF('deleteSilDialog').hide()"
+                                 styleClass="btn-material btn-danger ui-confirmdialog-no"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

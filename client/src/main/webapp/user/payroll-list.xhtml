@@ -57,10 +57,10 @@
                         </f:facet>
 
                         <p:column headerText="Cover Period Start">
-                            <h:outputText value="#{payroll.coverPeriodStart}" />
+                            <h:outputText value="#{payroll.coverPeriodStart}" converter="customDateConverter"/>
                         </p:column>
                         <p:column headerText="Cover Period End">
-                            <h:outputText value="#{payroll.coverPeriodEnd}" />
+                            <h:outputText value="#{payroll.coverPeriodEnd}" converter="customDateConverter"/>
                         </p:column>
                     </p:dataTable>
                 </div>

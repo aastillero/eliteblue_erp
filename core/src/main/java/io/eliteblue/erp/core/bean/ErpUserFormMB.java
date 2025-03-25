@@ -42,7 +42,8 @@ public class ErpUserFormMB implements Serializable {
     private List<String> locations;
     private List<String> selectedLocations;
     private Map<String, Long> detachments;
-    private ErpDetachment detachment;
+    private List<Long> selectedDetachments;
+    private List<Long> relieverDetachments;
 
     public void init() {
         if(Faces.isAjaxRequest()) {
@@ -50,14 +51,9 @@ public class ErpUserFormMB implements Serializable {
         }
         if(has(id)) {
             user = erpUserService.findById(Long.valueOf(id));
-            if(has(user.getErpDetachment())) {
-                detachment = user.getErpDetachment();
-            } else {
-                detachment = new ErpDetachment();
-            }
         } else {
             user = new ErpUser();
-            detachment = new ErpDetachment();
+            //detachment = new ErpDetachment();
         }
         enabledValues = new HashMap<>();
         enabledValues.put("YES", true);
@@ -80,11 +76,19 @@ public class ErpUserFormMB implements Serializable {
         if(user != null && user.getId() != null) {
             selectedRoles = new ArrayList<>();
             selectedLocations = new ArrayList<>();
+            selectedDetachments = new ArrayList<>();
+            relieverDetachments = new ArrayList<>();
             for(Authority a : user.getAuthorities()) {
                 selectedRoles.add(a.getName().name().replaceAll("ROLE_", ""));
             }
             for(OperationsArea ar: user.getLocations()) {
                 selectedLocations.add(ar.getLocation());
+            }
+            for(ErpDetachment dts: user.getErpDetachments()) {
+                selectedDetachments.add(dts.getId());
+            }
+            for(ErpDetachment dts: user.getRelieverDetachments()) {
+                relieverDetachments.add(dts.getId());
             }
         }
     }
@@ -153,12 +157,20 @@ public class ErpUserFormMB implements Serializable {
         this.detachments = detachments;
     }
 
-    public ErpDetachment getDetachment() {
-        return detachment;
+    public List<Long> getSelectedDetachments() {
+        return selectedDetachments;
     }
 
-    public void setDetachment(ErpDetachment detachment) {
-        this.detachment = detachment;
+    public void setSelectedDetachments(List<Long> selectedDetachments) {
+        this.selectedDetachments = selectedDetachments;
+    }
+
+    public List<Long> getRelieverDetachments() {
+        return relieverDetachments;
+    }
+
+    public void setRelieverDetachments(List<Long> relieverDetachments) {
+        this.relieverDetachments = relieverDetachments;
     }
 
     public void clear() {
@@ -168,6 +180,10 @@ public class ErpUserFormMB implements Serializable {
 
     public boolean isNew() {
         return user == null || user.getId() == null;
+    }
+
+    public String navigateChangepass() throws Exception {
+        return "/user/changepass-form?id="+user.getUsername()+"&faces-redirect=true&includeViewParams=true";
     }
 
     public void remove() throws Exception {
@@ -181,10 +197,15 @@ public class ErpUserFormMB implements Serializable {
 
     public void save() throws Exception {
         if(user != null) {
-            if(has(detachment.getId())) {
-                detachment = erpDetachmentService.findById(detachment.getId());
-                user.setErpDetachment(detachment);
+            //System.out.println("DETACHMENT: "+detachment.getId()+" "+detachment.getName());
+            /*if(has(erpDetachments)) {
+                //detachment = erpDetachmentService.findById(detachment.getId());
+                //user.setErpDetachment(detachment);
             }
+            else {
+                erpDetachments = null;
+                //user.setErpDetachment(detachment);
+            }*/
             if(selectedRoles != null && selectedRoles.size() > 0) {
                 user.setAuthorities(new HashSet<>());
                 for(String r: selectedRoles) {
@@ -208,6 +229,45 @@ public class ErpUserFormMB implements Serializable {
                     }
                     user.getLocations().add(area);
                 }
+            }
+            if(selectedDetachments != null && selectedDetachments.size() >0) {
+                user.setErpDetachments(new HashSet<>());
+                //System.out.println("SELECTED: "+selectedDetachments);
+                for (Object d : selectedDetachments) {
+                    Long detId = 0L;
+                    if (d instanceof String) {
+                        //System.out.println("STRING INSTANCE ["+d+"]");
+                        detId = Long.parseLong((String) d);
+                    } else {
+                        //System.out.println("LONG INSTANCE ["+d+"]");
+                        detId = (Long) d;
+                    }
+                    ErpDetachment ed = erpDetachmentService.findById(detId);
+                    if (ed != null) {
+                        user.getErpDetachments().add(ed);
+                    }
+                }
+            } else {
+                user.setErpDetachments(null);
+            }
+            if(relieverDetachments != null && relieverDetachments.size() >0) {
+                user.setRelieverDetachments(new HashSet<>());
+                for (Object d : relieverDetachments) {
+                    Long detId = 0L;
+                    if (d instanceof String) {
+                        //System.out.println("STRING INSTANCE ["+d+"]");
+                        detId = Long.parseLong((String) d);
+                    } else {
+                        //System.out.println("LONG INSTANCE ["+d+"]");
+                        detId = (Long) d;
+                    }
+                    ErpDetachment ed = erpDetachmentService.findById(detId);
+                    if (ed != null) {
+                        user.getRelieverDetachments().add(ed);
+                    }
+                }
+            } else {
+                user.setRelieverDetachments(null);
             }
             erpUserService.save(user);
             String userFullName = user.getFirstname()+ " " +user.getLastname();

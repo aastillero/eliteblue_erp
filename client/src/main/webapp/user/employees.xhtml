@@ -33,6 +33,9 @@
                         <p:commandButton action="employee-form?faces-redirect=true" icon="fa fa-plus"
                                          value="Add Employee" styleClass="btn-primary"/>
                         <p:spacer width="5"/>
+                        <p:commandButton ajax="false" action="#{erpEmployeeListMB.downloadEmployeesExcel}" icon="fa fa-download"
+                                         value="Download" styleClass="btn-success"/>
+                        <p:spacer width="5"/>
                     </div>
 
                     <p:separator/>
@@ -60,26 +63,88 @@
                             <h:outputText value="#{employee.employeeId}" />
                         </p:column>
 
-                        <p:column headerText="First Name">
-                            <h:outputText value="#{employee.firstname}" />
+                        <p:column headerText="Last Name" sortBy="#{employee.lastname}">
+                            <h:outputText value="#{employee.lastname}" />
                         </p:column>
 
-                        <p:column headerText="Last Name">
-                            <h:outputText value="#{employee.lastname}" />
+                        <p:column headerText="First Name" sortBy="#{employee.firstname}">
+                            <h:outputText value="#{employee.firstname}" />
                         </p:column>
 
                         <p:column headerText="Gender">
                             <h:outputText value="#{employee.gender}" />
                         </p:column>
 
+                        <p:column headerText="Date Hired">
+                            <h:outputText value="#{employee.joinedDate}">
+                                <f:convertDateTime type="date" pattern="MM/dd/yyyy" timeZone="GMT-8"/>
+                            </h:outputText>
+                        </p:column>
+
                         <p:column headerText="Email">
                             <h:outputText value="#{employee.email}" />
                         </p:column>
 
-                        <p:column headerText="Status">
+                        <p:column headerText="Detachment">
+                            <h:outputText value="#{employee.erpDetachment.name}" />
+                        </p:column>
+
+                        <p:column field="statusFilter" headerText="Status" filterMatchMode="exact" sortBy="#{employee.status}">
+                            <f:facet name="filter">
+                                <p:selectOneMenu onchange="PF('erpEmployeeTable').filter()" styleClass="ui-custom-filter">
+                                    <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
+                                    <f:selectItems value="#{erpEmployeeListMB.employeeStatus}"/>
+                                </p:selectOneMenu>
+                            </f:facet>
+
                             <h:outputText value="#{employee.status}" />
                         </p:column>
                     </p:dataTable>
+
+                    <p:spacer width="5"/>
+
+                    <div class="box-body">
+                        <div class="row">
+                            <div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>CREATED:</label>
+                                        <label>#{erpEmployeeListMB.countStatus('CREATED')}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>HIRED:</label>
+                                        <label>#{erpEmployeeListMB.countStatus('HIRED')}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>RESIGNED:</label>
+                                        <label>#{erpEmployeeListMB.countStatus('RESIGNED')}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>DECEASED:</label>
+                                        <label>#{erpEmployeeListMB.countStatus('DECEASED')}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>DELETED:</label>
+                                        <label>#{erpEmployeeListMB.countStatus('DELETED')}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>AWOL:</label>
+                                        <label>#{erpEmployeeListMB.countStatus('AWOL')}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </h:form>

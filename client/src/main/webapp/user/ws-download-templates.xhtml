@@ -23,6 +23,11 @@
                         <p:spacer width="5"/>
                         <p:commandButton value="Back" action="#{workScheduleTemplateForm.backBtnPressed}" icon="fa fa-reply"/>
                     </div>
+                    <p:splitButton value="Upload" ajax="false" action="#{workScheduleTemplateForm.fileUpload}"
+                                   icon="fa fa-upload"
+                                   styleClass="hidden-md hidden-lg btn-primary">
+                        <p:menuitem value="Back" action="#{workScheduleTemplateForm.backBtnPressed}" icon="fa fa-reply"/>
+                    </p:splitButton>
                     <p:separator/>
 
                     <div class="box-body">
@@ -32,11 +37,17 @@
                             </div>
                         </div>
                         <p:spacer width="5"/>
-                        <ui:repeat var="detach" value="#{workScheduleTemplateForm.detachments}">
+                        <ui:repeat var="detach" value="#{workScheduleTemplateForm.detachments}" varStatus="idx">
                             <div class="row">
                                 <div class="col-md-10">
-                                    <p:commandButton ajax="false" action="#{workScheduleTemplateForm.downloadFile(detach.id)}" icon="fa fa-download"
+                                    <p:commandButton ajax="false" action="#{workScheduleTemplateForm.downloadFile(detach.id, workScheduleTemplateForm.localStarts[idx.index], workScheduleTemplateForm.localEnds[idx.index])}" icon="fa fa-download"
                                                      value="Download" styleClass="btn-success"/>
+                                    <p:spacer width="6"/>
+                                    <label style="font-weight:bold;">Start:</label>
+                                    <p:datePicker autocomplete="off" class="date-input" monthNavigator="true" yearNavigator="true" value="#{workScheduleTemplateForm.localStarts[idx.index]}"/>
+                                    <p:spacer width="6"/>
+                                    <label style="font-weight:bold;">End:</label>
+                                    <p:datePicker autocomplete="off" class="date-input" monthNavigator="true" yearNavigator="true" value="#{workScheduleTemplateForm.localEnds[idx.index]}"/>
                                     <p:spacer width="6"/>
                                     <label style="font-weight:bold;">#{detach.name}</label>
                                 </div>

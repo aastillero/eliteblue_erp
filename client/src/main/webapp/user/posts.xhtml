@@ -35,7 +35,7 @@
                         <p:spacer width="5"/>
                     </div>-->
 
-                    <p:dataTable id="erpPostTab" var="post" value="#{erpPostListMB.posts}" selectionMode="single"
+                    <p:dataTable id="erpPostTab" var="post" value="#{erpPostListMB.lazyErpPosts}" selectionMode="single"
                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                         emptyMessage="No Posts found with given criteria" globalFilterFunction="#{erpPostListMB.globalFilterFunction}"

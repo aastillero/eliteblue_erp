@@ -59,6 +59,9 @@
                         <p:column headerText="Borrower Name">
                             <h:outputText value="#{headOfficeLoan.employeeBorrower.firstname} #{headOfficeLoan.employeeBorrower.lastname}" />
                         </p:column>
+                        <p:column headerText="Detachment">
+                            <h:outputText value="#{headOfficeLoan.employeeBorrower.erpDetachment.name}" />
+                        </p:column>
                         <p:column headerText="Amount">
                             <h:outputText value="#{headOfficeLoan.loanAmount}" />
                         </p:column>

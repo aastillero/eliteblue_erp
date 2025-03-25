@@ -25,7 +25,7 @@ public class ErpSSSContributionService extends CoreErpServiceImpl implements Cor
     }
 
     public List<ErpSSSContribution> getAllFromRange(Double salary) {
-        return repository.findByRangeFromGreaterThanEqualAndRangeToLessThanEqual(salary, salary);
+        return repository.getByRange(salary);
     }
 
     @Override

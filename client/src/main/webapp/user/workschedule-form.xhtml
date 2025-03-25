@@ -293,11 +293,11 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <ui:repeat var="workAssn" value="#{workScheduleForm.workAssignments}">
+                                    <ui:repeat var="workAssn" value="#{workScheduleForm.workAssignments.toArray()}">
                                         <tr>
                                             <td>#{workAssn.employeeAssigned.lastname}, #{workAssn.employeeAssigned.firstname}</td>
                                             <td>#{workAssn.workAssignment}</td>
-                                            <ui:repeat var="wd" value="#{workAssn.workDays}">
+                                            <ui:repeat var="wd" value="#{workAssn.workDays.toArray()}">
                                                 <td>
                                                     #{wd.shiftSchedule}
                                                 </td>
@@ -380,11 +380,11 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <ui:repeat var="workAssn" value="#{workScheduleForm.workAssignments}">
+                            <ui:repeat var="workAssn" value="#{workScheduleForm.workAssignments.toArray()}">
                                 <tr>
                                     <td>#{workAssn.employeeAssigned.lastname}, #{workAssn.employeeAssigned.firstname}</td>
                                     <td>#{workAssn.workAssignment}</td>
-                                    <ui:repeat var="wd" value="#{workAssn.workDays}">
+                                    <ui:repeat var="wd" value="#{workAssn.workDays.toArray()}">
                                         <td>
                                             #{wd.shiftSchedule}
                                         </td>

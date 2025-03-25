@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                xmlns:sec="http://www.springframework.org/security/tags"
+                template="#{layoutMB.template}">
+
+    <ui:define name="title">
+        <p:outputPanel rendered="#{todPersonnelShiftForm.isNew()}">
+            <h1>New Personnel Shift Form</h1>
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not todPersonnelShiftForm.isNew()}">
+            <h1>Edit Personnel Shift Form</h1>
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="description">
+        <p:outputPanel rendered="#{todPersonnelShiftForm.isNew()}">
+            Create a new Personnel Shift.
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not todPersonnelShiftForm.isNew()}">
+            Update Personnel Shift.
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="body">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"/>
+        <f:metadata>
+            <f:viewParam name="todClientId" value="#{todPersonnelShiftForm.todClientId}" converter="javax.faces.Long"/>
+            <f:viewParam name="id" value="#{todPersonnelShiftForm.id}" converter="javax.faces.Long"/>
+            <f:event type="preRenderView" listener="#{todPersonnelShiftForm.init}"/>
+        </f:metadata>
+
+        <h:form id="form" prependId="false">
+            <h:messages/>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <sec:authorize access="hasAnyRole('CRM', 'SYS_ADMIN')">
+                        <p:commandButton value="Save" action="#{todPersonnelShiftForm.save}" update="@form"
+                                         icon="fa fa-check" styleClass="btn-primary"/>
+                        <p:spacer width="5" rendered="#{todPersonnelShiftForm.isNew()}"/>
+                        <p:commandButton value="Clear" action="#{todPersonnelShiftForm.clear}" process="@this"
+                                         icon="fa fa-refresh" styleClass="btn-success"
+                                         update="@form" rendered="#{todPersonnelShiftForm.isNew()}" resetValues="true"/>
+                        <p:spacer width="5" rendered="#{not todPersonnelShiftForm.isNew()}"/>
+
+                        <p:commandButton value="Delete" action="#{todPersonnelShiftForm.remove}" process="@this"
+                                         rendered="#{not todPersonnelShiftForm.isNew()}" icon="fa fa-trash"
+                                         styleClass="btn-danger">
+                            <f:setPropertyActionListener value="true"
+                                                         target="#{facesContext.externalContext.flash.keepMessages}"/>
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:commandButton>
+                        <p:spacer width="5"/>
+                        </sec:authorize>
+                        <p:commandButton value="Back" action="#{todPersonnelShiftForm.backBtnPressed}" icon="fa fa-reply"/>
+                    </div>
+                    <p:splitButton access="hasAnyRole('CRM', 'SYS_ADMIN')" value="Save" action="#{todPersonnelShiftForm.save}" update="@form"
+                                   icon="fa fa-check"
+                                   styleClass="hidden-md hidden-lg btn-primary">
+                        <p:menuitem access="hasAnyRole('CRM', 'SYS_ADMIN')" value="Reset" action="#{todPersonnelShiftForm.clear}"
+                                    process="@this" update="@form" rendered="#{todPersonnelShiftForm.isNew()}"
+                                    resetValues="true" icon="fa fa-refresh"/>
+                        <p:menuitem access="hasAnyRole('CRM', 'SYS_ADMIN')" value="Delete" action="#{todPersonnelShiftForm.remove}" process="@this"
+                                    rendered="#{not todPersonnelShiftForm.isNew()}" icon="fa fa-trash"
+                        >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:menuitem value="Back" action="#{todPersonnelShiftForm.backBtnPressed}" icon="fa fa-reply"/>
+                    </p:splitButton>
+                    <p:separator/>
+
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Client Name</label>
+
+                            <div class="col-sm-10">
+                                #{todPersonnelShiftForm.todClient.clientName}
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="personnelPosition" class="col-sm-2 control-label">Personnel Position</label>
+
+                            <div class="col-sm-10">
+                                <p:inputText autocomplete="off" value="#{todPersonnelShiftForm.todPersonnelShift.personnelPosition}" class="form-control" id="personnelPosition" placeholder="Personnel Position"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Shift</label>
+
+                            <div class="col-sm-10">
+                                <p:selectOneMenu value="#{todPersonnelShiftForm.todPersonnelShift.shift}" style="width:150px">
+                                    <f:selectItems value="#{todPersonnelShiftForm.shiftValues}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="totalNoSecurity" class="col-sm-2 control-label">No. of Security</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="0" decimalPlaces="0" autocomplete="off" value="#{todPersonnelShiftForm.todPersonnelShift.noSecurity}" id="totalNoSecurity" placeholder="0"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="tod" class="col-sm-2 control-label">TOD</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="0" decimalPlaces="0" autocomplete="off" value="#{todPersonnelShiftForm.todPersonnelShift.tod}" id="tod" placeholder="0"/>
+                            </div>
+                        </div>
+
+                        <p:outputPanel rendered="#{not todPersonnelShiftForm.isNew()}">
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="totalHrs1to15" class="col-sm-2 control-label">Total Hours (1-15)</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="0" decimalPlaces="0" autocomplete="off" value="#{todPersonnelShiftForm.todPersonnelShift.totalHrs1to15}" id="totalHrs1to15" placeholder="0"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="totalHrs16to28" class="col-sm-2 control-label">Total Hours (16-28)</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="0" decimalPlaces="0" autocomplete="off" value="#{todPersonnelShiftForm.todPersonnelShift.totalHrs16to28}" id="totalHrs16to28" placeholder="0"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="totalHrs16to29" class="col-sm-2 control-label">Total Hours (16-29)</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="0" decimalPlaces="0" autocomplete="off" value="#{todPersonnelShiftForm.todPersonnelShift.totalHrs16to29}" id="totalHrs16to29" placeholder="0"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="totalHrs16to30" class="col-sm-2 control-label">Total Hours (16-30)</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="0" decimalPlaces="0" autocomplete="off" value="#{todPersonnelShiftForm.todPersonnelShift.totalHrs16to30}" id="totalHrs16to30" placeholder="0"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="totalHrs16to31" class="col-sm-2 control-label">Total Hours (16-31)</label>
+
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="0" decimalPlaces="0" autocomplete="off" value="#{todPersonnelShiftForm.todPersonnelShift.totalHrs16to31}" id="totalHrs16to31" placeholder="0"/>
+                            </div>
+                        </div>
+                        </p:outputPanel>
+                    </div>
+                </div>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

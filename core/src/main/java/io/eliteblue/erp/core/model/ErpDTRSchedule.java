@@ -28,12 +28,10 @@ public class ErpDTRSchedule extends CoreEntity {
 
     @Column(name = "NIGHT_SHIFT_START")
     @Temporal(TemporalType.TIMESTAMP)
-    @NotNull
     private Date nightShiftStart;
 
     @Column(name = "NIGHT_SHIFT_END")
     @Temporal(TemporalType.TIMESTAMP)
-    @NotNull
     private Date nightShiftEnd;
 
     @Column(name = "ATTENDANCE", length = 20)
@@ -52,6 +50,10 @@ public class ErpDTRSchedule extends CoreEntity {
     @ManyToOne
     @JoinColumn(name = "dtr_assn_id", nullable = false)
     private ErpDTRAssignment erpDTRAssignment;
+
+    @ManyToOne
+    @JoinColumn(name = "reliever_detachment_id")
+    private ErpDetachment relieverDetachment;
 
     public Long getId() {
         return id;
@@ -131,5 +133,13 @@ public class ErpDTRSchedule extends CoreEntity {
 
     public void setTotalHoursNight(Integer totalHoursNight) {
         this.totalHoursNight = totalHoursNight;
+    }
+
+    public ErpDetachment getRelieverDetachment() {
+        return relieverDetachment;
+    }
+
+    public void setRelieverDetachment(ErpDetachment relieverDetachment) {
+        this.relieverDetachment = relieverDetachment;
     }
 }

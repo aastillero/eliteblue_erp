@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                xmlns:sec="http://www.springframework.org/security/tags"
+                template="#{layoutMB.template}">
+
+    <ui:define name="title">
+        <p:outputPanel rendered="#{erpEquipmentForm.isNew()}">
+            <h1>New Equipment</h1>
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not erpEquipmentForm.isNew()}">
+            <h1>Edit Equipment</h1>
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="description">
+        <p:outputPanel rendered="#{erpEquipmentForm.isNew()}">
+            Create a new Equipment.
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not erpEquipmentForm.isNew()}">
+            Update Equipment information.
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewParam name="id" value="#{erpEquipmentForm.id}" converter="javax.faces.Long"/>
+            <f:viewParam name="refNum" value="#{erpEquipmentForm.refNum}" />
+            <f:event type="preRenderView" listener="#{erpEquipmentForm.init}"/>
+        </f:metadata>
+
+        <h:form id="form" prependId="false">
+            <h:messages/>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <sec:authorize access="hasAnyRole('INVENTORY_MGR', 'MATERIAL_REQ', 'SYS_ADMIN')">
+                            <p:commandButton value="Save" action="#{erpEquipmentForm.save}" update="@form"
+                                             icon="fa fa-check" styleClass="btn-primary"/>
+                            <p:spacer width="5" rendered="#{erpEquipmentForm.isNew()}"/>
+                            <p:commandButton value="Clear" action="#{erpEquipmentForm.clear}" process="@this"
+                                             icon="fa fa-refresh" styleClass="btn-success"
+                                             update="@form" rendered="#{erpEquipmentForm.isNew()}" resetValues="true"/>
+                            <p:spacer width="5" rendered="#{not erpEquipmentForm.isNew()}"/>
+
+                            <p:commandButton value="Delete" action="#{erpEquipmentForm.remove}" process="@this"
+                                             rendered="#{not erpEquipmentForm.isNew()}" icon="fa fa-trash"
+                                             styleClass="btn-danger">
+                                <f:setPropertyActionListener value="true"
+                                                             target="#{facesContext.externalContext.flash.keepMessages}"/>
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                            </p:commandButton>
+                            <p:spacer width="5"/>
+                        </sec:authorize>
+                        <p:commandButton value="Back" action="equipments?faces-redirect=true" icon="fa fa-reply"/>
+                    </div>
+                    <p:splitButton access="hasAnyRole('INVENTORY_MGR', 'MATERIAL_REQ', 'SYS_ADMIN')" value="Save" action="#{erpEquipmentForm.save}" update="@form"
+                                   icon="fa fa-check"
+                                   styleClass="hidden-md hidden-lg btn-primary">
+                        <p:menuitem access="hasAnyRole('INVENTORY_MGR', 'MATERIAL_REQ', 'SYS_ADMIN')" value="Reset" action="#{erpEquipmentForm.clear}"
+                                    process="@this" update="@form" rendered="#{erpEquipmentForm.isNew()}"
+                                    resetValues="true" icon="fa fa-refresh"/>
+                        <p:menuitem access="hasAnyRole('INVENTORY_MGR', 'MATERIAL_REQ', 'SYS_ADMIN')" value="Delete" action="#{erpEquipmentForm.remove}" process="@this"
+                                    rendered="#{not erpEquipmentForm.isNew()}" icon="fa fa-trash"
+                        >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:menuitem value="Back" action="equipments?faces-redirect=true"
+                                    process="@this" immediate="true"
+                                    icon="fa fa-reply"/>
+                    </p:splitButton>
+                    <p:separator/>
+
+                    <div class="box-body">
+                        <div class="form-group">
+                            <div class="col-sm-12" align="left">
+                                <div class="icon">
+                                    <i class="fa fa-image fa-5x"/>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-10">
+
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <p:outputPanel rendered="#{not erpEquipmentForm.isNew()}">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" style="font-weight:bold;">REF CODE</label>
+                            <div class="col-sm-10">
+                                <span class="label label-success" style="font-size:14px;">#{erpEquipmentForm.erpEquipment.refNum}</span>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        </p:outputPanel>
+                        <div class="form-group">
+                            <label for="inputName" class="col-sm-2 control-label">Equipment Name</label>
+
+                            <div class="col-sm-10">
+                                <p:inputText autocomplete="off" value="#{erpEquipmentForm.erpEquipment.name}" class="form-control" id="inputName" placeholder="Name"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="description" class="col-sm-2 control-label">Remarks</label>
+
+                            <div class="col-sm-10">
+                                <p:inputText autocomplete="off" value="#{erpEquipmentForm.erpEquipment.description}" class="form-control" id="description" placeholder="Description"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="inputStatus" class="col-sm-2 control-label">Status</label>
+
+                            <div class="col-sm-10">
+                                <p:selectOneMenu id="inputStatus" value="#{erpEquipmentForm.statusValue}" style="width:150px">
+                                    <f:selectItems value="#{erpEquipmentForm.statuses}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="inputLocation" class="col-sm-2 control-label">Type</label>
+
+                            <div class="col-sm-10">
+                                <p:selectOneMenu id="inputLocation" value="#{erpEquipmentForm.typeValue}" style="width:150px">
+                                    <f:selectItems value="#{erpEquipmentForm.types}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="serial" class="col-sm-2 control-label">Equipment No. (plate no./serial no./etc).</label>
+
+                            <div class="col-sm-10">
+                                <p:inputText autocomplete="off" value="#{erpEquipmentForm.erpEquipment.serialNo}" class="form-control" id="serial" placeholder="Equipment No."/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="date" class="col-sm-2 control-label">Date</label>
+
+                            <div class="col-sm-10">
+                                <p:datePicker autocomplete="off" id="date" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEquipmentForm.erpEquipment.expiryDate}"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="inputDetachment" class="col-sm-2 control-label">Detachment</label>
+
+                            <div class="col-sm-10">
+                                <p:selectOneMenu id="inputDetachment" value="#{erpEquipmentForm.detachment.id}" style="width:150px"
+                                                 effect="fade" filter="true" filterMatchMode="startsWith">
+                                    <f:selectItem itemLabel="Select One" itemValue=""/>
+                                    <f:selectItems value="#{erpEquipmentForm.detachments}" var="selectedDetachment"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="location" class="col-sm-2 control-label">Current Location</label>
+
+                            <div class="col-sm-10">
+                                <p:selectOneMenu id="location" value="#{erpEquipmentForm.location.id}" style="width:150px"
+                                                 effect="fade" filter="true" filterMatchMode="startsWith">
+                                    <f:selectItem itemLabel="Select One" itemValue=""/>
+                                    <f:selectItems value="#{erpEquipmentForm.locations}" var="selectedLocation"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

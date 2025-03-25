@@ -59,8 +59,17 @@
                         <p:column headerText="Borrower Name">
                             <h:outputText value="#{scoutLoan.employeeBorrower.firstname} #{scoutLoan.employeeBorrower.lastname}" />
                         </p:column>
-                        <p:column headerText="Amount">
+                        <p:column headerText="Detachment">
+                            <h:outputText value="#{scoutLoan.employeeBorrower.erpDetachment.name}" />
+                        </p:column>
+                        <p:column headerText="Loan Amount">
                             <h:outputText value="#{scoutLoan.loanAmount}" />
+                        </p:column>
+                        <p:column headerText="Payable Amount">
+                            <h:outputText value="#{scoutLoan.payableAmount}" />
+                        </p:column>
+                        <p:column headerText="Paid Amount">
+                            <h:outputText value="#{scoutLoan.paidAmount}" />
                         </p:column>
                         <p:column headerText="Loan Type">
                             <h:outputText value="#{scoutLoan.loanType}" />

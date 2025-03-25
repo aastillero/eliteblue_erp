@@ -1,6 +1,7 @@
 package io.eliteblue.erp.core.service;
 
 import io.eliteblue.erp.core.constants.DataOperation;
+import io.eliteblue.erp.core.model.ErpEmployee;
 import io.eliteblue.erp.core.model.ScoutLoan;
 import io.eliteblue.erp.core.repository.ScoutLoanRepository;
 import io.eliteblue.erp.core.util.CurrentUserUtil;
@@ -27,6 +28,10 @@ public class ScoutLoanService extends CoreErpServiceImpl implements CoreErpServi
     @Override
     public ScoutLoan findById(Long aLong) {
         return repository.getOne(aLong);
+    }
+
+    public List<ScoutLoan> getLoansByEmployee(ErpEmployee employee) {
+        return repository.findAllByEmployeeBorrower(employee);
     }
 
     @Override

@@ -86,6 +86,28 @@
                                 <p:datePicker autocomplete="off" id="date" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpHolidayForm.erpHoliday.holidayDate}"/>
                             </div>
                         </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="holidayType" class="col-sm-2 control-label">Type</label>
+
+                            <div class="col-sm-10">
+                                <p:selectOneMenu id="holidayType" value="#{erpHolidayForm.erpHoliday.holidayType}" style="width:150px">
+                                    <f:selectItems value="#{erpHolidayForm.holidayTypes}"/>
+                                    <p:ajax event="change" update="form"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <p:outputPanel rendered="#{erpHolidayForm.erpHoliday.holidayType eq 'CUSTOM'}">
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="holidayPercentage" class="col-sm-2 control-label">Pay Percentage</label>
+
+                            <div class="ui-inputgroup col-sm-10">
+                                <p:inputNumber minValue="0" decimalPlaces="0" autocomplete="off" value="#{erpHolidayForm.erpHoliday.holidayPayPercentage}" id="holidayPercentage" placeholder="100"/>
+                                <span class="ui-inputgroup-addon">%</span>
+                            </div>
+                        </div>
+                        </p:outputPanel>
                     </div>
                 </div>
             </div>

@@ -2,7 +2,9 @@ package io.eliteblue.erp.core.service;
 
 import io.eliteblue.erp.core.constants.DataOperation;
 import io.eliteblue.erp.core.model.ErpPost;
+import io.eliteblue.erp.core.model.OperationsArea;
 import io.eliteblue.erp.core.repository.ErpPostRepository;
+import io.eliteblue.erp.core.util.CurrentUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +17,16 @@ public class ErpPostService extends CoreErpServiceImpl implements CoreErpService
     @Autowired
     private ErpPostRepository repository;
 
+    @Autowired
+    private CurrentUserUtil currentUserUtil;
+
     public List<ErpPost> getAll() {
         return repository.findAll();
+    }
+
+    public List<ErpPost> getAllFilteredLocation() {
+        List<OperationsArea> assignedLocations = CurrentUserUtil.getOperationsAreas();
+        return repository.filteredByDetachmentLocation(assignedLocations);
     }
 
     public ErpPost findById(Long aLong) {

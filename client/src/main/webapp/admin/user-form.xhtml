@@ -48,6 +48,10 @@
                         <p:commandButton value="Clear" action="#{erpUserFormMB.clear}" process="@this"
                                          icon="fa fa-refresh" styleClass="btn-success"
                                          update="@form" rendered="#{erpUserFormMB.isNew()}" resetValues="true"/>
+                        <p:spacer width="5" rendered="#{!erpUserFormMB.isNew()}"/>
+                        <p:commandButton value="Change Password" action="#{erpUserFormMB.navigateChangepass}"
+                                         icon="fa fa-edit" styleClass="btn-success"
+                                         rendered="#{!erpUserFormMB.isNew()}"/>
                         <p:spacer width="5" rendered="#{not erpUserFormMB.isNew()}"/>
 
                         <p:commandButton value="Delete" action="#{erpUserFormMB.remove}" process="@this"
@@ -92,10 +96,11 @@
                         <p:outputPanel rendered="#{erpUserFormMB.isNew()}">
                             <p:spacer width="5"/>
                             <div class="form-group">
-                                <label for="inputPassword3" class="col-sm-2 control-label" style="font-weight: bold;">Password</label>
+                                <label for="password" class="col-sm-2 control-label" style="font-weight: bold;">Password</label>
 
                                 <div class="col-sm-10">
-                                    <p:password value="#{erpUserFormMB.user.password}" class="form-control" id="inputPassword3" placeholder="Password"/>
+                                    <p:password value="#{erpUserFormMB.user.password}" class="form-control" id="password" placeholder="Password" validatorMessage="Password minimum 4 characters">
+                                    </p:password>
                                 </div>
                             </div>
                         </p:outputPanel>
@@ -157,14 +162,26 @@
                         </div>
                         <p:spacer width="5"/>
                         <div class="form-group">
-                            <label for="inputDetachment" class="col-sm-2 control-label">Assigned Detachment</label>
+                            <label for="inputDetachment" class="col-sm-2 control-label">Assigned Detachments</label>
 
                             <div class="col-sm-10">
-                                <p:selectOneMenu id="inputDetachment" value="#{erpUserFormMB.detachment.id}" style="width:150px"
-                                                 effect="fade" filter="true" filterMatchMode="startsWith">
+                                <p:selectCheckboxMenu id="inputDetachment" value="#{erpUserFormMB.selectedDetachments}" label="Access" style="min-width: 15rem"
+                                                      multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width: 30rem" scrollHeight="250">
                                     <f:selectItem itemLabel="Select One" itemValue=""/>
                                     <f:selectItems value="#{erpUserFormMB.detachments}" var="selectedDetachment"/>
-                                </p:selectOneMenu>
+                                </p:selectCheckboxMenu>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="relieverDetachment" class="col-sm-2 control-label">Reliever Detachments</label>
+
+                            <div class="col-sm-10">
+                                <p:selectCheckboxMenu id="relieverDetachment" value="#{erpUserFormMB.relieverDetachments}" label="Access" style="min-width: 15rem"
+                                                      multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width: 30rem" scrollHeight="250">
+                                    <f:selectItem itemLabel="Select One" itemValue=""/>
+                                    <f:selectItems value="#{erpUserFormMB.detachments}" var="selectedDetachment"/>
+                                </p:selectCheckboxMenu>
                             </div>
                         </div>
                     </div>

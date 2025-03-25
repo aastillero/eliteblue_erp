@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="metadata">
+        <ui:param name="title" value="Detachment list"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: right !important;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="title">
+        <h2 class="align-left">
+            SIL Monitoring
+        </h2>
+    </ui:define>
+
+    <ui:define name="description">
+        Select the Detachment you want to Monitor for SIL.
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="form">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <!--<div id="main-buttons" class="hidden-sm hidden-xs">
+                        <p:commandButton action="detachment-form?faces-redirect=true" icon="fa fa-plus"
+                                         value="New Detachment" styleClass="btn-primary"/>
+                        <p:spacer width="5"/>
+                    </div>-->
+
+                    <p:dataTable id="erpDetachmentTab" var="detachment" value="#{silMonitorDetachmentList.lazyErpDetachments}" selectionMode="single"
+                        paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+                        paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                        emptyMessage="No Detachments found with given criteria"
+                        widgetVar="erpDetachmentTable"
+                        selection="#{silMonitorDetachmentList.selectedDetachment}" rowKey="#{detachment.id}">
+
+                        <p:ajax event="rowSelect" listener="#{silMonitorDetachmentList.onRowSelect}"/>
+                        <p:ajax event="rowUnselect" listener="#{silMonitorDetachmentList.onRowUnselect}"/>
+
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-end">
+                                <p:commandButton onclick="$('#form\\:erpDetachmentTab\\:globalFilter').val('').keyup();PF('erpDetachmentTable').filter()" value="clear"/>
+                                <p:inputText id="globalFilter" style="width:20rem" placeholder="Search all columns" autocomplete="off"
+                                             onkeypress="if (event.keyCode === 13)  {PF('erpDetachmentTable').filter(); return false;}"/>
+                                <p:commandButton  class="ui-button" icon="fa fa-search" onclick="PF('erpDetachmentTable').filter()"/>
+                            </div>
+                        </f:facet>
+
+                        <p:column headerText="Detachment Name">
+                            <h:outputText value="#{detachment.name}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

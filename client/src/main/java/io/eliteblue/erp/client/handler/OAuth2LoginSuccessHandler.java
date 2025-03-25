@@ -1,5 +1,6 @@
 package io.eliteblue.erp.client.handler;
 
+import io.eliteblue.erp.core.model.ErpDetachment;
 import io.eliteblue.erp.core.model.security.Authority;
 import io.eliteblue.erp.core.model.security.AuthorityName;
 import io.eliteblue.erp.core.model.security.ErpOAuthUser;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
@@ -59,7 +61,8 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                     oAuthUser.setLocked(false);
                     oAuthUser.setEnabled(erpUser.getEnabled());
                     oAuthUser.setOperationsAreas(new ArrayList<>(erpUser.getLocations()));
-                    oAuthUser.setDetachment(erpUser.getErpDetachment());
+                    oAuthUser.setDetachments(new ArrayList<>(erpUser.getErpDetachments()));
+                    oAuthUser.setRelieverDetachments(new ArrayList<>(erpUser.getRelieverDetachments()));
                 } else {
                     isLogout = true;
                 }
@@ -75,7 +78,8 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                 oAuthUser.setLastLogged(new Date());
                 oAuthUser.setLocked(false);
                 oAuthUser.setEnabled(false);
-                oAuthUser.setDetachment(null);
+                oAuthUser.setDetachments(null);
+                oAuthUser.setRelieverDetachments(null);
 
                 // save ErpUser
                 ErpUser user = new ErpUser();
@@ -92,7 +96,8 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                 user.setOperation(DataOperation.CREATED.name());
                 user.setLastPasswordResetDate(new Date());
                 user.setEnabled(false);
-                user.setErpDetachment(null);
+                user.setErpDetachments(null);
+                user.setRelieverDetachments(null);
                 OperationsArea area = erpUserService.findAreaByLocation("FIELD OFFICE");
                 if(area != null) {
                     user.setLocations(new HashSet<>());

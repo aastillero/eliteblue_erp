@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                xmlns:sec="http://www.springframework.org/security/tags"
+                template="#{layoutMB.template}">
+
+    <ui:define name="metadata">
+        <ui:param name="title" value="Items list"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: right !important;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="title">
+        <h2 class="align-left">
+            Items List
+        </h2>
+    </ui:define>
+
+    <ui:define name="description">
+        You can add, edit and delete Items.
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="form">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <sec:authorize access="hasAnyRole('MATERIAL_REQ', 'SYS_ADMIN')">
+                        <div id="main-buttons">
+                            <p:commandButton action="item-form?faces-redirect=true" icon="fa fa-plus"
+                                             value="New Item" styleClass="btn-primary"/>
+                            <p:spacer width="5"/>
+                        </div>
+                    </sec:authorize>
+
+                    <p:separator/>
+
+                    <p:dataTable id="erpItemTab" var="item" value="#{erpItemList.lazyErpItems}" selectionMode="single"
+                        paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+                        paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                        emptyMessage="No Items found with given criteria"
+                        widgetVar="erpItemTable"
+                        selection="#{erpItemList.selectedErpItem}" rowKey="#{item.id}">
+
+                        <p:ajax event="rowSelect" listener="#{erpItemList.onRowSelect}"/>
+                        <p:ajax event="rowUnselect" listener="#{erpItemListMB.onRowUnselect}"/>
+
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-end">
+                                <p:commandButton onclick="$('#form\\:erpItemTab\\:globalFilter').val('').keyup();PF('erpItemTable').filter()" value="clear"/>
+                                <p:inputText id="globalFilter" style="width:20rem" placeholder="Search all columns" autocomplete="off"
+                                             onkeypress="if (event.keyCode === 13)  {PF('erpItemTable').filter(); return false;}"/>
+                                <p:commandButton  class="ui-button" icon="fa fa-search" onclick="PF('erpItemTable').filter()"/>
+                            </div>
+                        </f:facet>
+
+                        <p:column headerText="Item Name">
+                            <h:outputText value="#{item.name}" />
+                        </p:column>
+                        <p:column headerText="Unit of Measurement">
+                            <h:outputText value="#{item.measurement.measure}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

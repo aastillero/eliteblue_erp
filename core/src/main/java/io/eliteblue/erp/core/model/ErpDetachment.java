@@ -1,5 +1,7 @@
 package io.eliteblue.erp.core.model;
 
+import io.eliteblue.erp.core.constants.Shift;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -23,11 +25,14 @@ public class ErpDetachment extends CoreEntity {
     @Column(name = "PHIC_SG")
     private Double phicSG;
 
-    @Column(name = "PHIC_AC")
-    private Double phicAC;
+    @Column(name = "PHIC_SIC")
+    private Double phicSIC;
 
     @Column(name = "PHIC_DC")
     private Double phicDC;
+
+    @Column(name = "EXCESS_ENABLED")
+    private Boolean excessOT;
 
     @OneToOne
     @JoinColumn(name = "AREA_ID", referencedColumnName = "id")
@@ -45,6 +50,9 @@ public class ErpDetachment extends CoreEntity {
 
     @OneToMany(mappedBy = "erpDetachment", cascade = CascadeType.ALL)
     private Set<ErpEmployee> assignedEmployees;
+
+    @OneToMany(mappedBy = "erpDetachment", cascade = CascadeType.ALL)
+    private Set<TODClient> todClients;
 
     public Long getId() {
         return id;
@@ -110,12 +118,12 @@ public class ErpDetachment extends CoreEntity {
         this.phicSG = phicSG;
     }
 
-    public Double getPhicAC() {
-        return phicAC;
+    public Double getPhicSIC() {
+        return phicSIC;
     }
 
-    public void setPhicAC(Double phicAC) {
-        this.phicAC = phicAC;
+    public void setPhicSIC(Double phicSIC) {
+        this.phicSIC = phicSIC;
     }
 
     public Double getPhicDC() {
@@ -124,5 +132,21 @@ public class ErpDetachment extends CoreEntity {
 
     public void setPhicDC(Double phicDC) {
         this.phicDC = phicDC;
+    }
+
+    public Boolean getExcessOT() {
+        return excessOT;
+    }
+
+    public void setExcessOT(Boolean excessOT) {
+        this.excessOT = excessOT;
+    }
+
+    public Set<TODClient> getTodClients() {
+        return todClients;
+    }
+
+    public void setTodClients(Set<TODClient> todClients) {
+        this.todClients = todClients;
     }
 }

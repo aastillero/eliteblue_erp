@@ -108,8 +108,9 @@
                                 </div>
                                 <div class="col-md-7">
                                     <div class="text-sm-left mb-2 mb-sm-0">
-                                        <h2>#{erpEmployeeForm.erpEmployee.firstname} #{erpEmployeeForm.erpEmployee.middlename.charAt(0)}. #{erpEmployeeForm.erpEmployee.lastname}</h2>
+                                        <h2>#{erpEmployeeForm.erpEmployee.firstname} #{empty erpEmployeeForm.erpEmployee.middlename ? '' : erpEmployeeForm.erpEmployee.middlename.charAt(0)} #{erpEmployeeForm.erpEmployee.lastname}</h2>
                                         <p class="mb-0">ID: #{erpEmployeeForm.erpEmployee.employeeId}</p>
+                                        <p:outputPanel rendered="#{erpEmployeeForm.erpEmployee.erpDetachment ne null}"><p class="mb-0">Detachment: #{erpEmployeeForm.erpEmployee.erpDetachment.name}</p></p:outputPanel>
                                         <div class="text-muted"><small>Updated #{erpEmployeeForm.lastUpdate}</small></div>
                                         <div class="text-muted"><small>Last update by <b>#{erpEmployeeForm.erpEmployee.lastEditedBy}</b></small></div>
                                         <div class="mt-2">
@@ -130,11 +131,12 @@
                             <p:spacer width="2"/>
                         </p:outputPanel>
                         <div class="row">
-                            <ul class="nav nav-tabs">
-                                <li class="active"><a href="" class="active nav-link">General Information</a></li>
-                            </ul>
-                            <p:spacer width="2"/>
-                            <div class="tab-content">
+<!--                            <ul class="nav nav-tabs">-->
+<!--                                <li class="active"><a href="" class="active nav-link">General Information</a></li>-->
+<!--                            </ul>-->
+<!--                            <p:spacer width="2"/>-->
+                            <p:tabView>
+                            <p:tab title="Personal Information">
                                 <div class="tab-pane-active">
                                     <div>
                                         <div class="col-md-4">
@@ -180,15 +182,6 @@
                                                 <label>Gender</label>
                                                 <p:selectOneMenu id="inputGender" value="#{erpEmployeeForm.erpEmployee.gender}" style="width:150px">
                                                     <f:selectItems value="#{erpEmployeeForm.genderValues}"/>
-                                                </p:selectOneMenu>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label>Marital Status</label>
-                                                <p:selectOneMenu id="inputMarital" value="#{erpEmployeeForm.erpEmployee.civilStatus}" style="width:150px">
-                                                    <f:selectItem itemLabel="Select One" itemValue=""/>
-                                                    <f:selectItems value="#{erpEmployeeForm.maritalValues}"/>
                                                 </p:selectOneMenu>
                                             </div>
                                         </div>
@@ -243,44 +236,35 @@
                                                 <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.email}" class="form-control" id="email" placeholder="Email"/>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="position">Company Position</label>
-                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.position}" class="form-control" id="position" placeholder="Position"/>
-                                            </div>
-                                        </div>
-                                        <p:outputPanel rendered="#{erpEmployeeForm.erpEmployee.joinedDate != null}">
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <label for="joinedDate">Joined Date</label>
-                                                    <p:datePicker autocomplete="off" id="joinedDate" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.joinedDate}"/>
-                                                </div>
-                                            </div>
-                                        </p:outputPanel>
                                         <div class="col-md-2">
                                             <div class="form-group">
-                                                <label>Employment</label>
-                                                <p:selectOneMenu id="inputEmployment" value="#{erpEmployeeForm.erpEmployee.employment}" style="width:150px">
-                                                    <f:selectItems value="#{erpEmployeeForm.employmentValues}"/>
+                                                <label for="jobTitle">Job Title</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.position}" class="form-control" id="jobTitle" placeholder="Job Title"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="position">Position</label>
+                                                <p:selectOneMenu id="position" value="#{erpEmployeeForm.positionValue}" style="width:150px">
+                                                    <f:selectItem itemLabel="Select One" itemValue=""/>
+                                                    <f:selectItems value="#{erpEmployeeForm.companyPositions}"/>
                                                 </p:selectOneMenu>
                                             </div>
                                         </div>
-                                        <p:outputPanel rendered="#{erpEmployeeForm.erpEmployee.resignedDate != null}">
                                         <div class="col-md-2">
                                             <div class="form-group">
-                                                <label for="resignedDate">Date Reigned</label>
-                                                <p:datePicker autocomplete="off" id="resignedDate" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.resignedDate}"/>
+                                                <label for="joinedDate">Date Hired</label>
+                                                <p:datePicker autocomplete="off" id="joinedDate" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.joinedDate}"/>
                                             </div>
                                         </div>
-                                        </p:outputPanel>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="retirementDate">Date Resigned</label>
+                                                <p:datePicker autocomplete="off" id="retirementDate" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.resignedDate}"/>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="bankName">Bank Name</label>
-                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.bankName}" class="form-control" id="bankName" placeholder="Bank Name"/>
-                                            </div>
-                                        </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="bankAccNum">Bank Account Number</label>
@@ -289,15 +273,887 @@
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-group">
+                                                <label>Bank Name</label>
+                                                <p:selectOneMenu id="bankType" value="#{erpEmployeeForm.erpEmployee.bankName}" style="width:150px">
+                                                    <f:selectItems value="#{erpEmployeeForm.bankTypes}"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Employment</label>
+                                                <p:selectOneMenu id="inputEmployment" value="#{erpEmployeeForm.erpEmployee.employment}" style="width:150px">
+                                                    <f:selectItems value="#{erpEmployeeForm.employmentValues}"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Contribution Type</label>
+                                                <p:selectOneMenu id="contriType" value="#{erpEmployeeForm.erpEmployee.contributionType}" style="width:150px">
+                                                    <f:selectItems value="#{erpEmployeeForm.contributionTypes}"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Rest Day Pay Entitled</label>
+                                                <p:selectOneMenu id="rdp" value="#{erpEmployeeForm.erpEmployee.restDayPayEntitled}" style="width:150px">
+                                                    <f:selectItem itemLabel="NO" itemValue="false" />
+                                                    <f:selectItem itemLabel="YES" itemValue="true" />
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
                                                 <label for="salaryRate">Salary</label>
                                                 <div class="ui-inputgroup">
-                                                    <p:inputNumber minValue="0" decimalPlaces="0" autocomplete="off" value="#{erpEmployeeForm.erpEmployee.salaryRate}" id="salaryRate" placeholder="0.00"/>
+                                                    <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{erpEmployeeForm.erpEmployee.salaryRate}" id="salaryRate" placeholder="0.00"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Salary Type</label>
+                                                <p:selectOneMenu id="salaryType" value="#{erpEmployeeForm.erpEmployee.salaryType}" style="width:150px">
+                                                    <f:selectItems value="#{erpEmployeeForm.salaryTypes}"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="allowance">Allowance</label>
+                                                <div class="ui-inputgroup">
+                                                    <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{erpEmployeeForm.erpEmployee.allowance}" id="allowance" placeholder="0.00"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="sil">SIL</label>
+                                                <div class="ui-inputgroup">
+                                                    <p:inputNumber minValue="0" decimalPlaces="0" autocomplete="off" value="#{erpEmployeeForm.erpEmployee.sil}" id="sil" placeholder="0"/>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </p:tab>
+                            <p:tab title="Marital History">
+                                <div class="tab-pane-active">
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Marital Status</label>
+                                                <p:selectOneMenu id="inputMarital" value="#{erpEmployeeForm.erpEmployee.civilStatus}" style="width:150px">
+                                                    <f:selectItem itemLabel="Select One" itemValue=""/>
+                                                    <f:selectItems value="#{erpEmployeeForm.maritalValues}"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="nameofspouse">Name of Spouse</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.nameOfSpouse}" class="form-control" id="nameofspouse" placeholder="Name of Spouse"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="marriageplace">Place of Marriage</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.marriagePlace}" class="form-control" id="marriageplace" placeholder="Place of Marriage"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="marriagedate">Date of Marriage</label>
+                                                <p:datePicker autocomplete="off" id="marriagedate" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.marriageDate}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="childrenName1">Children Complete Name</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.childrenName1}" class="form-control" id="childrenName1" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="childrenBirthday1">Date of Birth</label>
+                                                <p:datePicker autocomplete="off" id="childrenBirthday1" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.childrenBirthday1}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label for="childrenAddress1">Address/ Contact Numbers</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.childrenAddress1}" class="form-control" id="childrenAddress1" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.childrenName2}" class="form-control" id="childrenName2" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <p:datePicker autocomplete="off" id="childrenBirthday2" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.childrenBirthday2}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.childrenAddress2}" class="form-control" id="childrenAddress2" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.childrenName3}" class="form-control" id="childrenName3" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <p:datePicker autocomplete="off" id="childrenBirthday3" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.childrenBirthday3}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.childrenAddress3}" class="form-control" id="childrenAddress3" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.childrenName4}" class="form-control" id="childrenName4" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <p:datePicker autocomplete="off" id="childrenBirthday4" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.childrenBirthday4}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.childrenAddress4}" class="form-control" id="childrenAddress4" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.childrenName5}" class="form-control" id="childrenName5" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <p:datePicker autocomplete="off" id="childrenBirthday5" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.childrenBirthday5}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.childrenAddress5}" class="form-control" id="childrenAddress5" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </p:tab>
+                            <p:tab title="Family History &amp; Information">
+                                <div class="tab-pane-active">
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="nameOfFather">Name of Father</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.nameOfFather}" class="form-control" id="nameOfFather" placeholder="Name of Father"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="fatherBirthPlace">Place of Birth</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.fatherBirthPlace}" class="form-control" id="fatherBirthPlace" placeholder="Place of Birth"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="fatherBirthDate">Date of Birth</label>
+                                                <p:datePicker autocomplete="off" id="fatherBirthDate" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.fatherBirthDate}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="fatherOccupation">Occupation</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.fatherOccupation}" class="form-control" id="fatherOccupation" placeholder="Occupation"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="fatherEmployPlace">Place of Employment</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.fatherEmployPlace}" class="form-control" id="fatherEmployPlace" placeholder="Place of Employment"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="fatherCitizenship">Citizenship</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.fatherCitizenship}" class="form-control" id="fatherCitizenship" placeholder="Citizenship"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label for="fatherContacts">Contacts</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.fatherContacts}" class="form-control" id="fatherContacts" placeholder="Contacts"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="nameOfMother">Name of Mother</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.nameOfMother}" class="form-control" id="nameOfMother" placeholder="Name of Mother"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="motherBirthPlace">Place of Birth</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.motherBirthPlace}" class="form-control" id="motherBirthPlace" placeholder="Place of Birth"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="motherBirthDate">Date of Birth</label>
+                                                <p:datePicker autocomplete="off" id="motherBirthDate" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.motherBirthDate}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="motherOccupation">Occupation</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.motherOccupation}" class="form-control" id="motherOccupation" placeholder="Occupation"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="motherEmployPlace">Place of Employment</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.motherEmployPlace}" class="form-control" id="motherEmployPlace" placeholder="Place of Employment"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="motherCitizenship">Citizenship</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.motherCitizenship}" class="form-control" id="motherCitizenship" placeholder="Citizenship"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label for="motherContacts">Contacts</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.motherContacts}" class="form-control" id="motherContacts" placeholder="Contacts"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="nameOfFatherInLaw">Name of Father-in-Law</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.nameOfFatherInLaw}" class="form-control" id="nameOfFatherInLaw" placeholder="Name of Father-in-Law"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="fatherInLawBirthPlace">Place of Birth</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.fatherInLawBirthPlace}" class="form-control" id="fatherInLawBirthPlace" placeholder="Place of Birth"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="fatherInLawBirthDate">Date of Birth</label>
+                                                <p:datePicker autocomplete="off" id="fatherInLawBirthDate" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.fatherInLawBirthDate}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="fatherOccupation"> </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="fatherInLawAddress">Address</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.fatherInLawAddress}" class="form-control" id="fatherInLawAddress" placeholder="Address"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="fatherInLawCitizenship">Citizenship</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.fatherInLawCitizenship}" class="form-control" id="fatherInLawCitizenship" placeholder="Citizenship"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label for="fatherInLawContacts">Contacts</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.fatherInLawContacts}" class="form-control" id="fatherInLawContacts" placeholder="Contacts"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="nameOfMotherInLaw">Name of Mother-in-Law</label>
+                                            <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.nameOfMotherInLaw}" class="form-control" id="nameOfMotherInLaw" placeholder="Name of Mother-in-Law"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="motherInLawBirthPlace">Place of Birth</label>
+                                            <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.motherInLawBirthPlace}" class="form-control" id="motherInLawBirthPlace" placeholder="Place of Birth"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="motherInLawBirthDate">Date of Birth</label>
+                                            <p:datePicker autocomplete="off" id="motherInLawBirthDate" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.motherInLawBirthDate}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="fatherOccupation"> </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="motherInLawAddress">Address</label>
+                                            <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.motherInLawAddress}" class="form-control" id="motherInLawAddress" placeholder="Address"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="motherInLawCitizenship">Citizenship</label>
+                                            <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.motherInLawCitizenship}" class="form-control" id="motherInLawCitizenship" placeholder="Citizenship"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label for="motherInLawContacts">Contacts</label>
+                                            <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.motherInLawContacts}" class="form-control" id="motherInLawContacts" placeholder="Contacts"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="stepParentSister">Step-Parent and Sister</label>
+                                            <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.stepParentSister}" class="form-control" id="stepParentSister" placeholder="Step-Parent and Sister"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="stepParentSisterAddress">Address</label>
+                                            <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.stepParentSisterAddress}" class="form-control" id="stepParentSisterAddress" placeholder="Address"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="stepParentSisterCitizenship">Citizenship</label>
+                                            <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.stepParentSisterCitizenship}" class="form-control" id="stepParentSisterCitizenship" placeholder="Citizenship"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="stepParentSisterContacts">Contacts</label>
+                                            <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.stepParentSisterContacts}" class="form-control" id="stepParentSisterContacts" placeholder="Contacts"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </p:tab>
+                            <p:tab title="Educational Background">
+                                <div class="tab-pane-active">
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="elementary">Elementary</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.elementary}" class="form-control" id="elementary" placeholder="Elementary"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="elementaryAddress">Address</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.elementaryAddress}" class="form-control" id="elementaryAddress" placeholder="Address"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="elementaryAttended">Year Attended</label>
+                                                <p:datePicker autocomplete="off" id="elementaryAttended" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.elementaryAttended}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="elementaryGraduated">Year Graduated</label>
+                                                <p:datePicker autocomplete="off" id="elementaryGraduated" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.elementaryGraduated}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="highSchool">High School</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.highSchool}" class="form-control" id="highSchool" placeholder="High School"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="highSchoolAddress">Address</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.highSchoolAddress}" class="form-control" id="highSchoolAddress" placeholder="Address"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="highSchoolAttended">Year Attended</label>
+                                                <p:datePicker autocomplete="off" id="highSchoolAttended" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.highSchoolAttended}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="highSchoolGraduated">Year Graduated</label>
+                                                <p:datePicker autocomplete="off" id="highSchoolGraduated" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.highSchoolGraduated}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="college">College/Post Graduate (Indicate Course)</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.college}" class="form-control" id="college" placeholder="Collge/Post Graduate"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="collegeAddress">Address</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.collegeAddress}" class="form-control" id="collegeAddress" placeholder="Address"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="collegeAttended">Year Attended</label>
+                                                <p:datePicker autocomplete="off" id="collegeAttended" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.collegeAttended}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="collegeGraduated">Year Graduated</label>
+                                                <p:datePicker autocomplete="off" id="collegeGraduated" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.collegeGraduated}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="otherSchools">Other Schools Attended</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.otherSchools}" class="form-control" id="otherSchools" placeholder="Other Schools Attended"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="otherSchoolsAddress">Address</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.otherSchoolsAddress}" class="form-control" id="otherSchoolsAddress" placeholder="Address"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="otherSchoolsAttended">Year Attended</label>
+                                                <p:datePicker autocomplete="off" id="otherSchoolsAttended" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.otherSchoolsAttended}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="otherSchoolsGraduated">Year Graduated</label>
+                                                <p:datePicker autocomplete="off" id="otherSchoolsGraduated" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.otherSchoolsGraduated}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="seminarQualifications">Seminar Qualifications</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.seminarQualifications}" class="form-control" id="seminarQualifications" placeholder="Seminar Qualifications"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="seminarQualificationsAddress">Address</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.seminarQualificationsAddress}" class="form-control" id="seminarQualificationsAddress" placeholder="Address"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="seminarQualificationsAttended">Year Attended</label>
+                                                <p:datePicker autocomplete="off" id="seminarQualificationsAttended" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.seminarQualificationsAttended}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="seminarQualificationsGraduated">Year Graduated</label>
+                                                <p:datePicker autocomplete="off" id="seminarQualificationsGraduated" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.seminarQualificationsGraduated}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </p:tab>
+                            <p:tab title="Employment History">
+                                <div class="tab-pane-active">
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="companyAgency1">(1) Company/Agency</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.companyAgency1}" class="form-control" id="companyAgency1" placeholder="Company/Agency"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="company1Address">Address</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.company1Address}" class="form-control" id="company1Address" placeholder="Address"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="company1Hired">Date Hired</label>
+                                                <p:datePicker autocomplete="off" id="company1Hired" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.company1Hired}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="company1Resigned">Date Resigned</label>
+                                                <p:datePicker autocomplete="off" id="company1Resigned" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.company1Resigned}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="company1Reason">Reason for Leaving</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.company1Reason}" class="form-control" id="company1Reason" placeholder="Reason"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="companyAgency2">(2) Company/Agency</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.companyAgency2}" class="form-control" id="companyAgency2" placeholder="Company/Agency"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="company2Address">Address</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.company2Address}" class="form-control" id="company2Address" placeholder="Address"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="company2Hired">Date Hired</label>
+                                                <p:datePicker autocomplete="off" id="company2Hired" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.company2Hired}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="company2Resigned">Date Resigned</label>
+                                                <p:datePicker autocomplete="off" id="company2Resigned" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.company2Resigned}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="company2Reason">Reason for Leaving</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.company2Reason}" class="form-control" id="company2Reason" placeholder="Reason"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="companyAgency3">(3) Company/Agency</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.companyAgency3}" class="form-control" id="companyAgency3" placeholder="Company/Agency"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="company3Address">Address</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.company3Address}" class="form-control" id="company3Address" placeholder="Address"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="company3Hired">Date Hired</label>
+                                                <p:datePicker autocomplete="off" id="company3Hired" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.company3Hired}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="company3Resigned">Date Resigned</label>
+                                                <p:datePicker autocomplete="off" id="company3Resigned" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeForm.erpEmployee.company3Resigned}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="company3Reason">Reason for Leaving</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.company3Reason}" class="form-control" id="company3Reason" placeholder="Reason"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="forcedResigned">Have you been dismissed and forced to resign from a position?</label>
+                                                <p:selectOneMenu id="forcedResigned" value="#{erpEmployeeForm.erpEmployee.forcedResigned}" style="width:150px">
+                                                    <f:selectItem itemLabel="NO" itemValue="false" />
+                                                    <f:selectItem itemLabel="YES" itemValue="true" />
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="forceResignedReason">Reason for Force Resigned</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.forceResignedReason}" class="form-control" id="forceResignedReason" placeholder="Reason"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </p:tab>
+                            <p:tab title="Arrest record &amp; Conduct">
+                                <div class="tab-pane-active">
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="investigatedArrested">Have you ever been investigated / arrested, indicted or convicted for any violation of law? If so, state name of court, nature of offense and disposition of case.</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.investigatedArrested}" class="form-control" id="investigatedArrested" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="famInvestigatedArrested">Has any member of your family ever been investigated / arrested for violation of a law? If so, state name of court, nature of offense and disposition of case.</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.famInvestigatedArrested}" class="form-control" id="famInvestigatedArrested" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="administrativeCase">Have you ever been charged in an administrative case by any company?</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.administrativeCase}" class="form-control" id="administrativeCase" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="liquorNarcotics">Do you use intoxicating liquor / narcotics? If so, to what extent?</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.liquorNarcotics}" class="form-control" id="liquorNarcotics" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </p:tab>
+                            <p:tab title="Character References">
+                                <div class="tab-pane-active">
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>List 5 people who know you well and have known you for at least 5 years.( not relatives)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="characterRef1">Name</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.characterRef1}" class="form-control" id="characterRef1" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="busRef1">Business / Residence Address / Contact</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.busRef1}" class="form-control" id="busRef1" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.characterRef2}" class="form-control" id="characterRef2" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.busRef2}" class="form-control" id="busRef2" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.characterRef3}" class="form-control" id="characterRef3" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.busRef3}" class="form-control" id="busRef3" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.characterRef4}" class="form-control" id="characterRef4" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.busRef4}" class="form-control" id="busRef4" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.characterRef5}" class="form-control" id="characterRef5" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.busRef5}" class="form-control" id="busRef5" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </p:tab>
+                            <p:tab title="Miscellaneous">
+                                <div class="tab-pane-active">
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="hobbies">Hobbies, sport and pastime</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.hobbies}" class="form-control" id="hobbies" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="language1">Language / Dialect</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.language1}" class="form-control" id="language1" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="speak1">Speak</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.speak1}" class="form-control" id="speak1" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="read1">Read</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.read1}" class="form-control" id="read1" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="write1">Write</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.write1}" class="form-control" id="write1" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.language2}" class="form-control" id="language2" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.speak2}" class="form-control" id="speak2" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.read2}" class="form-control" id="read2" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.write2}" class="form-control" id="write2" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.language3}" class="form-control" id="language3" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.speak3}" class="form-control" id="speak3" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.read3}" class="form-control" id="read3" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.write3}" class="form-control" id="write3" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="detectionTest">Are you willing to undergo periodic detection test?</label>
+                                                <p:selectOneMenu id="detectionTest" value="#{erpEmployeeForm.erpEmployee.detectionTest}" style="width:150px">
+                                                    <f:selectItem itemLabel="NO" itemValue="false" />
+                                                    <f:selectItem itemLabel="YES" itemValue="true" />
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="signatureLink">Signature URL</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.signatureLink}" class="form-control" id="signatureLink" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="pictureLink">Picture URL</label>
+                                                <p:inputText autocomplete="off" value="#{erpEmployeeForm.erpEmployee.pictureLink}" class="form-control" id="pictureLink" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </p:tab>
+                            </p:tabView>
                         </div>
                         <p:outputPanel rendered="#{not erpEmployeeForm.isNew()}">
                             <p:spacer width="10"/>
@@ -310,7 +1166,7 @@
                                 </div>
                             </div>
                             <p:separator/>
-                            <ui:repeat var="erpIds" value="#{erpEmployeeForm.erpEmployee.erpEmployeeIDList}">
+                            <ui:repeat var="erpIds" value="#{erpEmployeeForm.erpEmployee.erpEmployeeIDList.toArray()}">
                                 <div class="row">
                                     <div class="tab-content">
                                         <div class="tab-pane-active">
@@ -336,7 +1192,7 @@
                                 </div>
                             </div>
                             <p:separator/>
-                            <ui:repeat var="addrs" value="#{erpEmployeeForm.erpEmployee.addresses}">
+                            <ui:repeat var="addrs" value="#{erpEmployeeForm.erpEmployee.addresses.toArray()}">
                                 <div class="row">
                                     <div class="tab-content">
                                         <div class="tab-pane-active" style="font-size:16px;">
@@ -371,7 +1227,7 @@
                                 </div>
                             </div>
                             <p:separator/>
-                            <ui:repeat var="erpContacts" value="#{erpEmployeeForm.erpEmployee.contacts}">
+                            <ui:repeat var="erpContacts" value="#{erpEmployeeForm.erpEmployee.contacts.toArray()}">
                                 <div class="row">
                                     <div class="tab-content">
                                         <div class="tab-pane-active">
@@ -385,6 +1241,53 @@
                                     </div>
                                 </div>
                             </ui:repeat>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{not erpEmployeeForm.isNew()}">
+                            <p:spacer width="10"/>
+                            <div class="row">
+                                <div class="col-md-3 d-flex justify-content-center text-left">
+                                    <label style="font-weight:bold; font-size: 20px">Employment History</label>
+                                </div>
+                            </div>
+                            <p:separator/>
+                            <div class="row">
+                                <div class="tab-content">
+                                    <div class="tab-pane-active">
+                                        <div class="col-md-12" style="font-size: 16px; margin: 5px;">
+                                            <table class="table table-striped table-bordered" style="width:auto">
+                                                <thead>
+                                                <tr>
+                                                    <th>
+                                                        History Logs
+                                                    </th>
+                                                    <th>
+                                                        Made By
+                                                    </th>
+                                                    <th>
+                                                        Date Changed
+                                                    </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <ui:repeat var="hist" value="#{erpEmployeeForm.employmentHistory}">
+                                                    <tr>
+                                                        <td>
+                                                            #{hist.changes}
+                                                        </td>
+                                                        <td>
+                                                            #{hist.lastEditedBy}
+                                                        </td>
+                                                        <td>
+                                                            #{hist.lastUpdate}
+                                                        </td>
+                                                    </tr>
+                                                </ui:repeat>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </p:outputPanel>
                     </div>
                 </div>

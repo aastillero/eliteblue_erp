@@ -55,6 +55,18 @@
                                          icon="fa fa-refresh" styleClass="btn-success"
                                          update="@form" rendered="#{erpDTRForm.isNew()}" resetValues="true"/>
                         <p:spacer width="5" rendered="#{not erpDTRForm.isNew()}"/>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success">Download File</button>
+                            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><p:commandLink ajax="false" action="#{erpDTRForm.downloadFile}">DTR</p:commandLink></li>
+                                <li><p:commandLink ajax="false" action="#{erpDTRForm.downloadShiftSummary}">Shift Summary</p:commandLink></li>
+                            </ul>
+                        </div>
+                        <p:spacer width="5" rendered="#{not erpDTRForm.isNew()}"/>
 
                         <p:commandButton value="Delete" action="#{erpDTRForm.remove}" process="@this"
                                          rendered="#{not erpDTRForm.isNew()}" icon="fa fa-trash"
@@ -133,8 +145,12 @@
                                 </p:outputPanel>
                                 <div class="form-group">
                                     <label for="dateStart" class="col-sm-2 control-label">Cut-off Start</label>
-                                    <div class="col-sm-10">
+                                    <div class="col-sm-3">
                                         <p:datePicker autocomplete="off" id="dateStart" value="#{erpDTRForm.erpDTR.cutoffStart}"/>
+                                    </div>
+                                    <label for="reason" class="col-sm-2 control-label">Upload Reason</label>
+                                    <div class="col-sm-5">
+                                        <p:inputText autocomplete="off" value="#{erpDTRForm.erpDTR.uploadReason}" class="form-control" id="reason" placeholder="Upload Reason"/>
                                     </div>
                                 </div>
                                 <p:spacer width="5"/>
@@ -151,6 +167,7 @@
                                     <div class="col-sm-10">
                                         <p:selectOneMenu id="inputDetachment" value="#{erpDTRForm.detachment.id}" style="width:150px"
                                                          effect="fade" filter="true" filterMatchMode="startsWith">
+                                            <f:selectItem itemLabel="Select One" itemValue=""/>
                                             <f:selectItems value="#{erpDTRForm.detachments}" var="selectedDetachment"/>
                                         </p:selectOneMenu>
                                     </div>
@@ -198,7 +215,7 @@
                             <div class="box-body">
                                 <div class="row">
                                     <label class="col-sm-1 control-label" style="font-weight:bold;">STATUS</label>
-                                    <div class="col-sm-10">
+                                    <div class="col-sm-2">
                                         <p:outputPanel rendered="#{erpDTRForm.erpDTR.status ne null and erpDTRForm.erpDTR.status == 'PENDING'}">
                                             <span class="label label-warning" style="font-size:14px;">PENDING</span>
                                         </p:outputPanel>
@@ -209,6 +226,12 @@
                                             <span class="label label-success" style="font-size:14px;">APPROVED</span>
                                         </p:outputPanel>
                                     </div>
+                                    <p:outputPanel rendered="#{not empty erpDTRForm.erpDTR.uploadReason}">
+                                        <label class="col-sm-2 control-label" style="font-weight:bold;">UPLOAD REASON:</label>
+                                        <div class="col-sm-5">
+                                            #{erpDTRForm.erpDTR.uploadReason}
+                                        </div>
+                                    </p:outputPanel>
                                 </div>
                                 <p:spacer width="5"/>
                                 <div class="row">
@@ -222,7 +245,7 @@
                                 <p:spacer width="5"/>
                                 <div class="row">
                                     <div class="col-md-3">
-                                        WEEK PERIOD: <h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMMMM " /></h:outputText>#{erpDTRForm.startDate.getDayOfMonth()}-#{erpDTRForm.stopDate.getDayOfMonth()}<h:outputText value="#{erpDTRForm.erpDTR.cutoffEnd}"><f:convertDateTime pattern=" yyyy" /></h:outputText>
+                                        WEEK PERIOD: <h:outputText value="#{erpDTRForm.convertStartDate('MMMMM')}" /> #{erpDTRForm.startDate.getDayOfMonth()}-#{erpDTRForm.stopDate.getDayOfMonth()}<h:outputText value="#{erpDTRForm.erpDTR.cutoffEnd}"><f:convertDateTime pattern=" yyyy" /></h:outputText>
                                     </div>
                                     <div class="col-md-4">
                                         DETACHMENT: #{erpDTRForm.detachment.name}
@@ -233,7 +256,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-3">
-                                        MONTH OF: <h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMMMM, yyyy" /></h:outputText>
+                                        MONTH OF: <h:outputText value="#{erpDTRForm.convertStartDate('MMMMM, yyyy')}" />
                                     </div>
                                 </div>
 
@@ -251,9 +274,11 @@
                                         <tr>
                                             <th scope="col" colspan="2" rowspan="2">NAME</th>
                                             <ui:repeat var="workingDay" value="#{erpDTRForm.workingDays}">
-                                                <th scope="col" colspan="3" style="text-align:center"><h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMM" /></h:outputText> #{workingDay}</th>
+                                                <th scope="col" colspan="3" style="text-align:center"><h:outputText value="#{erpDTRForm.convertStartDate('MMM')}"/> #{workingDay}</th>
                                             </ui:repeat>
                                             <th scope="col" rowspan="2">Total Working Hours</th>
+                                            <th scope="col" rowspan="2">Number of Days</th>
+                                            <th scope="col" rowspan="2">Total Number of Days</th>
                                         </tr>
                                         <tr>
                                             <ui:repeat var="workingDay" value="#{erpDTRForm.workingDays}">
@@ -265,10 +290,10 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <ui:repeat var="workAssn" value="#{erpDTRForm.erpDTRAssignments}">
+                                        <ui:repeat var="workAssn" value="#{erpDTRForm.erpDTRAssignments.toArray()}">
                                             <tr>
                                                 <td colspan="2">#{workAssn.employeeAssigned.lastname}, #{workAssn.employeeAssigned.firstname}</td>
-                                                <ui:repeat var="wd" value="#{workAssn.schedules}">
+                                                <ui:repeat var="wd" value="#{workAssn.schedules.toArray()}">
                                                     <td>
                                                         <h:outputText value="#{wd.dayShiftStart}"><f:convertDateTime pattern="HH:mm" timeZone="Asia/Manila" /></h:outputText>
                                                         <!--#{wd.dayShiftStart}-->
@@ -281,7 +306,9 @@
                                                         #{wd.totalHoursDay}
                                                     </td>
                                                 </ui:repeat>
-                                                <td>#{workAssn.totalWorkHours}</td>
+                                                <td>#{workAssn.totalHoursDay}</td>
+                                                <td>#{workAssn.totalHoursDay / erpDTRForm.hoursShift}</td>
+                                                <td>#{workAssn.totalWorkDays}</td>
                                             </tr>
                                         </ui:repeat>
                                         </tbody>
@@ -298,9 +325,11 @@
                                         <tr>
                                             <th scope="col" colspan="2" rowspan="2">NAME</th>
                                             <ui:repeat var="workingDay" value="#{erpDTRForm.workingDays}">
-                                                <th scope="col" colspan="3" style="text-align:center"><h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMM" /></h:outputText> #{workingDay}</th>
+                                                <th scope="col" colspan="3" style="text-align:center"><h:outputText value="#{erpDTRForm.convertStartDate('MMM')}"/> #{workingDay}</th>
                                             </ui:repeat>
                                             <th scope="col" rowspan="2">Total Working Hours</th>
+                                            <th scope="col" rowspan="2">Number of Days</th>
+                                            <th scope="col" rowspan="2">Total Number of Days</th>
                                         </tr>
                                         <tr>
                                             <ui:repeat var="workingDay" value="#{erpDTRForm.workingDays}">
@@ -315,7 +344,7 @@
                                         <ui:repeat var="workAssn" value="#{erpDTRForm.erpDTRAssignments}">
                                             <tr>
                                                 <td colspan="2">#{workAssn.employeeAssigned.lastname}, #{workAssn.employeeAssigned.firstname}</td>
-                                                <ui:repeat var="wd" value="#{workAssn.schedules}">
+                                                <ui:repeat var="wd" value="#{workAssn.schedules.toArray()}">
                                                     <td>
                                                         <h:outputText value="#{wd.nightShiftStart}"><f:convertDateTime pattern="HH:mm" timeZone="Asia/Manila" /></h:outputText>
                                                         <!--#{wd.dayShiftStart}-->
@@ -328,9 +357,111 @@
                                                         #{wd.totalHoursNight}
                                                     </td>
                                                 </ui:repeat>
-                                                <td>#{workAssn.totalWorkHours}</td>
+                                                <td>#{workAssn.totalHoursNight}</td>
+                                                <td>#{workAssn.totalHoursNight / erpDTRForm.hoursShift}</td>
+                                                <td>#{workAssn.totalWorkDays}</td>
                                             </tr>
                                         </ui:repeat>
+                                        </tbody>
+                                    </table>
+                                    <p:spacer width="5"/>
+                                    <p:spacer width="5"/>
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <label class="control-label" style="font-weight:bold;">SHIFT SUMMARY</label>
+                                        </div>
+                                    </div>
+                                    <table class="table table-striped table-bordered" style="width:auto">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col" colspan="2" rowspan="2">NAME</th>
+                                            <th scope="col" rowspan="2">Total Work Days</th>
+                                            <th scope="col" rowspan="2">SIL</th>
+                                            <th scope="col" rowspan="2">Rest day</th>
+                                            <th scope="col" rowspan="2">BTR</th>
+                                            <th scope="col" rowspan="2">SG</th>
+                                            <th scope="col" rowspan="2">CCTV OP</th>
+                                            <th scope="col" colspan="5" style="text-align:center">Regular Days</th>
+                                            <th scope="col" colspan="5" style="text-align:center">Regular Holidays</th>
+                                            <th scope="col" colspan="5" style="text-align:center">Special Holidays</th>
+                                        </tr>
+                                        <tr>
+                                            <th scope="col">Days</th>
+                                            <th scope="col">Hours</th>
+                                            <th scope="col">OT Hours</th>
+                                            <th scope="col">OT Excess</th>
+                                            <th scope="col">ND Days</th>
+                                            <th scope="col">Days</th>
+                                            <th scope="col">Hours</th>
+                                            <th scope="col">OT Hours</th>
+                                            <th scope="col">OT Excess</th>
+                                            <th scope="col">ND Days</th>
+                                            <th scope="col">Days</th>
+                                            <th scope="col">Hours</th>
+                                            <th scope="col">OT Hours</th>
+                                            <th scope="col">OT Excess</th>
+                                            <th scope="col">ND Days</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <ui:repeat var="workAssn" value="#{erpDTRForm.erpDTRAssignments}">
+                                            <tr>
+                                                <td colspan="2">#{workAssn.employeeAssigned.lastname}, #{workAssn.employeeAssigned.firstname}</td>
+                                                <td>#{workAssn.totalWorkDays}</td>
+                                                <td>#{workAssn.totalSIL}</td>
+                                                <td>#{workAssn.totalRdp}</td>
+                                                <td>#{workAssn.totalBTRDays}</td>
+                                                <td>#{workAssn.totalSGDays}</td>
+                                                <td>#{workAssn.totalCCTVDays}</td>
+                                                <td>#{workAssn.totalBasicWorkDays}</td>
+                                                <td>#{workAssn.totalBasicHours}</td>
+                                                <td>#{workAssn.totalBasicOTHours}</td>
+                                                <td>#{workAssn.totalBasicOTExcessHours}</td>
+                                                <td>#{workAssn.totalBasicNDHours / 8}</td>
+
+                                                <td>#{workAssn.totalRegularHolidayHrs / 8}</td>
+                                                <td>#{workAssn.totalRegularHolidayHrs}</td>
+                                                <td>#{workAssn.totalOTRegularHolidayHrs}</td>
+                                                <td>#{workAssn.totalOTExcessRegularHolidayHrs}</td>
+                                                <td>#{workAssn.totalNDRegularHolidayHrs / 8}</td>
+
+                                                <td>#{workAssn.totalSpecialHolidayHrs / 8}</td>
+                                                <td>#{workAssn.totalSpecialHolidayHrs}</td>
+                                                <td>#{workAssn.totalOTSpecialHolidayHrs}</td>
+                                                <td>#{workAssn.totalOTExcessSpecialHolidayHrs}</td>
+                                                <td>#{workAssn.totalNDSpecialHolidayHrs / 8}</td>
+                                            </tr>
+                                        </ui:repeat>
+                                        <tr>
+                                            <td colspan="2" style="text-align:right"><b>Total:</b></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalWorkDays).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalSIL).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalRdp).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalBTRDays).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalSGDays).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalCCTVDays).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalBasicWorkDays).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalBasicHours).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalBasicOTHours).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalBasicOTExcessHours).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalBasicNDHours).sum() / 8}"/></td>
+
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalRegularHolidayHrs).sum() / 8}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalRegularHolidayHrs).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalOTRegularHolidayHrs).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalOTExcessRegularHolidayHrs).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalNDRegularHolidayHrs).sum() / 8}"/></td>
+
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalSpecialHolidayHrs).sum() / 8}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalSpecialHolidayHrs).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalOTSpecialHolidayHrs).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalOTExcessSpecialHolidayHrs).sum()}"/></td>
+                                            <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalNDSpecialHolidayHrs).sum() / 8}"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="text-align:right"><b>Total Hours:</b></td>
+                                            <td colspan="19" style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalHoursDay).sum() + erpDTRForm.erpDTRAssignments.stream().map(item->item.totalHoursNight).sum()}"/></td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -343,7 +474,7 @@
                         <div class="box-body">
                             <div class="row">
                                 <label class="col-sm-1 control-label" style="font-weight:bold;">STATUS</label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-2">
                                     <p:outputPanel rendered="#{erpDTRForm.erpDTR.status ne null and erpDTRForm.erpDTR.status == 'PENDING'}">
                                         <span class="label label-warning" style="font-size:14px;">PENDING</span>
                                     </p:outputPanel>
@@ -354,6 +485,12 @@
                                         <span class="label label-success" style="font-size:14px;">APPROVED</span>
                                     </p:outputPanel>
                                 </div>
+                                <p:outputPanel rendered="#{not empty erpDTRForm.erpDTR.uploadReason}">
+                                    <label class="col-sm-2 control-label" style="font-weight:bold;">UPLOAD REASON:</label>
+                                    <div class="col-sm-5">
+                                        #{erpDTRForm.erpDTR.uploadReason}
+                                    </div>
+                                </p:outputPanel>
                             </div>
                             <p:spacer width="5"/>
                             <div class="row">
@@ -367,7 +504,7 @@
                             <p:spacer width="5"/>
                             <div class="row">
                                 <div class="col-md-3">
-                                    WEEK PERIOD: <h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMMMM " /></h:outputText>#{erpDTRForm.startDate.getDayOfMonth()}-#{erpDTRForm.stopDate.getDayOfMonth()}<h:outputText value="#{erpDTRForm.erpDTR.cutoffEnd}"><f:convertDateTime pattern=" yyyy" /></h:outputText>
+                                    WEEK PERIOD: <h:outputText value="#{erpDTRForm.convertStartDate('MMMMM')}" /> #{erpDTRForm.startDate.getDayOfMonth()}-#{erpDTRForm.stopDate.getDayOfMonth()}<h:outputText value="#{erpDTRForm.erpDTR.cutoffEnd}"><f:convertDateTime pattern=" yyyy" /></h:outputText>
                                 </div>
                                 <div class="col-md-4">
                                     DETACHMENT: #{erpDTRForm.detachment.name}
@@ -378,7 +515,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-3">
-                                    MONTH OF: <h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMMMM, yyyy" /></h:outputText>
+                                    MONTH OF: <h:outputText value="#{erpDTRForm.convertStartDate('MMMMM, yyyy')}" />
                                 </div>
                             </div>
 
@@ -399,6 +536,8 @@
                                             <th scope="col" colspan="3" style="text-align:center"><h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMM" /></h:outputText> #{workingDay}</th>
                                         </ui:repeat>
                                         <th scope="col" rowspan="2">Total Working Hours</th>
+                                        <th scope="col" rowspan="2">Number of Days</th>
+                                        <th scope="col" rowspan="2">Total Number of Days</th>
                                     </tr>
                                     <tr>
                                         <ui:repeat var="workingDay" value="#{erpDTRForm.workingDays}">
@@ -413,7 +552,7 @@
                                     <ui:repeat var="workAssn" value="#{erpDTRForm.erpDTRAssignments}">
                                         <tr>
                                             <td colspan="2">#{workAssn.employeeAssigned.lastname}, #{workAssn.employeeAssigned.firstname}</td>
-                                            <ui:repeat var="wd" value="#{workAssn.schedules}">
+                                            <ui:repeat var="wd" value="#{workAssn.schedules.toArray()}">
                                                 <td>
                                                     <h:outputText value="#{wd.dayShiftStart}"><f:convertDateTime pattern="HH:mm" timeZone="Asia/Manila" /></h:outputText>
                                                     <!--#{wd.dayShiftStart}-->
@@ -426,7 +565,9 @@
                                                     #{wd.totalHoursDay}
                                                 </td>
                                             </ui:repeat>
-                                            <td>#{workAssn.totalWorkHours}</td>
+                                            <td>#{workAssn.totalHoursDay}</td>
+                                            <td>#{workAssn.totalHoursDay / erpDTRForm.hoursShift}</td>
+                                            <td>#{workAssn.totalWorkDays}</td>
                                         </tr>
                                     </ui:repeat>
                                     </tbody>
@@ -446,6 +587,8 @@
                                             <th scope="col" colspan="3" style="text-align:center"><h:outputText value="#{erpDTRForm.erpDTR.cutoffStart}"><f:convertDateTime pattern="MMM" /></h:outputText> #{workingDay}</th>
                                         </ui:repeat>
                                         <th scope="col" rowspan="2">Total Working Hours</th>
+                                        <th scope="col" rowspan="2">Number of Days</th>
+                                        <th scope="col" rowspan="2">Total Number of Days</th>
                                     </tr>
                                     <tr>
                                         <ui:repeat var="workingDay" value="#{erpDTRForm.workingDays}">
@@ -460,7 +603,7 @@
                                     <ui:repeat var="workAssn" value="#{erpDTRForm.erpDTRAssignments}">
                                         <tr>
                                             <td colspan="2">#{workAssn.employeeAssigned.lastname}, #{workAssn.employeeAssigned.firstname}</td>
-                                            <ui:repeat var="wd" value="#{workAssn.schedules}">
+                                            <ui:repeat var="wd" value="#{workAssn.schedules.toArray()}">
                                                 <td>
                                                     <h:outputText value="#{wd.nightShiftStart}"><f:convertDateTime pattern="HH:mm" timeZone="Asia/Manila" /></h:outputText>
                                                     <!--#{wd.dayShiftStart}-->
@@ -473,9 +616,111 @@
                                                     #{wd.totalHoursNight}
                                                 </td>
                                             </ui:repeat>
-                                            <td>#{workAssn.totalWorkHours}</td>
+                                            <td>#{workAssn.totalHoursNight}</td>
+                                            <td>#{workAssn.totalHoursNight / erpDTRForm.hoursShift}</td>
+                                            <td>#{workAssn.totalWorkDays}</td>
                                         </tr>
                                     </ui:repeat>
+                                    </tbody>
+                                </table>
+                                <p:spacer width="5"/>
+                                <p:spacer width="5"/>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <label class="control-label" style="font-weight:bold;">SHIFT SUMMARY</label>
+                                    </div>
+                                </div>
+                                <table class="table table-striped table-bordered" style="width:auto">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" colspan="2" rowspan="2">NAME</th>
+                                        <th scope="col" rowspan="2">Total Work Days</th>
+                                        <th scope="col" rowspan="2">SIL</th>
+                                        <th scope="col" rowspan="2">Rest day</th>
+                                        <th scope="col" rowspan="2">BTR</th>
+                                        <th scope="col" rowspan="2">SG</th>
+                                        <th scope="col" rowspan="2">CCTV OP</th>
+                                        <th scope="col" colspan="5" style="text-align:center">Regular Days</th>
+                                        <th scope="col" colspan="5" style="text-align:center">Regular Holidays</th>
+                                        <th scope="col" colspan="5" style="text-align:center">Special Holidays</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">Days</th>
+                                        <th scope="col">Hours</th>
+                                        <th scope="col">OT Hours</th>
+                                        <th scope="col">OT Excess</th>
+                                        <th scope="col">ND Days</th>
+                                        <th scope="col">Days</th>
+                                        <th scope="col">Hours</th>
+                                        <th scope="col">OT Hours</th>
+                                        <th scope="col">OT Excess</th>
+                                        <th scope="col">ND Days</th>
+                                        <th scope="col">Days</th>
+                                        <th scope="col">Hours</th>
+                                        <th scope="col">OT Hours</th>
+                                        <th scope="col">OT Excess</th>
+                                        <th scope="col">ND Days</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <ui:repeat var="workAssn" value="#{erpDTRForm.erpDTRAssignments}">
+                                        <tr>
+                                            <td colspan="2">#{workAssn.employeeAssigned.lastname}, #{workAssn.employeeAssigned.firstname}</td>
+                                            <td>#{workAssn.totalWorkDays}</td>
+                                            <td>#{workAssn.totalSIL}</td>
+                                            <td>#{workAssn.totalRdp}</td>
+                                            <td>#{workAssn.totalBTRDays}</td>
+                                            <td>#{workAssn.totalSGDays}</td>
+                                            <td>#{workAssn.totalCCTVDays}</td>
+                                            <td>#{workAssn.totalBasicWorkDays}</td>
+                                            <td>#{workAssn.totalBasicHours}</td>
+                                            <td>#{workAssn.totalBasicOTHours}</td>
+                                            <td>#{workAssn.totalBasicOTExcessHours}</td>
+                                            <td>#{workAssn.totalBasicNDHours / 8}</td>
+
+                                            <td>#{workAssn.totalRegularHolidayHrs / 8}</td>
+                                            <td>#{workAssn.totalRegularHolidayHrs}</td>
+                                            <td>#{workAssn.totalOTRegularHolidayHrs}</td>
+                                            <td>#{workAssn.totalOTExcessRegularHolidayHrs}</td>
+                                            <td>#{workAssn.totalNDRegularHolidayHrs / 8}</td>
+
+                                            <td>#{workAssn.totalSpecialHolidayHrs / 8}</td>
+                                            <td>#{workAssn.totalSpecialHolidayHrs}</td>
+                                            <td>#{workAssn.totalOTSpecialHolidayHrs}</td>
+                                            <td>#{workAssn.totalOTExcessSpecialHolidayHrs}</td>
+                                            <td>#{workAssn.totalNDSpecialHolidayHrs / 8}</td>
+                                        </tr>
+                                    </ui:repeat>
+                                    <tr>
+                                        <td colspan="2" style="text-align:right"><b>Total:</b></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalWorkDays).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalSIL).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalRdp).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalBTRDays).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalSGDays).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalCCTVDays).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalBasicWorkDays).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalBasicHours).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalBasicOTHours).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalBasicOTExcessHours).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalBasicNDHours).sum() / 8}"/></td>
+
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalRegularHolidayHrs).sum() / 8}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalRegularHolidayHrs).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalOTRegularHolidayHrs).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalOTExcessRegularHolidayHrs).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalNDRegularHolidayHrs).sum() / 8}"/></td>
+
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalSpecialHolidayHrs).sum() / 8}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalSpecialHolidayHrs).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalOTSpecialHolidayHrs).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalOTExcessSpecialHolidayHrs).sum()}"/></td>
+                                        <td style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalNDSpecialHolidayHrs).sum() / 8}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="text-align:right"><b>Total Hours:</b></td>
+                                        <td colspan="19" style="color:red; font-weight:600;"><h:outputText value="#{erpDTRForm.erpDTRAssignments.stream().map(item->item.totalHoursDay).sum() + erpDTRForm.erpDTRAssignments.stream().map(item->item.totalHoursNight).sum()}"/></td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>

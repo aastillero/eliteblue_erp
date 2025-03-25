@@ -24,6 +24,9 @@ public class ErpSSSContribution extends CoreEntity {
     @Column(name = "EE")
     private Double ee;
 
+    @Column(name = "EC")
+    private Double ec;
+
     public Long getId() {
         return id;
     }
@@ -62,5 +65,13 @@ public class ErpSSSContribution extends CoreEntity {
 
     public void setEe(Double ee) {
         this.ee = ee;
+    }
+
+    public Double getEc() {
+        return ec;
+    }
+
+    public void setEc(Double ec) {
+        this.ec = ec;
     }
 }

@@ -18,6 +18,10 @@ public class HeadOfficeDeductions extends CoreEntity {
     @Column(name = "DEDUCTION_DESCRIPTION", columnDefinition = "TEXT")
     private String deductionDescription;
 
+    @OneToOne
+    @JoinColumn(name = "HEAD_OFFICE_LOAN_ID", referencedColumnName = "id")
+    private HeadOfficeLoan headOfficeLoan;
+
     @ManyToOne
     @JoinColumn(name = "salary_deduction_id", nullable = false)
     private SalaryDeductions salaryDeductions;
@@ -52,5 +56,13 @@ public class HeadOfficeDeductions extends CoreEntity {
 
     public void setSalaryDeductions(SalaryDeductions salaryDeductions) {
         this.salaryDeductions = salaryDeductions;
+    }
+
+    public HeadOfficeLoan getHeadOfficeLoan() {
+        return headOfficeLoan;
+    }
+
+    public void setHeadOfficeLoan(HeadOfficeLoan headOfficeLoan) {
+        this.headOfficeLoan = headOfficeLoan;
     }
 }

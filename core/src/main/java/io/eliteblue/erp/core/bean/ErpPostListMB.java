@@ -15,6 +15,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,8 +36,10 @@ public class ErpPostListMB implements Serializable {
 
     @PostConstruct
     public void init() {
-        posts = erpPostService.getAll();
+        posts = erpPostService.getAllFilteredLocation();
+        posts.sort(Comparator.comparing(ErpPost::getName));
         lazyErpPosts = new LazyErpPostModel(posts);
+        lazyErpPosts.setRowCount(10);
     }
 
     public LazyDataModel<ErpPost> getLazyErpPosts() {

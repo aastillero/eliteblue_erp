@@ -9,10 +9,7 @@ import org.primefaces.model.filter.FilterConstraint;
 import org.primefaces.util.LocaleUtils;
 
 import javax.faces.context.FacesContext;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class LazyCityModel extends LazyDataModel<ErpCity> {
@@ -42,6 +39,9 @@ public class LazyCityModel extends LazyDataModel<ErpCity> {
                 .filter(o -> filter(FacesContext.getCurrentInstance(), filterBy.values(), o))
                 .count();
 
+        // sort source
+        Collections.sort(dataSource, (o1, o2) -> (o1.getName().compareTo(o2.getName())));
+
         // apply offset & filters
         List<ErpCity> erpCities = dataSource.stream()
                 .skip(first)
@@ -50,13 +50,13 @@ public class LazyCityModel extends LazyDataModel<ErpCity> {
                 .collect(Collectors.toList());
 
         // sort
-        if (!sortBy.isEmpty()) {
+        /*if (!sortBy.isEmpty()) {
             List<Comparator<ErpCity>> comparators = sortBy.values().stream()
                     .map(o -> new CityLazySorter(o.getField(), o.getOrder()))
                     .collect(Collectors.toList());
             Comparator<ErpCity> cp = ComparatorUtils.chainedComparator(comparators); // from apache
             erpCities.sort(cp);
-        }
+        }*/
 
         setRowCount((int) rowCount);
 

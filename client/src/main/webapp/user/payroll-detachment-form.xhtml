@@ -24,7 +24,31 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <div id="main-buttons" class="hidden-sm hidden-xs">
-                        <p:commandButton value="Back" action="clients?faces-redirect=true" icon="fa fa-reply"/>
+                        <p:commandButton value="Back" action="payroll-list?faces-redirect=true" icon="fa fa-reply"/>
+                        <p:spacer width="5"/>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success">Download File</button>
+                            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><p:commandLink ajax="false" action="#{payrollDetachmentForm.downloadFile}">Payroll List</p:commandLink></li>
+                                <li><p:commandLink ajax="false" action="#{payrollDetachmentForm.downloadMetrobankTemplate}">Metrobank Upload Template</p:commandLink></li>
+                                <li><p:commandLink ajax="false" action="#{payrollDetachmentForm.downloadRCBCSavingsTemplate}">RCBC Savings Template</p:commandLink></li>
+                                <li><p:commandLink ajax="false" action="#{payrollDetachmentForm.downloadRCBCMyWalletTemplate}">RCBC MyWallet Template</p:commandLink></li>
+                                <li><p:commandLink ajax="false" action="#{payrollDetachmentForm.downloadPayslip}">Payslip</p:commandLink></li>
+                                <li class="divider"></li>
+                                <li><p:commandLink ajax="false" action="#{payrollDetachmentForm.downloadScoutLoansReport}">Summary Report Scout Tuazon Loans</p:commandLink></li>
+                                <li><p:commandLink ajax="false" action="#{payrollDetachmentForm.downloadHRContriLoansReport}">Summary Report for Contributions and Deductions</p:commandLink></li>
+                                <li class="divider"></li>
+                                <li><p:commandLink ajax="false" action="#{payrollDetachmentForm.downloadSSStemplate}">SSS Payment</p:commandLink></li>
+                                <li><p:commandLink ajax="false" action="#{payrollDetachmentForm.downloadPayrollMasterListTemplate}">Payroll Master List</p:commandLink></li>
+                                <li><a href="#">Payroll Summary per Client</a></li>
+                                <li><p:commandLink ajax="false" action="#{payrollDetachmentForm.downloadPayrollListForClient}">Payroll List for Client</p:commandLink></li>
+                                <li><a href="#">Firearms Bond</a></li>
+                            </ul>
+                        </div>
                     </div>
                     <p:separator/>
 
@@ -34,115 +58,291 @@
                                 <table class="table table-striped table-bordered" style="width:auto">
                                     <thead>
                                         <tr>
+                                            <th scope="col" rowspan="2"> </th>
                                             <th scope="col" rowspan="2">Employee Name</th>
                                             <th scope="col" rowspan="2">Daily Wage</th>
                                             <th scope="col" rowspan="2">Hourly Rate</th>
                                             <th scope="col" rowspan="2">Total No. of Days</th>
-                                            <th scope="col" rowspan="2">Total No. of Hours</th>
+                                            <th scope="col" rowspan="2">Total No. of Basic Hours</th>
+                                            <th scope="col" rowspan="2">Total Number of Hours</th>
                                             <th scope="col" rowspan="2">Total No. of Days w/OT</th>
                                             <th scope="col" rowspan="2">Total No. of Days w/ND</th>
                                             <th scope="col" rowspan="2">Basic Salary</th>
-                                            <th scope="col" colspan="3" style="text-align:center">OVERTIME</th>
-                                            <th scope="col" colspan="2" style="text-align:center">NIGHT DIFFERENTIAL</th>
-                                            <th scope="col" colspan="6" style="text-align:center">REST DAY</th>
-                                            <th scope="col" colspan="6" style="text-align:center">REGULAR HOLIDAY</th>
-                                            <th scope="col" colspan="6" style="text-align:center">SPECIAL HOLIDAY</th>
+                                            <th scope="col" colspan="4" style="text-align:center">OVERTIME</th>
+                                            <th scope="col" colspan="4" style="text-align:center">NIGHT DIFFERENTIAL</th>
+                                            <!--<th scope="col" colspan="5" style="text-align:center">REST DAY</th>-->
+                                            <th scope="col" colspan="10" style="text-align:center; background-color:#b6d7a8;">REGULAR HOLIDAY</th>
+                                            <th scope="col" colspan="10" style="text-align:center; background-color:#f9cb9c;">SPECIAL HOLIDAY</th>
                                             <th scope="col" rowspan="2">ECOLA</th>
                                             <th scope="col" rowspan="2">Allowance</th>
                                             <th scope="col" rowspan="2">SIL</th>
                                             <th scope="col" rowspan="2">Paternity Leave</th>
                                             <th scope="col" rowspan="2">13th Month</th>
                                             <th scope="col" rowspan="2">Adjustments</th>
+                                            <th scope="col" rowspan="2">Extra Pay</th>
                                             <th scope="col" rowspan="2">Gross Salary</th>
                                             <th scope="col" colspan="3" style="text-align:center">SSS, HDMF &amp; PHIC CONTRIBUTIONS</th>
-                                            <th scope="col" colspan="2" style="text-align:center">HEAD OFFICE DEDUCTIONS</th>
-                                            <th scope="col" colspan="1" style="text-align:center">SCT TUAZON DEDUCTIONS</th>
+                                            <th scope="col" colspan="2" style="text-align:center">SSS LOAN</th>
+                                            <th scope="col" colspan="2" style="text-align:center">PAGIBIG LOAN</th>
+                                            <th scope="col" colspan="6" style="text-align:center">HEAD OFFICE DEDUCTIONS</th>
+                                            <th scope="col" colspan="3" style="text-align:center">SCT TUAZON DEDUCTIONS</th>
                                             <th scope="col" rowspan="2">Total Deductions</th>
                                             <th scope="col" rowspan="2">Net Pay</th>
                                         </tr>
                                     <tr>
                                         <th scope="col">No. of Days</th>
-                                        <th scope="col">Total No of OT</th>
+                                        <th scope="col">No of Hours OT</th>
+                                        <th scope="col">OT Rate Ordinary day</th>
                                         <th scope="col">Overtime Pay</th>
+
                                         <th scope="col">No. of Days</th>
+                                        <th scope="col">No of Hours ND</th>
+                                        <th scope="col">ND Rate</th>
                                         <th scope="col">Night Diff Pay</th>
-                                        <th scope="col">8 Hours</th>
-                                        <th scope="col">12 Hours</th>
+
+                                        <!--<th scope="col">8 Hours</th>
+                                        <th scope="col">12 Hours</th>-
+                                        <th scope="col">No. of Days</th>
                                         <th scope="col">8 Hours Rate</th>
                                         <th scope="col">Reg day w/OT</th>
                                         <th scope="col">12 Hours Rate</th>
-                                        <th scope="col">Rest Day Pay</th>
-                                        <th scope="col">8 Hours</th>
-                                        <th scope="col">12 Hours</th>
-                                        <th scope="col">Excess No. of Hours</th>
-                                        <th scope="col">Regular Holiday Pay</th>
-                                        <th scope="col">Overtime Pay</th>
-                                        <th scope="col">Night Diff Pay</th>
-                                        <th scope="col">8 Hours</th>
-                                        <th scope="col">12 Hours</th>
-                                        <th scope="col">Excess No. of Hours</th>
-                                        <th scope="col">Regular Holiday Pay</th>
-                                        <th scope="col">Overtime Pay</th>
-                                        <th scope="col">Night Diff Pay</th>
+                                        <th scope="col">Rest Day Pay</th>-->
+
+                                        <!--<th scope="col">8 Hours</th>
+                                        <th scope="col">12 Hours</th>-->
+                                        <th scope="col" style="background-color:#b6d7a8;">No. of Days</th>
+                                        <th scope="col" style="background-color:#b6d7a8;">Excess No. of Hours</th>
+                                        <th scope="col" style="background-color:#b6d7a8;">No of Hours OT</th>
+                                        <th scope="col" style="background-color:#b6d7a8;">Regular Holiday Pay</th>
+                                        <th scope="col" style="background-color:#b6d7a8;">OT Rate</th>
+                                        <th scope="col" style="background-color:#b6d7a8;">Overtime Pay</th>
+                                        <th scope="col" style="background-color:#b6d7a8;">No of Days ND</th>
+                                        <th scope="col" style="background-color:#b6d7a8;">No of Hours ND</th>
+                                        <th scope="col" style="background-color:#b6d7a8;">ND Rate</th>
+                                        <th scope="col" style="background-color:#b6d7a8;">Night Diff Pay</th>
+
+                                        <!--<th scope="col">8 Hours</th>
+                                        <th scope="col">12 Hours</th>-->
+                                        <th scope="col" style="background-color:#f9cb9c;">No. of Days</th>
+                                        <th scope="col" style="background-color:#f9cb9c;">Excess No. of Hours</th>
+                                        <th scope="col" style="background-color:#f9cb9c;">No of Hours OT</th>
+                                        <th scope="col" style="background-color:#f9cb9c;">Special Holiday Pay</th>
+                                        <th scope="col" style="background-color:#f9cb9c;">OT Rate</th>
+                                        <th scope="col" style="background-color:#f9cb9c;">Overtime Pay</th>
+                                        <th scope="col" style="background-color:#f9cb9c;">No of Days ND</th>
+                                        <th scope="col" style="background-color:#f9cb9c;">No of Hours ND</th>
+                                        <th scope="col" style="background-color:#f9cb9c;">ND Rate</th>
+                                        <th scope="col" style="background-color:#f9cb9c;">Night Diff Pay</th>
+
+
                                         <th scope="col">SSS Premium</th>
                                         <th scope="col">HDMF Premium</th>
                                         <th scope="col">PHIC Premium</th>
+                                        <th scope="col">Salary Loan</th>
+                                        <th scope="col">Calamity Loan</th>
+                                        <th scope="col">Short Term Loan</th>
+                                        <th scope="col">Calamity Loan</th>
+                                        <th scope="col">Cash Advance</th>
                                         <th scope="col">Firearms Bond</th>
+                                        <th scope="col">Training Fee</th>
+                                        <th scope="col">Security License</th>
+                                        <th scope="col">Paraphernalia</th>
+                                        <th scope="col">Others</th>
                                         <th scope="col">Cash Advance</th>
-                                        <th scope="col">Cash Advance</th>
+                                        <th scope="col">Security License</th>
+                                        <th scope="col">Paraphernalia</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                        <ui:repeat var="emp" value="#{payrollDetachmentForm.detachmentPayroll.employeePayrolls}">
+                                        <ui:repeat var="emp" value="#{payrollDetachmentForm.employeePayrolls}">
                                             <tr>
+                                                <td><p:commandButton class="rounded-button" icon="pi pi-pencil" value="Edit"
+                                                     action="#{payrollDetachmentForm.editPressed(emp.id)}"/></td>
                                                 <td>#{emp.employeePayroll.lastname}, #{emp.employeePayroll.firstname}</td>
-                                                <td>#{emp.basicSalary.dailyWage}</td>
-                                                <td>#{emp.basicSalary.hourlyWage}</td>
+                                                <td><h:outputText value="#{emp.basicSalary.dailyWage}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+                                                <td><h:outputText value="#{emp.basicSalary.hourlyWage}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
                                                 <td>#{emp.basicSalary.totalDaysWorked}</td>
                                                 <td>#{emp.basicSalary.basicHoursWorked}</td>
+                                                <td>#{emp.basicSalary.totalHoursWorked}</td>
                                                 <td>#{emp.basicSalary.totalDaysOT}</td>
                                                 <td>#{emp.basicSalary.totalDaysND}</td>
-                                                <td>#{emp.basicSalary.basicSalary}</td>
+                                                <td><h:outputText value="#{emp.basicSalary.basicSalary}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+
                                                 <td>#{emp.basicSalary.ot_no_days}</td>
                                                 <td>#{emp.basicSalary.ot_total_hours}</td>
-                                                <td>#{emp.basicSalary.ot_pay}</td>
+                                                <td><h:outputText value="#{emp.basicSalary.ot_rate}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+                                                <td><h:outputText value="#{emp.basicSalary.ot_pay}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+
                                                 <td>#{emp.basicSalary.nd_no_days}</td>
-                                                <td>#{emp.basicSalary.nd_pay}</td>
-                                                <td>#{emp.basicSalary.rd_eight_hrs}</td>
+                                                <td>#{emp.basicSalary.nd_total_hours}</td>
+                                                <td><h:outputText value="#{emp.basicSalary.nd_hourly_rate}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+                                                <td><h:outputText value="#{emp.basicSalary.nd_pay}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+
+                                                <!--<td>#{emp.basicSalary.rd_eight_hrs}</td>
                                                 <td>#{emp.basicSalary.rd_twelve_hrs}</td>
+                                                <td>#{emp.basicSalary.rd_no_days}</td>
                                                 <td>#{emp.basicSalary.rd_eight_hrs_rate}</td>
                                                 <td>#{emp.basicSalary.rd_reg_day_ot}</td>
                                                 <td>#{emp.basicSalary.rd_twelve_hrs_rate}</td>
-                                                <td>#{emp.basicSalary.rd_pay}</td>
-                                                <td>#{emp.basicSalary.rh_eight_hrs}</td>
-                                                <td>#{emp.basicSalary.rh_twelve_hrs}</td>
+                                                <td>#{emp.basicSalary.rd_pay}</td>-->
+
+                                                <!--<td>#{emp.basicSalary.rh_eight_hrs}</td>
+                                                <td>#{emp.basicSalary.rh_twelve_hrs}</td>-->
+                                                <td>#{emp.basicSalary.rh_no_days}</td>
                                                 <td>#{emp.basicSalary.rh_excess_ot_hrs}</td>
-                                                <td>#{emp.basicSalary.rh_pay}</td>
-                                                <td>#{emp.basicSalary.rh_ot_pay}</td>
-                                                <td>#{emp.basicSalary.rh_nightdiff_pay}</td>
-                                                <td>#{emp.basicSalary.sh_eight_hrs}</td>
-                                                <td>#{emp.basicSalary.sh_twelve_hrs}</td>
+                                                <td>#{emp.basicSalary.rh_ot_hrs}</td>
+                                                <td><h:outputText value="#{emp.basicSalary.rh_pay}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+                                                <td><h:outputText value="#{emp.basicSalary.rh_ot_rate}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+                                                <td><h:outputText value="#{emp.basicSalary.rh_ot_pay}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+                                                <td><h:outputText value="#{emp.basicSalary.rh_nightdiff_days eq null ? 0 : emp.basicSalary.rh_nightdiff_days}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+                                                <td>#{emp.basicSalary.rh_nightdiff_hrs}</td>
+                                                <td><h:outputText value="#{emp.basicSalary.rh_nightdiff_rate}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+                                                <td><h:outputText value="#{emp.basicSalary.rh_nightdiff_pay}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+
+                                                <!--<td>#{emp.basicSalary.sh_eight_hrs}</td>
+                                                <td>#{emp.basicSalary.sh_twelve_hrs}</td>-->
+                                                <td>#{emp.basicSalary.sh_no_days}</td>
                                                 <td>#{emp.basicSalary.sh_excess_ot_hrs}</td>
-                                                <td>#{emp.basicSalary.sh_pay}</td>
-                                                <td>#{emp.basicSalary.sh_ot_pay}</td>
-                                                <td>#{emp.basicSalary.sh_nightdiff_pay}</td>
+                                                <td>#{emp.basicSalary.sh_ot_hrs}</td>
+                                                <td><h:outputText value="#{emp.basicSalary.sh_pay}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+                                                <td><h:outputText value="#{emp.basicSalary.sh_ot_rate}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+                                                <td><h:outputText value="#{emp.basicSalary.sh_ot_pay}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+                                                <td><h:outputText value="#{emp.basicSalary.sh_nightdiff_days eq null ? 0 : emp.basicSalary.sh_nightdiff_days}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+                                                <td>#{emp.basicSalary.sh_nightdiff_hrs}</td>
+                                                <td><h:outputText value="#{emp.basicSalary.sh_nightdiff_rate}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+                                                <td><h:outputText value="#{emp.basicSalary.sh_nightdiff_pay}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+
                                                 <td>#{emp.ecola}</td>
                                                 <td>#{emp.allowance}</td>
                                                 <td>#{emp.sil}</td>
                                                 <td>#{emp.paternityLeave}</td>
                                                 <td>#{emp.thirteenthMonth}</td>
                                                 <td>#{emp.adjustments}</td>
-                                                <td>#{emp.grossSalary}</td>
-                                                <td>652.50</td>l
-                                                <td>100.00</td>
-                                                <td>150.00</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td>902.50</td>
-                                                <td>#{emp.totalNetPay - 902.5}</td>
+                                                <td>#{emp.basicSalary.extra_pay}</td>
+                                                <td><h:outputText value="#{emp.grossSalary}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
+                                                <td>#{emp.salaryDeductions.sssPremium}</td>
+                                                <td>#{emp.salaryDeductions.hdmfPremium}</td>
+                                                <td>#{emp.salaryDeductions.phicPremium}</td>
+                                                <td>
+                                                    #{emp.salaryDeductions.governmentDeductions.stream().filter(nm->nm.getDeductionDescription().equals('SSS_SALARY_LOAN')).map(itm->itm.deductionAmount).sum()}
+                                                </td>
+                                                <td>
+                                                    #{emp.salaryDeductions.governmentDeductions.stream().filter(nm->nm.getDeductionDescription().equals('SSS_CALAMITY_LOAN')).map(itm->itm.deductionAmount).sum()}
+                                                </td>
+                                                <td>
+                                                    #{emp.salaryDeductions.governmentDeductions.stream().filter(nm->nm.getDeductionDescription().equals('PAGIBIG_SHORT_TERM_LOAN')).map(itm->itm.deductionAmount).sum()}
+                                                </td>
+                                                <td>
+                                                    #{emp.salaryDeductions.governmentDeductions.stream().filter(nm->nm.getDeductionDescription().equals('PAGIBIG_CALAMITY_LOAN')).map(itm->itm.deductionAmount).sum()}
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{payrollDetachmentForm.getHeadOfficeDeductionAmount('CASH_ADVANCE', emp.salaryDeductions.headOfficeDeductions.toArray())}"/>
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{payrollDetachmentForm.getHeadOfficeDeductionAmount('FIRE_ARMS_BOND', emp.salaryDeductions.headOfficeDeductions.toArray())}"/>
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{payrollDetachmentForm.getHeadOfficeDeductionAmount('TRAINING_FEE', emp.salaryDeductions.headOfficeDeductions.toArray())}"/>
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{payrollDetachmentForm.getHeadOfficeDeductionAmount('SECURITY_LICENSE', emp.salaryDeductions.headOfficeDeductions.toArray())}"/>
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{payrollDetachmentForm.getHeadOfficeDeductionAmount('PARAPHERNALIA', emp.salaryDeductions.headOfficeDeductions.toArray())}"/>
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{payrollDetachmentForm.getHeadOfficeDeductionAmount('OTHERS', emp.salaryDeductions.headOfficeDeductions.toArray())}"/>
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{payrollDetachmentForm.getScoutDeductionAmount('CASH_ADVANCE', emp.salaryDeductions.scoutDeductions.toArray())}"/>
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{payrollDetachmentForm.getScoutDeductionAmount('SECURITY_LICENSE', emp.salaryDeductions.scoutDeductions.toArray())}"/>
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{payrollDetachmentForm.getScoutDeductionAmount('PARAPHERNALIA', emp.salaryDeductions.scoutDeductions.toArray())}"/>
+                                                </td>
+                                                <!--<td>
+                                                    <ui:repeat var="headOfficeDeduct" value="#{emp.salaryDeductions.headOfficeDeductions.toArray()}">
+                                                        <ui:fragment rendered="#{headOfficeDeduct.deductionDescription eq 'CASH_ADVANCE'}">#{headOfficeDeduct.deductionAmount}</ui:fragment>
+                                                    </ui:repeat>
+                                                </td>
+                                                <td>
+                                                    <ui:repeat var="scoutDeduct" value="#{emp.salaryDeductions.scoutDeductions.toArray()}">
+                                                        <ui:fragment rendered="#{scoutDeduct.deductionDescription eq 'CASH_ADVANCE'}">#{scoutDeduct.deductionAmount}</ui:fragment>
+                                                    </ui:repeat>
+                                                </td>-->
+                                                <td>#{emp.salaryDeductions.totalDeductions}</td>
+                                                <td><h:outputText value="#{emp.totalNetPay}"><f:convertNumber currencySymbol="" type="currency"/></h:outputText></td>
                                             </tr>
                                         </ui:repeat>
+                                            <tr>
+                                                <td colspan="2"></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.dailyWage).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.hourlyWage).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.totalDaysWorked).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.basicHoursWorked).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.totalHoursWorked).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.totalDaysOT).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.totalDaysND).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.basicSalary).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.ot_no_days).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.ot_total_hours).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.ot_rate).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.ot_pay).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.nd_no_days).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.nd_total_hours).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.nd_hourly_rate).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.nd_pay).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.rh_no_days).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.rh_excess_ot_hrs).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.rh_ot_hrs).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.rh_pay).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.rh_ot_rate).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.rh_ot_pay).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.rh_nightdiff_days).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.rh_nightdiff_hrs).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.rh_nightdiff_rate).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.rh_nightdiff_pay).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.sh_no_days).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.sh_excess_ot_hrs).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.sh_ot_hrs).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.sh_pay).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.sh_ot_rate).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.sh_ot_pay).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.sh_nightdiff_days).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.sh_nightdiff_hrs).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.sh_nightdiff_rate).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.sh_nightdiff_pay).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.ecola).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.allowance).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.sil).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.paternityLeave).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.thirteenthMonth).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.adjustments).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.basicSalary.extra_pay).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.grossSalary).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.salaryDeductions.sssPremium).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.salaryDeductions.hdmfPremium).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.salaryDeductions.phicPremium).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.salaryDeductions.governmentDeductions.stream().filter(nm->nm.getDeductionDescription().equals('SSS_SALARY_LOAN')).map(itm->itm.deductionAmount).sum()).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.salaryDeductions.governmentDeductions.stream().filter(nm->nm.getDeductionDescription().equals('SSS_CALAMITY_LOAN')).map(itm->itm.deductionAmount).sum()).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.salaryDeductions.governmentDeductions.stream().filter(nm->nm.getDeductionDescription().equals('PAGIBIG_SHORT_TERM_LOAN')).map(itm->itm.deductionAmount).sum()).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.salaryDeductions.governmentDeductions.stream().filter(nm->nm.getDeductionDescription().equals('PAGIBIG_CALAMITY_LOAN')).map(itm->itm.deductionAmount).sum()).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->payrollDetachmentForm.getHeadOfficeDeductionAmount('CASH_ADVANCE', item.salaryDeductions.headOfficeDeductions.toArray())).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->payrollDetachmentForm.getHeadOfficeDeductionAmount('FIRE_ARMS_BOND', item.salaryDeductions.headOfficeDeductions.toArray())).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->payrollDetachmentForm.getHeadOfficeDeductionAmount('TRAINING_FEE', item.salaryDeductions.headOfficeDeductions.toArray())).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->payrollDetachmentForm.getHeadOfficeDeductionAmount('SECURITY_LICENSE', item.salaryDeductions.headOfficeDeductions.toArray())).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->payrollDetachmentForm.getHeadOfficeDeductionAmount('PARAPHERNALIA', item.salaryDeductions.headOfficeDeductions.toArray())).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->payrollDetachmentForm.getHeadOfficeDeductionAmount('OTHERS', item.salaryDeductions.headOfficeDeductions.toArray())).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->payrollDetachmentForm.getScoutDeductionAmount('CASH_ADVANCE', item.salaryDeductions.scoutDeductions.toArray())).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->payrollDetachmentForm.getScoutDeductionAmount('SECURITY_LICENSE', item.salaryDeductions.scoutDeductions.toArray())).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->payrollDetachmentForm.getScoutDeductionAmount('PARAPHERNALIA', item.salaryDeductions.scoutDeductions.toArray())).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.salaryDeductions.totalDeductions).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                                <td style="color:red; font-weight:600;"><h:outputText value="#{payrollDetachmentForm.employeePayrolls.stream().map(item->item.totalNetPay).sum()}"><f:convertNumber currencySymbol="" type="currency" /></h:outputText></td>
+                                            </tr>
                                     </tbody>
                                 </table>
                             </div>

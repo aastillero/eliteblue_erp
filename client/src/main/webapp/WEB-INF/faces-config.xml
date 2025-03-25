@@ -8,4 +8,13 @@
 		<resource-handler>org.omnifaces.resourcehandler.CombinedResourceHandler</resource-handler>
 	</application>
 
+	<converter>
+		<converter-id>employeeAssignConverter</converter-id>
+		<converter-class>io.eliteblue.erp.core.converters.EmployeeAssignConverter</converter-class>
+	</converter>
+
+	<converter>
+		<converter-id>customDateConverter</converter-id>
+		<converter-class>io.eliteblue.erp.core.converters.CustomDateConverter</converter-class>
+	</converter>
 </faces-config>

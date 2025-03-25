@@ -23,11 +23,14 @@ public class SalaryDeductions extends CoreEntity {
     @Column(name = "PHIC_PREMIUM")
     private Double phicPremium;
 
-    @OneToMany(mappedBy = "salaryDeductions", cascade = CascadeType.MERGE, orphanRemoval = true)
+    @OneToMany(mappedBy = "salaryDeductions", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<HeadOfficeDeductions> headOfficeDeductions;
 
-    @OneToMany(mappedBy = "salaryDeductions", cascade = CascadeType.MERGE, orphanRemoval = true)
+    @OneToMany(mappedBy = "salaryDeductions", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<ScoutDeductions> scoutDeductions;
+
+    @OneToMany(mappedBy = "salaryDeductions", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<GovernmentDeductions> governmentDeductions;
 
     @Column(name = "TOTAL_DEDUCTIONS")
     private Double totalDeductions;
@@ -86,5 +89,13 @@ public class SalaryDeductions extends CoreEntity {
 
     public void setTotalDeductions(Double totalDeductions) {
         this.totalDeductions = totalDeductions;
+    }
+
+    public Set<GovernmentDeductions> getGovernmentDeductions() {
+        return governmentDeductions;
+    }
+
+    public void setGovernmentDeductions(Set<GovernmentDeductions> governmentDeductions) {
+        this.governmentDeductions = governmentDeductions;
     }
 }

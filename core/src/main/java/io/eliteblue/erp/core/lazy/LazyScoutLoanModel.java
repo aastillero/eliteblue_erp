@@ -76,6 +76,7 @@ public class LazyScoutLoanModel extends LazyDataModel<ScoutLoan> {
 
             ScoutLoan scoutLoan = (ScoutLoan) o;
             return scoutLoan.getLoanType().name().contains(filterText)
+                    || (scoutLoan.getEmployeeBorrower().getErpDetachment() != null && scoutLoan.getEmployeeBorrower().getErpDetachment().getName().toLowerCase().contains(filterText))
                     || scoutLoan.getEmployeeBorrower().getFirstname().toLowerCase().contains(filterText)
                     || scoutLoan.getEmployeeBorrower().getLastname().toLowerCase().contains(filterText)
                     || (scoutLoan.getEmployeeBorrower().getFirstname().toLowerCase()+" "+scoutLoan.getEmployeeBorrower().getLastname().toLowerCase()).contains(filterText);

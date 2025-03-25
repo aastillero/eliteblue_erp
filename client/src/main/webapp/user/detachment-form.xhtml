@@ -2,6 +2,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                xmlns:sec="http://www.springframework.org/security/tags"
                 template="#{layoutMB.template}">
 
     <ui:define name="title">
@@ -35,6 +36,7 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <sec:authorize access="hasAnyRole('CRM', 'SYS_ADMIN')">
                         <p:commandButton value="Save" action="#{erpDetachmentForm.save}" update="@form"
                                          icon="fa fa-check" styleClass="btn-primary"/>
                         <p:spacer width="5" rendered="#{erpDetachmentForm.isNew()}"/>
@@ -51,21 +53,25 @@
                             <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
                         </p:commandButton>
                         <p:spacer width="5"/>
-                        <p:commandButton value="Back" action="#{erpDetachmentForm.backBtnPressed}" icon="fa fa-reply"/>
+                        <p:commandButton ajax="false" action="#{erpDetachmentForm.downloadSILReport}" icon="fa fa-download"
+                                         value="SIL Report" styleClass="btn-success"/>
+                        </sec:authorize>
+                        <p:spacer width="5"/>
+                        <p:commandButton value="Back" onclick="window.history.back();" icon="fa fa-reply"/>
                     </div>
-                    <p:splitButton value="Save" action="#{erpDetachmentForm.save}" update="@form"
+                    <p:splitButton access="hasAnyRole('CRM', 'SYS_ADMIN')" value="Save" action="#{erpDetachmentForm.save}" update="@form"
                                    icon="fa fa-check"
                                    styleClass="hidden-md hidden-lg btn-primary">
-                        <p:menuitem value="Reset" action="#{erpDetachmentForm.clear}"
+                        <p:menuitem access="hasAnyRole('CRM', 'SYS_ADMIN')" value="Reset" action="#{erpDetachmentForm.clear}"
                                     process="@this" update="@form" rendered="#{erpDetachmentForm.isNew()}"
                                     resetValues="true" icon="fa fa-refresh"/>
-                        <p:menuitem value="Delete" action="#{erpDetachmentForm.remove}" process="@this"
+                        <p:menuitem access="hasAnyRole('CRM', 'SYS_ADMIN')" value="Delete" action="#{erpDetachmentForm.remove}" process="@this"
                                     rendered="#{not erpDetachmentForm.isNew()}" icon="fa fa-trash"
                         >
                             <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
                         </p:menuitem>
                         <p:separator/>
-                        <p:menuitem value="Back" action="#{erpDetachmentForm.backBtnPressed}" icon="fa fa-reply"/>
+                        <p:menuitem value="Back" onclick="window.history.back();" icon="fa fa-reply"/>
                     </p:splitButton>
                     <p:separator/>
 
@@ -97,15 +103,15 @@
                             <label for="phicSG" class="col-sm-2 control-label">PHIC SG</label>
 
                             <div class="col-sm-10">
-                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{erpDetachmentForm.erpDetachment.phicSG}" id="phicSG" placeholder="0"/>
+                                <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{erpDetachmentForm.erpDetachment.phicSG}" id="phicSG" placeholder="0"/>
                             </div>
                         </div>
                         <p:spacer width="5"/>
                         <div class="form-group">
-                            <label for="phicAC" class="col-sm-2 control-label">PHIC AC</label>
+                            <label for="phicSIC" class="col-sm-2 control-label">PHIC SIC</label>
 
                             <div class="col-sm-10">
-                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{erpDetachmentForm.erpDetachment.phicAC}" id="phicAC" placeholder="0"/>
+                                <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{erpDetachmentForm.erpDetachment.phicSIC}" id="phicSIC" placeholder="0"/>
                             </div>
                         </div>
                         <p:spacer width="5"/>
@@ -113,19 +119,31 @@
                             <label for="phicDC" class="col-sm-2 control-label">PHIC DC</label>
 
                             <div class="col-sm-10">
-                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{erpDetachmentForm.erpDetachment.phicDC}" id="phicDC" placeholder="0"/>
+                                <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{erpDetachmentForm.erpDetachment.phicDC}" id="phicDC" placeholder="0"/>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="excessOT" class="col-sm-2 control-label">Excess OT Enabled</label>
+
+                            <div class="col-sm-10">
+                                <p:selectOneMenu id="excessOT" value="#{erpDetachmentForm.erpDetachment.excessOT}" style="width:150px">
+                                    <f:selectItems value="#{erpDetachmentForm.exessOTSelect}"/>
+                                </p:selectOneMenu>
                             </div>
                         </div>
                     </div>
 
                     <p:outputPanel rendered="#{not erpDetachmentForm.isNew()}">
-                        <h3>Posts</h3>
+                        <h3>Time Schedule</h3>
                         <p:separator/>
+                        <sec:authorize access="hasAnyRole('CRM', 'SYS_ADMIN')">
                         <div id="fourth-buttons" class="hidden-sm hidden-xs">
                             <p:commandButton action="#{erpDetachmentForm.newTimePressed}" icon="fa fa-plus"
                                              value="New Time Schedule" styleClass="btn-primary"/>
                             <p:spacer width="5"/>
                         </div>
+                        </sec:authorize>
 
                         <p:dataTable id="timeScheduleTab" var="timesched" value="#{erpDetachmentForm.erpTimeSchedules}" selectionMode="single"
                                      paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
@@ -163,13 +181,15 @@
                     <p:outputPanel rendered="#{not erpDetachmentForm.isNew()}">
                         <h3>Posts</h3>
                         <p:separator/>
+                        <sec:authorize access="hasAnyRole('CRM', 'SYS_ADMIN')">
                             <div id="secondary-buttons" class="hidden-sm hidden-xs">
                                 <p:commandButton action="#{erpDetachmentForm.newPostPressed}" icon="fa fa-plus"
                                                  value="New Post" styleClass="btn-primary"/>
                                 <p:spacer width="5"/>
                             </div>
+                        </sec:authorize>
 
-                            <p:dataTable id="erpPostTab" var="post" value="#{erpDetachmentForm.posts}" selectionMode="single"
+                            <p:dataTable id="erpPostTab" var="post" value="#{erpDetachmentForm.lazyErpPosts}" selectionMode="single"
                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
                                 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                                 emptyMessage="No Posts found with given criteria" globalFilterFunction="#{erpDetachmentForm.globalFilterFunction}"
@@ -198,22 +218,27 @@
                         <h3>Assigned Employees</h3>
                         <p:separator/>
                         <div id="third-buttons" class="hidden-sm hidden-xs">
+                            <sec:authorize access="hasAnyRole('CRM', 'SYS_ADMIN', 'EMPLOYEE_ASSIGN')">
                             <p:commandButton action="#{erpDetachmentForm.newEmployeePressed}" icon="fa fa-plus"
                                              value="Assign" styleClass="btn-primary"/>
                             <p:spacer width="5"/>
+                            </sec:authorize>
+                            <p:commandButton ajax="false" action="#{erpDetachmentForm.downloadFile}" icon="fa fa-download"
+                                             value="Download" styleClass="btn-success"/>
+                            <p:spacer width="5"/>
                         </div>
 
-                        <p:dataTable id="erpEmployeeTab" var="employee" value="#{erpDetachmentForm.employees}"
+                        <p:dataTable id="erpEmployeeTab" var="employee" value="#{erpDetachmentForm.lazyErpEmployees}" selectionMode="single"
                                      paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
                                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                                     emptyMessage="No Employees found with given criteria" globalFilterFunction="#{erpDetachmentForm.globalEmployeeFilterFunction}"
-                                     filteredValue="#{erpDetachmentForm.filteredEmployees}" widgetVar="erpEmployeeTable"
-                                     rowKey="#{employee.id}">
+                                     emptyMessage="No Employees found with given criteria"
+                                     widgetVar="erpEmployeeTable"
+                                     multiViewState="true" rowKey="#{employee.id}">
 
                             <f:facet name="header">
                                 <div class="p-d-flex p-jc-end">
-                                    <p:commandButton onclick="$('#form\\:erpEmployeeTab\\:globalEmployeeFilter').val('').keyup();PF('erpEmployeeTable').filter()" value="clear"/>
-                                    <p:inputText id="globalEmployeeFilter" style="width:20rem" placeholder="Search all columns" autocomplete="off"
+                                    <p:commandButton onclick="$('#form\\:erpEmployeeTab\\:globalFilter').val('').keyup();PF('erpEmployeeTable').filter()" value="clear"/>
+                                    <p:inputText id="globalFilter" style="width:20rem" placeholder="Search all columns" autocomplete="off"
                                                  onkeypress="if (event.keyCode === 13)  {PF('erpEmployeeTable').filter(); return false;}"/>
                                     <p:commandButton  class="ui-button" icon="fa fa-search" onclick="PF('erpEmployeeTable').filter()"/>
                                 </div>
@@ -223,20 +248,25 @@
                                 <h:outputText value="#{employee.employeeId}" />
                             </p:column>
 
-                            <p:column headerText="First Name">
-                                <h:outputText value="#{employee.firstname}" />
-                            </p:column>
-
                             <p:column headerText="Last Name">
                                 <h:outputText value="#{employee.lastname}" />
                             </p:column>
 
+                            <p:column headerText="First Name">
+                                <h:outputText value="#{employee.firstname}" />
+                            </p:column>
+
+                            <p:column headerText="STATUS">
+                                <h:outputText value="#{employee.status}" />
+                            </p:column>
+                            <sec:authorize access="hasAnyRole('CRM', 'SYS_ADMIN', 'EMPLOYEE_ASSIGN')">
                             <p:column exportable="false" width="50">
                                 <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash" process="@this"
                                                  oncomplete="PF('deleteAssignedEmployeeDialog').show()" styleClass="btn-danger">
                                     <f:setPropertyActionListener value="#{employee}" target="#{erpDetachmentForm.selectedEmployee}"/>
                                 </p:commandButton>
                             </p:column>
+                            </sec:authorize>
                         </p:dataTable>
                     </p:outputPanel>
                 </div>

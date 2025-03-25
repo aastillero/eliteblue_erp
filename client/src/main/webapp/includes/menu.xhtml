@@ -63,11 +63,59 @@
 							<span>Holiday Table</span>
 						</p:link>
 					</li>
+					<li>
+						<p:link outcome="/admin/units">
+							<i class="fa fa-balance-scale nav-icon"/>
+							<span>Unit of Measure</span>
+						</p:link>
+					</li>
+					<li>
+						<p:link outcome="/admin/items">
+							<i class="fa fa-tags nav-icon"/>
+							<span>Items Management</span>
+						</p:link>
+					</li>
+					<li>
+						<p:link outcome="/admin/equip-types">
+							<i class="fa fa-wrench nav-icon"/>
+							<span>Equipment Type</span>
+						</p:link>
+					</li>
+					<li>
+						<p:link outcome="/admin/equip-categories">
+							<i class="fa fa-wrench nav-icon"/>
+							<span>Equipment Category</span>
+						</p:link>
+					</li>
+					<li>
+						<p:link outcome="/admin/equip-sub-categories">
+							<i class="fa fa-wrench nav-icon"/>
+							<span>Equipment Sub Category</span>
+						</p:link>
+					</li>
+					<li>
+						<p:link outcome="/admin/equip-status">
+							<i class="fa fa-eye nav-icon"/>
+							<span>Equipment Status</span>
+						</p:link>
+					</li>
+					<li>
+						<p:link outcome="/admin/client-status">
+							<i class="fa fa-user nav-icon"/>
+							<span>Client Status</span>
+						</p:link>
+					</li>
+					<li>
+						<p:link outcome="/admin/comp-positions">
+							<i class="fa fa-users nav-icon"/>
+							<span>Company Positions</span>
+						</p:link>
+					</li>
 				</ul>
 			</li>
 		</sec:authorize>
 		<li class="header">ERP General</li>
-		<sec:authorize access="hasAnyRole('SYS_ADMIN', 'USER', 'HR', 'CRM', 'TIMETRACKING', 'BILLING', 'PAYROLL')">
+		<sec:authorize access="hasAnyRole('SYS_ADMIN', 'USER', 'HR', 'CRM', 'CRM_READ_ONLY', 'TIMETRACKING', 'BILLING', 'PAYROLL')">
 		<li class="treeview">
 			<a href="#">
 				<i class="fa fa-dashboard nav-icon"/>
@@ -95,7 +143,36 @@
 			</ul>
 		</li>
 		</sec:authorize>
-		<sec:authorize access="hasAnyRole('SYS_ADMIN', 'CRM')">
+		<sec:authorize access="hasAnyRole('INVENTORY_MGR', 'MATERIAL_REQ', 'HEAD_OPERATIONS', 'CEO', 'SCOUT_HEAD')">
+			<li class="treeview">
+				<a href="#">
+					<i class="fa fa-cube nav-icon"/>
+					<span>Inventory Management</span>
+					<i class="fa fa-angle-left pull-right"/>
+				</a>
+				<ul class="treeview-menu">
+					<li>
+						<p:link outcome="/user/equipments">
+							<i class="fa fa-wrench nav-icon"/>
+							<span>Equipments</span>
+						</p:link>
+					</li>
+					<li>
+						<p:link outcome="/user/pullout-reqs">
+							<i class="fa fa-edit nav-icon"/>
+							<span>Pull-out Request</span>
+						</p:link>
+					</li>
+					<li>
+						<p:link outcome="/user/material-requests">
+							<i class="fa fa-sticky-note-o nav-icon"/>
+							<span>Material Request</span>
+						</p:link>
+					</li>
+				</ul>
+			</li>
+		</sec:authorize>
+		<sec:authorize access="hasAnyRole('SYS_ADMIN', 'CRM', 'CRM_READ_ONLY','EMPLOYEE_ASSIGN')">
 		<li class="treeview">
 			<a href="#">
 				<i class="fa fa-slideshare nav-icon"/>
@@ -103,24 +180,34 @@
 				<i class="fa fa-angle-left pull-right"/>
 			</a>
 			<ul class="treeview-menu">
+				<sec:authorize access="hasAnyRole('SYS_ADMIN', 'CRM', 'CRM_READ_ONLY')">
 				<li>
 					<p:link outcome="/user/clients">
 						<i class="fa fa-users nav-icon"/>
 						<span>Clients</span>
 					</p:link>
 				</li>
+				</sec:authorize>
 				<li>
 					<p:link outcome="/user/detachments">
 						<i class="fa fa-shield nav-icon"/>
 						<span>Detachments</span>
 					</p:link>
 				</li>
+				<sec:authorize access="hasAnyRole('SYS_ADMIN', 'CRM', 'CRM_READ_ONLY')">
 				<li>
 					<p:link outcome="/user/posts">
 						<i class="fa fa-map-pin nav-icon"/>
 						<span>Posts</span>
 					</p:link>
 				</li>
+				<li>
+					<p:link outcome="/user/tod-clients">
+						<i class="fa fa-users nav-icon"/>
+						<span>TOD Clients</span>
+					</p:link>
+				</li>
+				</sec:authorize>
 			</ul>
 		</li>
 		</sec:authorize>
@@ -137,6 +224,60 @@
 						<i class="fa fa-users nav-icon"/>
 						<span>Employee Management</span>
 					</p:link>
+				</li>
+				<li class="treeview">
+					<a href="#">
+						<i class="fa fa-plane nav-icon"/>
+						<span>Service Incentive Leave</span>
+						<i class="fa fa-angle-left pull-right"/>
+					</a>
+					<ul class="treeview-menu">
+						<li>
+							<p:link outcome="/user/sil-detachments">
+								<i class="fa fa-file-excel-o nav-icon"/>
+								<span>SIL Reports</span>
+							</p:link>
+						</li>
+						<li>
+							<p:link outcome="/user/sil-monitor-detachments">
+								<i class="fa fa-television nav-icon"/>
+								<span>SIL Monitoring</span>
+							</p:link>
+						</li>
+					</ul>
+				</li>
+				<li class="treeview">
+					<a href="#">
+						<i class="fa fa-credit-card nav-icon"/>
+						<span>Loans Upload</span>
+						<i class="fa fa-angle-left pull-right"/>
+					</a>
+					<ul class="treeview-menu">
+						<li>
+							<p:link outcome="/user/sss-upload-util">
+								<i class="fa fa-credit-card nav-icon"/>
+								<span>SSS Loan</span>
+							</p:link>
+						</li>
+						<li>
+							<p:link outcome="/user/hdmf-upload-util">
+								<i class="fa fa-credit-card nav-icon"/>
+								<span>HDMF Loan</span>
+							</p:link>
+						</li>
+						<li>
+							<a href="#">
+								<i class="fa fa-credit-card nav-icon"/>
+								<span>Eliteblue Loan</span>
+							</a>
+						</li>
+						<li>
+							<a href="#">
+								<i class="fa fa-credit-card nav-icon"/>
+								<span>Scout Tuazon Loan</span>
+							</a>
+						</li>
+					</ul>
 				</li>
 				<li>
 					<p:link outcome="/user/government-loans">

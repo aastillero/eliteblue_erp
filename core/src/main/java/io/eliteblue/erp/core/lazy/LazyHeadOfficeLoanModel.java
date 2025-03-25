@@ -76,6 +76,7 @@ public class LazyHeadOfficeLoanModel extends LazyDataModel<HeadOfficeLoan> {
 
             HeadOfficeLoan headOfficeLoan = (HeadOfficeLoan) o;
             return headOfficeLoan.getLoanType().name().contains(filterText)
+                    || (headOfficeLoan.getEmployeeBorrower().getErpDetachment() != null && headOfficeLoan.getEmployeeBorrower().getErpDetachment().getName().toLowerCase().contains(filterText))
                     || headOfficeLoan.getEmployeeBorrower().getFirstname().toLowerCase().contains(filterText)
                     || headOfficeLoan.getEmployeeBorrower().getLastname().toLowerCase().contains(filterText)
                     || (headOfficeLoan.getEmployeeBorrower().getFirstname().toLowerCase()+" "+headOfficeLoan.getEmployeeBorrower().getLastname().toLowerCase()).contains(filterText);

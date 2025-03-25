@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="title">
+            <h1>Payroll Employee</h1>
+    </ui:define>
+
+    <ui:define name="description">
+            Manage Payroll of Employee.
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewParam name="id" value="#{payrollEmployeeForm.id}" converter="javax.faces.Long"/>
+            <f:viewParam name="payrollDetachmentId" value="#{payrollEmployeeForm.pId}" converter="javax.faces.Long"/>
+            <f:event type="preRenderView" listener="#{payrollEmployeeForm.init}"/>
+        </f:metadata>
+
+        <h:form id="form" prependId="false">
+            <h:messages/>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <p:commandButton value="Save" action="#{payrollEmployeeForm.save}" update="@form"
+                                         icon="fa fa-check" styleClass="btn-primary"/>
+                        <p:commandButton value="Back" action="#{payrollEmployeeForm.backBtnPressed}" icon="fa fa-reply"/>
+                    </div>
+                    <p:separator/>
+
+                    <p:outputPanel rendered="#{not payrollEmployeeForm.isNew()}">
+                        <div class="box-body">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Employee Name: #{payrollEmployeeForm.employeePayroll.employeePayroll.lastname}, #{payrollEmployeeForm.employeePayroll.employeePayroll.firstname}</label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="dailyWage">Daily Wage</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.dailyWage}" id="dailyWage" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="hourlyWage">Hourly Rate</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.hourlyWage}" id="hourlyWage" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="totalDays">Total Days</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.totalDaysWorked}" id="totalDays" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="totalHours">Total Hours</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.basicHoursWorked}" id="totalHours" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="totalDaysOT">Total Days w/OT</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.totalDaysOT}" id="totalDaysOT" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="totalDaysND">Total Days w/ND</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.totalDaysND}" id="totalDaysND" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label style="font-weight:bold">OVERTIME</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="otRate">OT Rate Ordinary Day</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.ot_rate}" id="otRate" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="numDaysOT">Total No. Days</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.ot_no_days}" id="numDaysOT" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="otHours">Total No. of OT Hours</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.ot_total_hours}" id="otHours" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="otExcess">Total No. of Excess OT Hours</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.ot_no_excess_4hours}" id="otExcess" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label style="font-weight:bold">NIGHT DIFFERENTIAL</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="hourlyrateND">ND Hourly Rate</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.nd_hourly_rate}" id="hourlyrateND" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="numDaysND">Total No. of ND Days</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.nd_no_days}" id="numDaysND" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="hoursND">Total No. of ND Hours</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.nd_total_hours}" id="hoursND" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label style="font-weight:bold">REST DAY</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="rdEightHrs">8 Hours</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.rd_eight_hrs}" id="rdEightHrs" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="rdTwelveHrs">12 Hours</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.rd_twelve_hrs}" id="rdTwelveHrs" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="rdEightHrsRate">8 Hours Rate</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.rd_eight_hrs_rate}" id="rdEightHrsRate" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="rdRegDayOT">Rate Reg Day w/OT</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.rd_reg_day_ot}" id="rdRegDayOT" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="rdTwelveHrsRate">12 Hours Rate</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.rd_twelve_hrs_rate}" id="rdTwelveHrsRate" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label style="font-weight:bold">REGULAR HOLIDAY</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="rhOTRate">OT Rate</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.rh_ot_rate}" id="rhOTRate" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="rhNDRate">ND Rate</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.rh_nightdiff_rate}" id="rhNDRate" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="rhNoDays">No. of Days</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.rh_no_days}" id="rhNoDays" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="rhOTHrs">No. of OT Hours</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.rh_ot_hrs}" id="rhOTHrs" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="rhExcessOTHours">Excess No. of OT Hours</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.rh_excess_ot_hrs}" id="rhExcessOTHours" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="rhNDHrs">No. of ND Hours</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.rh_nightdiff_hrs}" id="rhNDHrs" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label style="font-weight:bold">SPECIAL HOLIDAY</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="shOTRate">OT Rate</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.sh_ot_rate}" id="shOTRate" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="shNDRate">ND Rate</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.sh_nightdiff_rate}" id="shNDRate" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="shNoDays">No. of Days</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.sh_no_days}" id="shNoDays" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="shOTHrs">No. of OT Hours</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.sh_ot_hrs}" id="shOTHrs" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="shExcessOTHours">Excess No. of OT Hours</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.sh_excess_ot_hrs}" id="shExcessOTHours" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="shNDHrs">No. of ND Hours</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.sh_nightdiff_hrs}" id="shNDHrs" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label style="font-weight:bold">OTHERS</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="ecola">ECOLA</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.ecola}" id="ecola" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="allowance">Allowance</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.allowance}" id="allowance" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="sil">SIL</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.sil}" id="sil" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="patternity">Patternity Leave</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.paternityLeave}" id="patternity" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="thirteenth">13th Month</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.thirteenthMonth}" id="thirteenth" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="adjustments">Adjustments</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.adjustments}" id="adjustments" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="extra_pay">Extra Pay</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.basicSalary.extra_pay}" id="extra_pay" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label style="font-weight:bold">SSS, HDMF &amp; PHIC CONTRIBUTIONS</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="sssPrem">SSS Premium</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.salaryDeductions.sssPremium}" id="sssPrem" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="hdmfPrem">HDMF Premium</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.salaryDeductions.hdmfPremium}" id="hdmfPrem" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label for="phicPrem">PHIC Premium</label>
+                                        <div class="ui-inputgroup">
+                                            <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollEmployeeForm.employeePayroll.salaryDeductions.phicPremium}" id="phicPrem" placeholder="0.00"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 d-flex justify-content-center text-left" style="padding-bottom:20px;">
+                                    <div class="col-md-3" style="padding-left:0px">
+                                        <label style="font-weight:bold;">GOVERNMENT DEDUCTIONS</label>
+                                        <p:commandButton action="#{payrollEmployeeForm.governmentDeductions}" icon="fa fa-plus" value="Add" styleClass="btn-primary"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <ui:repeat var="govtDeduction" value="#{payrollEmployeeForm.employeePayroll.salaryDeductions.governmentDeductions.toArray()}">
+                                <div class="row">
+                                    <div class="col-md-12" style="font-size: 16px; margin: 5px;">
+                                        <p:commandButton class="rounded-button" icon="pi pi-trash" process="@this" action="#{payrollEmployeeForm.removeGovernmentDeduction(govtDeduction.id)}">
+                                            <f:setPropertyActionListener value="true"
+                                                                         target="#{facesContext.externalContext.flash.keepMessages}"/>
+                                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                                        </p:commandButton>
+                                        <p:spacer width="10"/>
+                                        <label style="font-weight:bold;">#{govtDeduction.deductionDescription}:</label> #{govtDeduction.deductionAmount}
+                                    </div>
+                                </div>
+                            </ui:repeat>
+                            <div class="row">
+                                <div class="col-md-12 d-flex justify-content-center text-left" style="padding-bottom:20px;">
+                                    <div class="col-md-3" style="padding-left:0px">
+                                        <label style="font-weight:bold;">HEAD OFFICE DEDUCTIONS</label>
+                                        <p:commandButton action="#{payrollEmployeeForm.headOfficeDeductions}" icon="fa fa-plus" value="Add" styleClass="btn-primary"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <ui:repeat var="officeDeduction" value="#{payrollEmployeeForm.employeePayroll.salaryDeductions.headOfficeDeductions.toArray()}">
+                                <div class="row">
+                                    <div class="col-md-12" style="font-size: 16px; margin: 5px;">
+                                        <p:commandButton class="rounded-button" icon="pi pi-trash" process="@this" action="#{payrollEmployeeForm.removeHeadOfficeDeduction(officeDeduction.id)}">
+                                            <f:setPropertyActionListener value="true"
+                                                                         target="#{facesContext.externalContext.flash.keepMessages}"/>
+                                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                                        </p:commandButton>
+                                        <p:spacer width="10"/>
+                                        <label style="font-weight:bold;">#{officeDeduction.deductionDescription}:</label> #{officeDeduction.deductionAmount}
+                                    </div>
+                                </div>
+                            </ui:repeat>
+                            <div class="row">
+                                <div class="col-md-12 d-flex justify-content-center text-left" style="padding-bottom:20px;">
+                                    <div class="col-md-2" style="padding-left:0px">
+                                        <label style="font-weight:bold;">SCOUT DEDUCTIONS</label>
+                                        <p:commandButton action="#{payrollEmployeeForm.newScoutDeductions}" icon="fa fa-plus" value="Add" styleClass="btn-primary"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <ui:repeat var="scoutDeduction" value="#{payrollEmployeeForm.employeePayroll.salaryDeductions.scoutDeductions.toArray()}">
+                                <div class="row">
+                                    <div class="col-md-12" style="font-size: 16px; margin: 5px;">
+                                        <p:commandButton class="rounded-button" icon="pi pi-trash" process="@this" action="#{payrollEmployeeForm.removeScoutDeduction(scoutDeduction.id)}">
+                                            <f:setPropertyActionListener value="true"
+                                                                         target="#{facesContext.externalContext.flash.keepMessages}"/>
+                                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                                        </p:commandButton>
+                                        <p:spacer width="10"/>
+                                        <label style="font-weight:bold;">#{scoutDeduction.deductionDescription}:</label> #{scoutDeduction.deductionAmount}
+                                    </div>
+                                </div>
+                            </ui:repeat>
+                        </div>
+                    </p:outputPanel>
+                </div>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

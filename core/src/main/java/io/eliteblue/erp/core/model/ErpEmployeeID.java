@@ -3,6 +3,7 @@ package io.eliteblue.erp.core.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 @Entity
 @Table(name = "ERP_EMPLOYEE_IDENTIFICATION")
@@ -18,6 +19,10 @@ public class ErpEmployeeID extends CoreEntity {
     @NotNull
     @Size(min = 1, max = 50)
     private String identificationNumber;
+
+    @Column(name = "BIRTH_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expiry;
 
     @OneToOne
     @JoinColumn(name = "EMP_ID_TYPE", referencedColumnName = "id")
@@ -58,5 +63,13 @@ public class ErpEmployeeID extends CoreEntity {
 
     public void setEmployee(ErpEmployee employee) {
         this.employee = employee;
+    }
+
+    public Date getExpiry() {
+        return expiry;
+    }
+
+    public void setExpiry(Date expiry) {
+        this.expiry = expiry;
     }
 }

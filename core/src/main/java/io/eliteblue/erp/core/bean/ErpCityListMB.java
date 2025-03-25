@@ -119,9 +119,10 @@ public class ErpCityListMB implements Serializable {
     }
 
     public String newCityPressed() throws Exception {
+        //System.out.println("NEW CITY PRESSED!");
         //return "city-form?regionId="+id+"faces-redirect=true&includeViewParams=true";
         //processUtil.startProcess();
-        //fireArmsBondUtil.startProcessBonds();
+        fireArmsBondUtil.startProcessBonds();
         //scoutCAUtil.startProcess();
         return "cities?id="+id+"faces-redirect=true&includeViewParams=true";
     }

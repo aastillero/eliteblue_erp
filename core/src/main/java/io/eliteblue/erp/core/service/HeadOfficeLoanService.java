@@ -1,6 +1,7 @@
 package io.eliteblue.erp.core.service;
 
 import io.eliteblue.erp.core.constants.DataOperation;
+import io.eliteblue.erp.core.model.ErpEmployee;
 import io.eliteblue.erp.core.model.HeadOfficeLoan;
 import io.eliteblue.erp.core.repository.HeadOfficeLoanRepository;
 import io.eliteblue.erp.core.util.CurrentUserUtil;
@@ -27,6 +28,10 @@ public class HeadOfficeLoanService extends CoreErpServiceImpl implements CoreErp
     @Override
     public HeadOfficeLoan findById(Long aLong) {
         return repository.getOne(aLong);
+    }
+
+    public List<HeadOfficeLoan> getLoansByEmployee(ErpEmployee employee) {
+        return repository.findAllByEmployeeBorrower(employee);
     }
 
     @Override

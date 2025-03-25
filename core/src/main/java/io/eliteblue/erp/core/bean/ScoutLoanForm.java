@@ -67,6 +67,8 @@ public class ScoutLoanForm implements Serializable {
         if(has(componentStr) && has(id)) {
             if(componentStr.equals("loanAmount")) {
                 initialValue = scoutLoan.getLoanAmount();
+            } else if(componentStr.equals("payableAmount")) {
+                initialValue = scoutLoan.getPayableAmount();
             } else if(componentStr.equals("deductionAmount")) {
                 initialValue = scoutLoan.getDeductionAmount();
             } else if(componentStr.equals("loanDescription")) {
@@ -205,32 +207,37 @@ public class ScoutLoanForm implements Serializable {
                 hist.setReason(reason);
                 switch (componentStr) {
                     case "loanAmount":
-                        hist.setChanges("Loan Amount changed from "+initialValue+" to "+scoutLoan.getLoanAmount());
+                        hist.setChanges("Loan Amount changed from "+(initialValue != null ? initialValue : "empty")+" to "+scoutLoan.getLoanAmount());
                         hist.setPreviousLoanAmount(initialValue);
                         hist.setUpdatedLoanAmount(scoutLoan.getLoanAmount());
                         break;
+                    case "payableAmount":
+                        hist.setChanges("Payable Amount changed from "+(initialValue != null ? initialValue : "empty")+" to "+scoutLoan.getPayableAmount());
+                        hist.setPreviousPayableAmount(initialValue);
+                        hist.setUpdatedPayableAmount(scoutLoan.getPayableAmount());
+                        break;
                     case "deductionAmount":
-                        hist.setChanges("Deduction Amount changed from "+initialValue+" to "+scoutLoan.getDeductionAmount());
+                        hist.setChanges("Deduction Amount changed from "+(initialValue != null ? initialValue : "empty")+" to "+scoutLoan.getDeductionAmount());
                         hist.setPrevDeductionAmount(initialValue);
                         hist.setUpdatedDeductionAmount(scoutLoan.getDeductionAmount());
                         break;
                     case "loanDescription":
-                        hist.setChanges("Loan Description changed from "+initialDesc+" to "+scoutLoan.getLoanDescription());
+                        hist.setChanges("Loan Description changed from "+(initialDesc != null ? initialDesc : "empty")+" to "+scoutLoan.getLoanDescription());
                         hist.setPreviousLoanDescription(initialDesc);
                         hist.setUpdatedLoanDescription(scoutLoan.getLoanDescription());
                         break;
                     case "balanceAmount":
-                        hist.setChanges("Balance changed from "+initialValue+" to "+scoutLoan.getBalanceAmount());
+                        hist.setChanges("Balance changed from "+(initialValue != null ? initialValue : "empty")+" to "+scoutLoan.getBalanceAmount());
                         hist.setPrevBalanceAmount(initialValue);
                         hist.setUpdatedBalanceAmount(scoutLoan.getBalanceAmount());
                         break;
                     case "paidAmount":
-                        hist.setChanges("Paid Amount changed from "+initialValue+" to "+scoutLoan.getPaidAmount());
+                        hist.setChanges("Paid Amount changed from "+(initialValue != null ? initialValue : "empty")+" to "+scoutLoan.getPaidAmount());
                         hist.setPrevPaidAmount(initialValue);
                         hist.setUpdatedBalanceAmount(scoutLoan.getPaidAmount());
                         break;
                     default: // date started
-                        String changesLog = "Date Started changed from "+simpleDateFormat.format(initialDate)+" to "+simpleDateFormat.format(scoutLoan.getDateStarted());
+                        String changesLog = "Date Started changed from "+(initialDate != null ? simpleDateFormat.format(initialDate) : "empty")+" to "+simpleDateFormat.format(scoutLoan.getDateStarted());
                         hist.setChanges(changesLog);
                         hist.setPreviousStartDate(initialDate);
                         hist.setUpdatedStartDate(scoutLoan.getDateStarted());
@@ -247,12 +254,23 @@ public class ScoutLoanForm implements Serializable {
                     employee = employeeService.findById(employee.getId());
                     scoutLoan.setEmployeeBorrower(employee);
                 }
-                scoutLoan.setBalanceAmount(scoutLoan.getLoanAmount());
+                scoutLoan.setBalanceAmount(scoutLoan.getPayableAmount());
                 scoutLoan.setPaidAmount(0.0);
                 scoutLoanService.save(scoutLoan);
                 addDetailMessage("SCOUT LOAN SAVED", "", FacesMessage.SEVERITY_INFO);
                 FacesContext.getCurrentInstance().getExternalContext().redirect("scout-loans.xhtml");
             }
+        }
+    }
+
+    public void computeByTerms(Double loanAmount) {
+        //System.out.println("LOAN AMOUNT: "+loanAmount);
+        if(has(loanAmount)){
+            Integer payTermsDiv = scoutLoan.getPaymentTerms().intValue() * 2;
+            Double percentage = (scoutLoan.getPaymentTerms() * 5) / 100;
+            scoutLoan.setPayableAmount((loanAmount * percentage)+loanAmount); // 10%
+            scoutLoan.setDeductionAmount(scoutLoan.getPayableAmount() / payTermsDiv);
+            //System.out.println("PAYABLE: "+scoutLoan.getPayableAmount()+" DEDUCT: "+scoutLoan.getDeductionAmount());
         }
     }
 

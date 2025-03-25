@@ -39,7 +39,7 @@ public class GovernmentLoan extends CoreEntity {
     @NotNull
     private ErpEmployee employeeBorrower;
 
-    @Column(name = "LOAN_TYPE", length = 20)
+    @Column(name = "LOAN_TYPE", length = 40)
     @Enumerated(EnumType.STRING)
     private GovernmentLoanType loanType;
 

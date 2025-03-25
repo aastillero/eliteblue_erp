@@ -20,6 +20,9 @@ public class ScoutLoan extends CoreEntity {
     @Column(name = "LOAN_AMOUNT")
     private Double loanAmount;
 
+    @Column(name = "PAYABLE_AMOUNT")
+    private Double payableAmount;
+
     @Column(name = "DEDUCT_AMOUNT")
     private Double deductionAmount;
 
@@ -28,6 +31,9 @@ public class ScoutLoan extends CoreEntity {
 
     @Column(name = "PAID_AMOUNT")
     private Double paidAmount;
+
+    @Column(name = "PAYMENT_TERMS")
+    private Double paymentTerms;
 
     @Column(name = "DATE_STARTED")
     @Temporal(TemporalType.TIMESTAMP)
@@ -126,5 +132,21 @@ public class ScoutLoan extends CoreEntity {
 
     public void setPaidAmount(Double paidAmount) {
         this.paidAmount = paidAmount;
+    }
+
+    public Double getPayableAmount() {
+        return payableAmount;
+    }
+
+    public void setPayableAmount(Double payableAmount) {
+        this.payableAmount = payableAmount;
+    }
+
+    public Double getPaymentTerms() {
+        return paymentTerms;
+    }
+
+    public void setPaymentTerms(Double paymentTerms) {
+        this.paymentTerms = paymentTerms;
     }
 }

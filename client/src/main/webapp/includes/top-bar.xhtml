@@ -104,18 +104,21 @@
                     <img src="#{request.contextPath}/resources/images/user1-128x128.jpg" class="img-circle" alt="User Image"/>
 
                     <p>
-                        #{sessionMB.firstname} #{sessionMB.lastname} - Systems Developer
+                        #{sessionMB.firstname} #{sessionMB.lastname} - #{sessionMB.erpEmployee.position}
                         <small>Member since Nov. 2012</small>
                     </p>
                 </li>
                 <!-- Menu Footer-->
                 <li class="user-footer">
                     <div class="pull-left">
-                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                        <!--<a href="#" class="btn btn-default btn-flat">Change Password</a>-->
+                        <p:link outcome="/user/changepass-form" title="Changepass" class="btn btn-default btn-flat">
+                            Change Password
+                        </p:link>
                     </div>
                     <div class="pull-right">
                         <!--<a href="#" class="btn btn-default btn-flat">Sign out</a>-->
-                        <p:link href="/j_spring_security_logout" title="Logoff" class="btn btn-default btn-flat">
+                        <p:link href="#{request.contextPath}/j_spring_security_logout" title="Logoff" class="btn btn-default btn-flat">
                             Sign out
                         </p:link>
                     </div>

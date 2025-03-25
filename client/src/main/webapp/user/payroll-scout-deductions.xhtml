@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="title">
+            <h1>Scout Deduction(s)</h1>
+    </ui:define>
+
+    <ui:define name="description">
+            Manage Payroll Scout Deductions.
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewParam name="id" value="#{payrollScoutDeduction.id}" converter="javax.faces.Long"/>
+            <f:viewParam name="payrollDetachmentId" value="#{payrollScoutDeduction.pId}" converter="javax.faces.Long"/>
+            <f:event type="preRenderView" listener="#{payrollScoutDeduction.init}"/>
+        </f:metadata>
+
+        <h:form id="form" prependId="false">
+            <h:messages/>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <p:commandButton value="Save" action="#{payrollScoutDeduction.save}" update="@form"
+                                         icon="fa fa-check" styleClass="btn-primary"/>
+                        <p:commandButton value="Back" action="#{payrollScoutDeduction.backBtnPressed}" icon="fa fa-reply"/>
+                    </div>
+                    <p:separator/>
+
+                    <p:outputPanel rendered="#{not payrollScoutDeduction.isNew()}">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label class="col-sm-2" for="scoutLoan">DEDUCTION</label>
+                                <div class="col-sm-10">
+                                    <p:selectOneMenu id="scoutLoan" value="#{payrollScoutDeduction.selectedLoan}" style="width:150px">
+                                        <f:selectItem itemLabel="Select One" itemValue=""/>
+                                        <f:selectItems value="#{payrollScoutDeduction.scoutLoanMap}" var="selectedLoan"/>
+                                        <f:ajax event="valueChange" listener="#{payrollScoutDeduction.getDeductionAmount(payrollScoutDeduction.selectedLoan)}" execute="@this" render="amount" />
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <p:spacer width="10"/>
+                            <div class="form-group">
+                                <label class="col-sm-2" for="amount">AMOUNT</label>
+                                <div class="col-sm-10">
+                                    <p:inputNumber minValue="0" decimalPlaces="2" autocomplete="off" value="#{payrollScoutDeduction.selLoan}" id="amount" placeholder="0.00"/>
+                                </div>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </div>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

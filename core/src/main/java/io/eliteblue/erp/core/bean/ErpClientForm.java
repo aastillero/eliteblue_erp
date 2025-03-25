@@ -1,8 +1,10 @@
 package io.eliteblue.erp.core.bean;
 
 import io.eliteblue.erp.core.lazy.LazyErpDetachmentModel;
+import io.eliteblue.erp.core.model.ClientStatus;
 import io.eliteblue.erp.core.model.ErpClient;
 import io.eliteblue.erp.core.model.ErpDetachment;
+import io.eliteblue.erp.core.service.ClientStatusService;
 import io.eliteblue.erp.core.service.ErpClientService;
 import org.omnifaces.util.Faces;
 import org.primefaces.event.SelectEvent;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -29,6 +32,9 @@ public class ErpClientForm implements Serializable {
     @Autowired
     private ErpClientService erpClientService;
 
+    @Autowired
+    private ClientStatusService clientStatusService;
+
     private Long id;
     private ErpClient erpClient;
 
@@ -36,6 +42,9 @@ public class ErpClientForm implements Serializable {
     private List<ErpDetachment> filteredErpDetachments;
     private List<ErpDetachment> detachments;
     private ErpDetachment selectedDetachment;
+
+    private List<SelectItem> statuses;
+    private String statusValue;
 
     public void init() {
         if(Faces.isAjaxRequest()) {
@@ -48,6 +57,28 @@ public class ErpClientForm implements Serializable {
         } else {
             erpClient = new ErpClient();
         }
+        List<ClientStatus> clientStatuses = clientStatusService.getAll();
+        statuses = new ArrayList<SelectItem>();
+        for (ClientStatus cs: clientStatuses) {
+            SelectItem itm = new SelectItem(cs.getName(), cs.getName());
+            statuses.add(itm);
+        }
+    }
+
+    public List<SelectItem> getStatuses() {
+        return statuses;
+    }
+
+    public void setStatuses(List<SelectItem> statuses) {
+        this.statuses = statuses;
+    }
+
+    public String getStatusValue() {
+        return statusValue;
+    }
+
+    public void setStatusValue(String statusValue) {
+        this.statusValue = statusValue;
     }
 
     public LazyDataModel<ErpDetachment> getLazyErpDetachments() {
@@ -150,6 +181,12 @@ public class ErpClientForm implements Serializable {
 
     public void save() throws Exception {
         if(erpClient != null) {
+            if(has(statusValue)) {
+                erpClient.setClientStatus(clientStatusService.findByName(statusValue));
+            } else {
+                erpClient.setClientStatus(clientStatusService.findByName("ACTIVE"));
+            }
+
             erpClientService.save(erpClient);
             addDetailMessage("CLIENT SAVED", erpClient.getName(), FacesMessage.SEVERITY_INFO);
             FacesContext.getCurrentInstance().getExternalContext().redirect("clients.xhtml");

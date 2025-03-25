@@ -131,10 +131,21 @@
                                                 <p:selectOneMenu id="inputBlood" value="#{erpEmployeeIDForm.erpEmployeeID.idName.id}" style="width:150px">
                                                     <f:selectItem itemLabel="Select One" itemValue=""/>
                                                     <f:selectItems value="#{erpEmployeeIDForm.idTypes}"/>
+                                                    <p:ajax update="form" />
                                                 </p:selectOneMenu>
                                             </div>
                                         </div>
                                     </div>
+                                    <ui:fragment rendered="#{erpEmployeeIDForm.erpEmployeeID.idName.id == 5}">
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label for="expiry" class="col-md-2">Expiration Date</label>
+                                                <div class="col-md-12">
+                                                    <p:datePicker autocomplete="off" id="expiry" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpEmployeeIDForm.erpEmployeeID.expiry}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ui:fragment>
                                 </div>
                             </div>
                         </div>

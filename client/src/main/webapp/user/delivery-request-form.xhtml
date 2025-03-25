@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                xmlns:sec="http://www.springframework.org/security/tags"
+                template="#{layoutMB.template}">
+
+    <ui:define name="title">
+        <p:outputPanel rendered="#{erpDeliveryRequestForm.isNew()}">
+            <h1>New Delivery Status</h1>
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not erpDeliveryRequestForm.isNew()}">
+            <h1>Edit Delivery Status</h1>
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="description">
+        <p:outputPanel rendered="#{erpDeliveryRequestForm.isNew()}">
+            Create a new Delivery Status.
+        </p:outputPanel>
+        <p:outputPanel rendered="#{not erpDeliveryRequestForm.isNew()}">
+            Update Delivery Status.
+        </p:outputPanel>
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+            <f:viewParam name="materialId" value="#{erpDeliveryRequestForm.materialId}" converter="javax.faces.Long"/>
+            <f:viewParam name="id" value="#{erpDeliveryRequestForm.id}" converter="javax.faces.Long"/>
+            <f:event type="preRenderView" listener="#{erpDeliveryRequestForm.init}"/>
+        </f:metadata>
+
+        <h:form id="form" prependId="false">
+            <h:messages/>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <sec:authorize access="hasAnyRole('MATERIAL_REQ')">
+                            <p:commandButton value="Save" action="#{erpDeliveryRequestForm.save}" update="@form"
+                                             icon="fa fa-check" styleClass="btn-primary"/>
+                            <p:spacer width="5" rendered="#{erpDeliveryRequestForm.isNew()}"/>
+                            <p:commandButton value="Clear" action="#{erpDeliveryRequestForm.clear}" process="@this"
+                                             icon="fa fa-refresh" styleClass="btn-success"
+                                             update="@form" rendered="#{erpDeliveryRequestForm.isNew()}" resetValues="true"/>
+                            <p:spacer width="5" rendered="#{not erpDeliveryRequestForm.isNew()}"/>
+                            <p:commandButton value="Delete" action="#{erpDeliveryRequestForm.remove}" process="@this"
+                                             rendered="#{not erpDeliveryRequestForm.isNew()}" icon="fa fa-trash"
+                                             styleClass="btn-danger">
+                                <f:setPropertyActionListener value="true"
+                                                             target="#{facesContext.externalContext.flash.keepMessages}"/>
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                            </p:commandButton>
+
+                            <p:spacer width="5"/>
+                        </sec:authorize>
+                        <p:commandButton value="Back" action="material-requests?faces-redirect=true" icon="fa fa-reply"/>
+                    </div>
+                    <p:splitButton access="hasAnyRole('CRM', 'SYS_ADMIN')" value="Save" action="#{erpDeliveryRequestForm.save}" update="@form"
+                                   icon="fa fa-check"
+                                   styleClass="hidden-md hidden-lg btn-primary">
+                        <p:menuitem access="hasAnyRole('CRM', 'SYS_ADMIN')" value="Reset" action="#{erpDeliveryRequestForm.clear}"
+                                    process="@this" update="@form" rendered="#{erpDeliveryRequestForm.isNew()}"
+                                    resetValues="true" icon="fa fa-refresh"/>
+                        <p:menuitem access="hasAnyRole('CRM', 'SYS_ADMIN')" value="Delete" action="#{erpDeliveryRequestForm.remove}" process="@this"
+                                    rendered="#{not erpDeliveryRequestForm.isNew()}" icon="fa fa-trash"
+                        >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:menuitem value="Back" action="material-requests?faces-redirect=true"
+                                    process="@this" immediate="true"
+                                    icon="fa fa-reply"/>
+                    </p:splitButton>
+                    <p:separator/>
+
+                    <div class="box-body">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Status</label>
+
+                                <div class="col-sm-10">
+                                    <p:selectOneMenu id="inputGender" value="#{erpDeliveryRequestForm.requestDelivery.deliveryStatus}" style="width:150px">
+                                        <f:selectItems value="#{erpDeliveryRequestForm.statusValues}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <p:spacer width="5"/>
+                            <div class="form-group">
+                                <label for="remarks" class="col-sm-2 control-label">Remarks</label>
+
+                                <div class="col-sm-10">
+                                    <p:inputText autocomplete="off" value="#{erpDeliveryRequestForm.requestDelivery.remarks}" class="form-control" id="remarks" placeholder="Remarks"/>
+                                </div>
+                            </div>
+                            <p:spacer width="5"/>
+                    </div>
+                </div>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

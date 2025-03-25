@@ -1,8 +1,13 @@
 package io.eliteblue.erp.core.service;
 
 import io.eliteblue.erp.core.constants.DataOperation;
+import io.eliteblue.erp.core.model.ClientStatus;
 import io.eliteblue.erp.core.model.ErpClient;
+import io.eliteblue.erp.core.model.ErpDetachment;
+import io.eliteblue.erp.core.model.OperationsArea;
 import io.eliteblue.erp.core.repository.ErpClientRepository;
+import io.eliteblue.erp.core.repository.ErpDetachmentRepository;
+import io.eliteblue.erp.core.util.CurrentUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +20,20 @@ public class ErpClientService extends CoreErpServiceImpl implements CoreErpServi
     @Autowired
     private ErpClientRepository repository;
 
+    @Autowired
+    private CurrentUserUtil currentUserUtil;
+
     public List<ErpClient> getAll() {
         return repository.findAll();
+    }
+
+    public List<ErpClient> getByClientStatus(ClientStatus status) {
+        return repository.findByClientStatus(status);
+    }
+
+    public List<ErpClient> getAllFilteredLocation() {
+        List<OperationsArea> assignedLocations = CurrentUserUtil.getOperationsAreas();
+        return repository.findByDetachmentLocations(assignedLocations);
     }
 
     public ErpClient findById(Long aLong) {

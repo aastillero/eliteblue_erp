@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                xmlns:sec="http://www.springframework.org/security/tags"
+                template="#{layoutMB.template}">
+
+    <ui:define name="metadata">
+        <ui:param name="title" value="Materials list"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: right !important;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="title">
+        <h2 class="align-left">
+            Material Request List
+        </h2>
+    </ui:define>
+
+    <ui:define name="description">
+        You can add, edit and delete Requests.
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form id="form">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <sec:authorize access="hasAnyRole('MATERIAL_REQ','SYS_ADMIN')">
+                        <div id="main-buttons">
+                            <p:commandButton action="material-req-form?faces-redirect=true" icon="fa fa-plus"
+                                             value="New Request" styleClass="btn-primary"/>
+                            <p:spacer width="5"/>
+                            <p:commandButton action="material-req-templates?faces-redirect=true" icon="fa fa-download"
+                                             value="Download/Upload" styleClass="btn-success"/>
+                            <p:spacer width="5"/>
+                        </div>
+                    </sec:authorize>
+
+                    <p:separator/>
+
+                    <p:dataTable id="erpMaterialTab" var="material" value="#{erpMaterialRequestList.lazyErpMaterialRequests}" selectionMode="single"
+                        paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+                        paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                        emptyMessage="No Requests found with given criteria"
+                        widgetVar="erpMaterialTable"
+                        selection="#{erpMaterialRequestList.selectedErpMaterialRequest}" rowKey="#{material.id}">
+
+                        <p:ajax event="rowSelect" listener="#{erpMaterialRequestList.onRowSelect}"/>
+                        <p:ajax event="rowUnselect" listener="#{erpMaterialRequestList.onRowUnselect}"/>
+
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-end">
+                                <p:commandButton onclick="$('#form\\:erpMaterialTab\\:globalFilter').val('').keyup();PF('erpMaterialTable').filter()" value="clear"/>
+                                <p:inputText id="globalFilter" style="width:20rem" placeholder="Search all columns" autocomplete="off"
+                                             onkeypress="if (event.keyCode === 13)  {PF('erpMaterialTable').filter(); return false;}"/>
+                                <p:commandButton  class="ui-button" icon="fa fa-search" onclick="PF('erpMaterialTable').filter()"/>
+                            </div>
+                        </f:facet>
+
+
+                        <p:column headerText="Date Requested">
+                            <h:outputText value="#{material.dateCreated}" converter="customDateConverter"/>
+                        </p:column>
+                        <p:column headerText="Requester">
+                            <h:outputText value="#{material.requester.firstname} #{material.requester.firstname}" />
+                        </p:column>
+                        <p:column headerText="Status">
+                            <h:outputText value="#{material.status}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

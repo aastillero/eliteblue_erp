@@ -1,18 +1,13 @@
 package io.eliteblue.erp.core.lazy;
 
 import io.eliteblue.erp.core.model.ErpPost;
-import org.apache.commons.collections4.ComparatorUtils;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 import org.primefaces.model.filter.FilterConstraint;
-import org.primefaces.util.LocaleUtils;
 
 import javax.faces.context.FacesContext;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class LazyErpPostModel extends LazyDataModel<ErpPost> {
@@ -40,6 +35,9 @@ public class LazyErpPostModel extends LazyDataModel<ErpPost> {
                 .filter(o -> filter(FacesContext.getCurrentInstance(), filterBy.values(), o))
                 .count();
 
+        // sort source
+        Collections.sort(dataSource, (o1, o2) -> (o1.getName().compareTo(o2.getName())));
+
         // apply offset & filters
         List<ErpPost> erpPosts = dataSource.stream()
                 .skip(first)
@@ -48,13 +46,13 @@ public class LazyErpPostModel extends LazyDataModel<ErpPost> {
                 .collect(Collectors.toList());
 
         // sort
-        if (!sortBy.isEmpty()) {
+        /*if (!sortBy.isEmpty()) {
             List<Comparator<ErpPost>> comparators = sortBy.values().stream()
                     .map(o -> new ErpPostLazySorter(o.getField(), o.getOrder()))
                     .collect(Collectors.toList());
             Comparator<ErpPost> cp = ComparatorUtils.chainedComparator(comparators); // from apache
             erpPosts.sort(cp);
-        }
+        }*/
 
         setRowCount((int) rowCount);
 
@@ -67,17 +65,10 @@ public class LazyErpPostModel extends LazyDataModel<ErpPost> {
         for (FilterMeta filter : filterBy) {
             FilterConstraint constraint = filter.getConstraint();
             Object filterValue = filter.getFilterValue();
+            String filterText = (filterValue == null) ? null : filterValue.toString().trim().toLowerCase();
 
-            try {
-                Object columnValue = String.valueOf(o.getClass().getField(filter.getField()).get(o));
-                matching = constraint.isMatching(context, columnValue, filterValue, LocaleUtils.getCurrentLocale());
-            } catch (ReflectiveOperationException e) {
-                matching = false;
-            }
-
-            if (!matching) {
-                break;
-            }
+            ErpPost erpPost = (ErpPost) o;
+            return erpPost.getName().toLowerCase().contains(filterText);
         }
 
         return matching;

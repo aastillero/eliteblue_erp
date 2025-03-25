@@ -59,6 +59,9 @@ public class BasicSalary extends CoreEntity {
     @Column(name = "ND_NO_DAYS")
     private Double nd_no_days;
 
+    @Column(name = "ND_TOTAL_HRS")
+    private Double nd_total_hours;
+
     @Column(name = "ND_HOURLY_RATE")
     private Double nd_hourly_rate;
 
@@ -71,6 +74,12 @@ public class BasicSalary extends CoreEntity {
 
     @Column(name = "RD_12HRS")
     private Double rd_twelve_hrs;
+
+    @Column(name = "RD_NO_DAYS")
+    private Double rd_no_days;
+
+    @Column(name = "RD_OT_HRS")
+    private Double rd_ot_hrs;
 
     @Column(name = "RD_8HRS_RATE")
     private Double rd_eight_hrs_rate;
@@ -91,8 +100,14 @@ public class BasicSalary extends CoreEntity {
     @Column(name = "RH_12HRS")
     private Double rh_twelve_hrs;
 
+    @Column(name = "RH_NO_DAYS")
+    private Double rh_no_days;
+
     @Column(name = "RH_EXCESS_OT_HRS")
     private Double rh_excess_ot_hrs;
+
+    @Column(name = "RH_OT_HRS")
+    private Double rh_ot_hrs;
 
     @Column(name = "RH_EXCESS_8HRS")
     private Double rh_excess_8hrs;
@@ -109,6 +124,9 @@ public class BasicSalary extends CoreEntity {
     @Column(name = "RH_NDIFF_DAYS")
     private Double rh_nightdiff_days;
 
+    @Column(name = "RH_NDIFF_HRS")
+    private Double rh_nightdiff_hrs;
+
     @Column(name = "RH_NDIFF_RATE")
     private Double rh_nightdiff_rate;
 
@@ -122,8 +140,14 @@ public class BasicSalary extends CoreEntity {
     @Column(name = "SH_12HRS")
     private Double sh_twelve_hrs;
 
+    @Column(name = "SH_NO_DAYS")
+    private Double sh_no_days;
+
     @Column(name = "SH_EXCESS_OT_HRS")
     private Double sh_excess_ot_hrs;
+
+    @Column(name = "SH_OT_HRS")
+    private Double sh_ot_hrs;
 
     @Column(name = "SH_EXCESS_8HRS")
     private Double sh_excess_8hrs;
@@ -140,11 +164,17 @@ public class BasicSalary extends CoreEntity {
     @Column(name = "SH_NDIFF_DAYS")
     private Double sh_nightdiff_days;
 
+    @Column(name = "SH_NDIFF_HRS")
+    private Double sh_nightdiff_hrs;
+
     @Column(name = "SH_NDIFF_RATE")
     private Double sh_nightdiff_rate;
 
     @Column(name = "SH_NDIFF_PAY")
     private Double sh_nightdiff_pay;
+
+    @Column(name = "EXTRA_PAY")
+    private Double extra_pay;
 
     public Long getId() {
         return id;
@@ -496,5 +526,85 @@ public class BasicSalary extends CoreEntity {
 
     public void setSh_nightdiff_pay(Double sh_nightdiff_pay) {
         this.sh_nightdiff_pay = sh_nightdiff_pay;
+    }
+
+    public Double getRd_no_days() {
+        return rd_no_days;
+    }
+
+    public void setRd_no_days(Double rd_no_days) {
+        this.rd_no_days = rd_no_days;
+    }
+
+    public Double getRh_no_days() {
+        return rh_no_days;
+    }
+
+    public void setRh_no_days(Double rh_no_days) {
+        this.rh_no_days = rh_no_days;
+    }
+
+    public Double getSh_no_days() {
+        return sh_no_days;
+    }
+
+    public void setSh_no_days(Double sh_no_days) {
+        this.sh_no_days = sh_no_days;
+    }
+
+    public Double getNd_total_hours() {
+        return nd_total_hours;
+    }
+
+    public void setNd_total_hours(Double nd_total_hours) {
+        this.nd_total_hours = nd_total_hours;
+    }
+
+    public Double getRd_ot_hrs() {
+        return rd_ot_hrs;
+    }
+
+    public void setRd_ot_hrs(Double rd_ot_hrs) {
+        this.rd_ot_hrs = rd_ot_hrs;
+    }
+
+    public Double getRh_ot_hrs() {
+        return rh_ot_hrs;
+    }
+
+    public void setRh_ot_hrs(Double rh_ot_hrs) {
+        this.rh_ot_hrs = rh_ot_hrs;
+    }
+
+    public Double getSh_ot_hrs() {
+        return sh_ot_hrs;
+    }
+
+    public void setSh_ot_hrs(Double sh_ot_hrs) {
+        this.sh_ot_hrs = sh_ot_hrs;
+    }
+
+    public Double getRh_nightdiff_hrs() {
+        return rh_nightdiff_hrs;
+    }
+
+    public void setRh_nightdiff_hrs(Double rh_nightdiff_hrs) {
+        this.rh_nightdiff_hrs = rh_nightdiff_hrs;
+    }
+
+    public Double getSh_nightdiff_hrs() {
+        return sh_nightdiff_hrs;
+    }
+
+    public void setSh_nightdiff_hrs(Double sh_nightdiff_hrs) {
+        this.sh_nightdiff_hrs = sh_nightdiff_hrs;
+    }
+
+    public Double getExtra_pay() {
+        return extra_pay;
+    }
+
+    public void setExtra_pay(Double extra_pay) {
+        this.extra_pay = extra_pay;
     }
 }

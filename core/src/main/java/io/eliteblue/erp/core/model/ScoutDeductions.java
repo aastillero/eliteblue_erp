@@ -18,6 +18,10 @@ public class ScoutDeductions extends CoreEntity {
     @Column(name = "DEDUCTION_DESCRIPTION", columnDefinition = "TEXT")
     private String deductionDescription;
 
+    @OneToOne
+    @JoinColumn(name = "SCOUT_LOAN_ID", referencedColumnName = "id")
+    private ScoutLoan scoutLoan;
+
     @ManyToOne
     @JoinColumn(name = "salary_deduction_id", nullable = false)
     private SalaryDeductions salaryDeductions;
@@ -52,5 +56,13 @@ public class ScoutDeductions extends CoreEntity {
 
     public void setSalaryDeductions(SalaryDeductions salaryDeductions) {
         this.salaryDeductions = salaryDeductions;
+    }
+
+    public ScoutLoan getScoutLoan() {
+        return scoutLoan;
+    }
+
+    public void setScoutLoan(ScoutLoan scoutLoan) {
+        this.scoutLoan = scoutLoan;
     }
 }

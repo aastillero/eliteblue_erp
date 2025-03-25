@@ -1,6 +1,7 @@
 package io.eliteblue.erp.core.service;
 
 import io.eliteblue.erp.core.constants.DataOperation;
+import io.eliteblue.erp.core.model.ErpDetachment;
 import io.eliteblue.erp.core.model.ErpTimeSchedule;
 import io.eliteblue.erp.core.repository.TimeScheduleRepository;
 import io.eliteblue.erp.core.util.CurrentUserUtil;
@@ -27,6 +28,10 @@ public class TimeScheduleService extends CoreErpServiceImpl implements CoreErpSe
     @Override
     public ErpTimeSchedule findById(Long aLong) {
         return repository.getOne(aLong);
+    }
+
+    public List<ErpTimeSchedule> findByDetachment(ErpDetachment detachment) {
+        return repository.findByErpDetachment(detachment);
     }
 
     @Override

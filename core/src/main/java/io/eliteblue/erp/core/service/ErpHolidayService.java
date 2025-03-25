@@ -7,6 +7,7 @@ import io.eliteblue.erp.core.util.CurrentUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +23,11 @@ public class ErpHolidayService extends CoreErpServiceImpl implements CoreErpServ
     @Override
     public List<ErpHoliday> getAll() {
         return repository.findAll();
+    }
+
+    public List<ErpHoliday> findByDateRange(Date start, Date stop) {
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd");
+        return repository.findAllBetweenDate(format.format(start), format.format(stop));
     }
 
     public ErpHoliday findByName(String name) {

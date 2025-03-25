@@ -41,6 +41,12 @@ public class ScoutLoanHistory extends CoreEntity {
     @Column(name = "UPDATED_LOAN_AMOUNT", columnDefinition = "NUMERIC", length = 20)
     private Double updatedLoanAmount;
 
+    @Column(name = "PREV_PAYABLE_AMOUNT", columnDefinition = "NUMERIC", length = 20)
+    private Double previousPayableAmount;
+
+    @Column(name = "UPDATED_PAYABLE_AMOUNT", columnDefinition = "NUMERIC", length = 20)
+    private Double updatedPayableAmount;
+
     @Column(name = "PREV_DEDUCT_AMOUNT", columnDefinition = "NUMERIC", length = 20)
     private Double prevDeductionAmount;
 
@@ -187,5 +193,21 @@ public class ScoutLoanHistory extends CoreEntity {
 
     public void setUpdatedPaidAmount(Double updatedPaidAmount) {
         this.updatedPaidAmount = updatedPaidAmount;
+    }
+
+    public Double getPreviousPayableAmount() {
+        return previousPayableAmount;
+    }
+
+    public void setPreviousPayableAmount(Double previousPayableAmount) {
+        this.previousPayableAmount = previousPayableAmount;
+    }
+
+    public Double getUpdatedPayableAmount() {
+        return updatedPayableAmount;
+    }
+
+    public void setUpdatedPayableAmount(Double updatedPayableAmount) {
+        this.updatedPayableAmount = updatedPayableAmount;
     }
 }

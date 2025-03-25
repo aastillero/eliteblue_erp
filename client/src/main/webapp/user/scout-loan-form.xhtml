@@ -73,7 +73,7 @@
                     <p:outputPanel rendered="#{scoutLoanForm.isNew()}">
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="inputEmp" class="col-sm-2 control-label">Borrower</label>
+                            <label for="inputEmp" class="col-sm-2 control-label">Borrower Name</label>
 
                             <div class="col-sm-10">
                                 <p:selectOneMenu id="inputEmp" value="#{scoutLoanForm.employee.id}" style="width:150px"
@@ -84,9 +84,45 @@
                         </div>
                         <p:spacer width="5"/>
                         <div class="form-group">
+                            <label for="loanType" class="col-sm-2 control-label">Loan Type</label>
+                            <div class="col-sm-10">
+                                <p:selectOneMenu id="loanType" value="#{scoutLoanForm.scoutLoan.loanType}" style="width:150px">
+                                    <f:selectItem itemLabel="Select One" itemValue=""/>
+                                    <f:selectItems value="#{scoutLoanForm.employeeLoanValues}"/>
+                                    <p:ajax process="@form" update="@form"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
                             <label for="loanAmount" class="col-sm-2 control-label">Loan Amount</label>
                             <div class="col-sm-10">
-                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{scoutLoanForm.scoutLoan.loanAmount}" id="loanAmount" placeholder="10000.00"/>
+                                <p:inputNumber minValue="1" decimalPlaces="2" autocomplete="off" value="#{scoutLoanForm.scoutLoan.loanAmount}" id="loanAmount" placeholder="10000.00"/>
+                                <span class="ui-inputgroup-addon">php</span>
+                            </div>
+                        </div>
+                        <p:outputPanel id="termsPanel" rendered="#{scoutLoanForm.scoutLoan.loanType.name() eq 'CASH_ADVANCE'}">
+                            <p:spacer width="5"/>
+                            <div class="form-group">
+                                <label for="paymentTerms" class="col-sm-2 control-label">Payment Terms</label>
+                                <div class="col-sm-10">
+                                    <p:selectOneMenu id="paymentTerms" value="#{scoutLoanForm.scoutLoan.paymentTerms}" style="width:150px">
+                                        <f:selectItem itemLabel="Select One" itemValue=""/>
+                                        <f:selectItem itemLabel="2 Months" itemValue="2.0"/>
+                                        <f:selectItem itemLabel="3 Months" itemValue="3.0"/>
+                                        <f:selectItem itemLabel="4 Months" itemValue="4.0"/>
+                                        <f:selectItem itemLabel="5 Months" itemValue="5.0"/>
+                                        <f:selectItem itemLabel="6 Months" itemValue="6.0"/>
+                                        <p:ajax process="@this loanAmount" update="payableAmount deductionAmount" listener="#{scoutLoanForm.computeByTerms(scoutLoanForm.scoutLoan.loanAmount)}" />
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:spacer width="5"/>
+                        <div class="form-group">
+                            <label for="payableAmount" class="col-sm-2 control-label">Payable Amount</label>
+                            <div class="col-sm-10">
+                                <p:inputNumber minValue="1" decimalPlaces="2" autocomplete="off" value="#{scoutLoanForm.scoutLoan.payableAmount}" id="payableAmount" placeholder="10000.00"/>
                                 <span class="ui-inputgroup-addon">php</span>
                             </div>
                         </div>
@@ -95,7 +131,7 @@
                             <label for="deductionAmount" class="col-sm-2 control-label">Deduction Amount</label>
 
                             <div class="col-sm-10">
-                                <p:inputNumber minValue="1" decimalPlaces="0" autocomplete="off" value="#{scoutLoanForm.scoutLoan.deductionAmount}" id="deductionAmount" placeholder="2000.00"/>
+                                <p:inputNumber minValue="1" decimalPlaces="2" autocomplete="off" value="#{scoutLoanForm.scoutLoan.deductionAmount}" id="deductionAmount" placeholder="2000.00"/>
                                 <span class="ui-inputgroup-addon">php</span>
                             </div>
                         </div>
@@ -104,15 +140,6 @@
                             <label for="dateStarted" class="col-sm-2 control-label">Start Date</label>
                             <div class="col-sm-10">
                                 <p:datePicker autocomplete="off" id="dateStarted" class="date-input" monthNavigator="true" yearNavigator="true" value="#{scoutLoanForm.scoutLoan.dateStarted}"/>
-                            </div>
-                        </div>
-                        <p:spacer width="5"/>
-                        <div class="form-group">
-                            <label for="loanType" class="col-sm-2 control-label">Loan Type</label>
-                            <div class="col-sm-10">
-                                <p:selectOneMenu id="loanType" value="#{scoutLoanForm.scoutLoan.loanType}" style="width:150px">
-                                    <f:selectItems value="#{scoutLoanForm.employeeLoanValues}"/>
-                                </p:selectOneMenu>
                             </div>
                         </div>
                         <p:spacer width="5"/>
@@ -142,6 +169,16 @@
                                     <p:spacer width="10"/>
                                     <p:commandButton class="rounded-button" icon="pi pi-pencil" value="Edit"
                                                      action="#{scoutLoanForm.editPressed('loanAmount')}"/>
+                                </div>
+                            </div>
+                            <p:spacer width="5"/>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" style="font-weight:bold;">Payable Amount:</label>
+                                <div class="col-sm-10">
+                                    <label class="control-label">#{scoutLoanForm.scoutLoan.payableAmount}</label>
+                                    <p:spacer width="10"/>
+                                    <p:commandButton class="rounded-button" icon="pi pi-pencil" value="Edit"
+                                                     action="#{scoutLoanForm.editPressed('payableAmount')}"/>
                                 </div>
                             </div>
                             <p:spacer width="5"/>

@@ -28,6 +28,9 @@ public class ErpDTR extends CoreEntity {
     @Enumerated(EnumType.STRING)
     private ApprovalStatus status;
 
+    @Column(name = "UPLOAD_REASON")
+    private String uploadReason;
+
     @ManyToOne
     @JoinColumn(name = "erp_detachment_id", nullable = false)
     private ErpDetachment erpDetachment;
@@ -81,5 +84,13 @@ public class ErpDTR extends CoreEntity {
 
     public void setStatus(ApprovalStatus status) {
         this.status = status;
+    }
+
+    public String getUploadReason() {
+        return uploadReason;
+    }
+
+    public void setUploadReason(String uploadReason) {
+        this.uploadReason = uploadReason;
     }
 }

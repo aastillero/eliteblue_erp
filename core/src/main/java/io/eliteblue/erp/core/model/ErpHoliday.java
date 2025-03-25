@@ -1,5 +1,7 @@
 package io.eliteblue.erp.core.model;
 
+import io.eliteblue.erp.core.constants.HolidayType;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -19,6 +21,13 @@ public class ErpHoliday extends CoreEntity {
     @Column(name = "HOLIDAY_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date holidayDate;
+
+    @Column(name = "HOLIDAY_TYPE", length = 20)
+    @Enumerated(EnumType.STRING)
+    private HolidayType holidayType;
+
+    @Column(name = "HOLIDAY_PERCENTAGE")
+    private Double holidayPayPercentage;
 
     public Long getId() {
         return id;
@@ -42,5 +51,21 @@ public class ErpHoliday extends CoreEntity {
 
     public void setHolidayDate(Date date) {
         this.holidayDate = date;
+    }
+
+    public HolidayType getHolidayType() {
+        return holidayType;
+    }
+
+    public void setHolidayType(HolidayType holidayType) {
+        this.holidayType = holidayType;
+    }
+
+    public Double getHolidayPayPercentage() {
+        return holidayPayPercentage;
+    }
+
+    public void setHolidayPayPercentage(Double holidayPayPercentage) {
+        this.holidayPayPercentage = holidayPayPercentage;
     }
 }

@@ -1,9 +1,12 @@
 package io.eliteblue.erp.core.model;
 
+import io.eliteblue.erp.core.constants.Archipelago;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "AREA")
@@ -18,7 +21,11 @@ public class OperationsArea extends CoreEntity {
     @Column(name = "LOCATION", length = 50, unique = true)
     @NotNull
     @Size(min = 2, max = 50)
-    String location;
+    private String location;
+
+    @Column(name = "ARCHIPELAGO", length = 20)
+    @Enumerated(EnumType.STRING)
+    private Archipelago archipelago;
 
     @Column(name = "RATE_SG")
     private Double rateSG;
@@ -34,6 +41,9 @@ public class OperationsArea extends CoreEntity {
 
     @Column(name = "RATE_SIC")
     private Double rateSIC;
+
+    @OneToMany(mappedBy = "operationsArea", cascade = CascadeType.MERGE, orphanRemoval = true)
+    private Set<ErpLocalHoliday> localHolidays;
 
     public Long getId() {
         return id;
@@ -89,5 +99,21 @@ public class OperationsArea extends CoreEntity {
 
     public void setRateSIC(Double rateSIC) {
         this.rateSIC = rateSIC;
+    }
+
+    public Set<ErpLocalHoliday> getLocalHolidays() {
+        return localHolidays;
+    }
+
+    public void setLocalHolidays(Set<ErpLocalHoliday> localHolidays) {
+        this.localHolidays = localHolidays;
+    }
+
+    public Archipelago getArchipelago() {
+        return archipelago;
+    }
+
+    public void setArchipelago(Archipelago archipelago) {
+        this.archipelago = archipelago;
     }
 }

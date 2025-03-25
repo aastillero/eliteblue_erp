@@ -28,15 +28,15 @@ public class ErpWorkSchedule extends CoreEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date stopDate;
 
-    @Column(name = "SHIFT_COMMANDER", length = 50)
+    @Column(name = "SHIFT_COMMANDER")
     @NotNull
     private String shiftCommander;
 
-    @Column(name = "DETACHMENT_COMMANDER", length = 50)
+    @Column(name = "DETACHMENT_COMMANDER")
     @NotNull
     private String detachmentCommander;
 
-    @Column(name = "AREA_SEC_COMMANDER", length = 50)
+    @Column(name = "AREA_SEC_COMMANDER")
     @NotNull
     private String areaSecurityCommander;
 

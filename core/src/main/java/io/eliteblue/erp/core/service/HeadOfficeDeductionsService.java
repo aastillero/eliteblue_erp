@@ -31,6 +31,8 @@ public class HeadOfficeDeductionsService extends CoreErpServiceImpl implements C
 
     @Override
     public void delete(HeadOfficeDeductions headOfficeDeductions) {
+        // return deducted amount
+        // delete history
         repository.delete(headOfficeDeductions);
     }
 

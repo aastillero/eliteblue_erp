@@ -51,7 +51,8 @@
 
                             <div class="col-sm-10">
                                 <p:selectCheckboxMenu id="inputEmployees" value="#{erpEmployeeAssign.selectedEmployees}" label="Employees" style="min-width: 60rem"
-                                                      multiple="true" filter="true" filterMatchMode="startsWith" panelStyle="width: 60rem" scrollHeight="250">
+                                                      multiple="true" filter="true" filterMatchMode="contains"
+                                                      panelStyle="width: 60rem" scrollHeight="250" converter="employeeAssignConverter">
                                     <f:selectItems value="#{erpEmployeeAssign.assignedEmployees}"/>
                                 </p:selectCheckboxMenu>
                             </div>

@@ -70,7 +70,7 @@ public class ErpSSSContributionForm implements Serializable {
     public void save() throws Exception {
         if(has(erpSSSContribution)) {
             erpSSSContributionService.save(erpSSSContribution);
-            addDetailMessage("CLIENT SAVED", "", FacesMessage.SEVERITY_INFO);
+            addDetailMessage("CONTRIBUTION SAVED", "", FacesMessage.SEVERITY_INFO);
             FacesContext.getCurrentInstance().getExternalContext().redirect("sss-contributions.xhtml");
         }
     }

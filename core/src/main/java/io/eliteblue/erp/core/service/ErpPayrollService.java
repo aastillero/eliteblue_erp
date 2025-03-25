@@ -24,6 +24,11 @@ public class ErpPayrollService extends CoreErpServiceImpl implements CoreErpServ
         return repository.findAll();
     }
 
+    public List<ErpPayroll> getAllFilteredStartAndEndDate(Date startDate, Date endDate) {
+        List<ErpPayroll> retVal = repository.getAllFilteredStartAndEndDate(endDate, startDate);
+        return retVal;
+    }
+
     @Override
     public ErpPayroll findById(Long aLong) {
         return repository.getOne(aLong);

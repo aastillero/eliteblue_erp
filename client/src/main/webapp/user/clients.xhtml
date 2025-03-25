@@ -3,6 +3,7 @@
                 xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:adm="http://github.com/adminfaces"
+                xmlns:sec="http://www.springframework.org/security/tags"
                 template="#{layoutMB.template}">
 
     <ui:define name="metadata">
@@ -29,13 +30,29 @@
         <h:form id="form">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <div id="main-buttons">
-                        <p:commandButton action="client-form?faces-redirect=true" icon="fa fa-plus"
-                                         value="New Client" styleClass="btn-primary"/>
-                        <p:spacer width="5"/>
-                    </div>
-
+                    <sec:authorize access="hasAnyRole('CRM', 'SYS_ADMIN')">
+                        <div id="main-buttons">
+                            <p:commandButton action="client-form?faces-redirect=true" icon="fa fa-plus"
+                                             value="New Client" styleClass="btn-primary"/>
+                            <p:spacer width="5"/>
+                        </div>
+                    </sec:authorize>
                     <p:separator/>
+
+                    <div class="box-body">
+                        <div class="form-group">
+                            <h4><label for="inputStatus" class="col-sm-2 control-label">Status Filter</label></h4>
+
+                            <div class="col-sm-10">
+                                <p:selectOneMenu id="inputStatus" value="#{erpClientListMB.selectedStatus}" style="width:150px">
+                                    <f:selectItem itemLabel="Select One" itemValue=""/>
+                                    <f:selectItems value="#{erpClientListMB.statusValues}"/>
+                                    <p:ajax update="erpClientTab" event="change" listener="#{erpClientListMB.getClientByStatus}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <p:spacer width="10"/>
+                    </div>
 
                     <p:dataTable id="erpClientTab" var="client" value="#{erpClientListMB.lazyErpClients}" selectionMode="single"
                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
@@ -58,6 +75,9 @@
 
                         <p:column headerText="Client Name">
                             <h:outputText value="#{client.name}" />
+                        </p:column>
+                        <p:column headerText="Status">
+                            <h:outputText value="#{client.clientStatus.name}" />
                         </p:column>
                     </p:dataTable>
                 </div>

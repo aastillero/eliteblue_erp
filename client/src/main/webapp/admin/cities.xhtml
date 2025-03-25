@@ -52,7 +52,7 @@
                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                         emptyMessage="No Users found with given criteria"
                         filteredValue="#{erpCityListMB.filteredErpCities}" widgetVar="erpCitiesTable"
-                        rowKey="#{city.id}">
+                        selection="#{erpCityListMB.selectedCity}" rowKey="#{city.id}">
 
                         <p:ajax event="rowSelect" listener="#{erpCityListMB.onRowSelect}"/>
                         <p:ajax event="rowUnselect" listener="#{erpCityListMB.onRowUnselect}"/>

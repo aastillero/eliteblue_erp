@@ -25,11 +25,12 @@ public class ErpUserDetails implements UserDetails, Serializable {
     private Date lastLogged;
     private Boolean locked;
     private Boolean enabled;
-    private ErpDetachment detachment;
+    private List<ErpDetachment> detachments;
+    private List<ErpDetachment> relieverDetachments;
 
     public ErpUserDetails(){}
 
-    public ErpUserDetails(String username, String firstname, String lastname, String email, String password, List<Authority> authorities, Date lastLogged, Boolean locked, Boolean enabled, List<OperationsArea> areas, ErpDetachment detachment) {
+    public ErpUserDetails(String username, String firstname, String lastname, String email, String password, List<Authority> authorities, Date lastLogged, Boolean locked, Boolean enabled, List<OperationsArea> areas, List<ErpDetachment> detachments, List<ErpDetachment> relieverDetachments) {
         this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -40,7 +41,8 @@ public class ErpUserDetails implements UserDetails, Serializable {
         this.locked = locked;
         this.enabled = enabled;
         this.operationsAreas = areas;
-        this.detachment = detachment;
+        this.detachments = detachments;
+        this.relieverDetachments = relieverDetachments;
     }
 
     @Override
@@ -158,11 +160,19 @@ public class ErpUserDetails implements UserDetails, Serializable {
         this.operationsAreas = operationsAreas;
     }
 
-    public ErpDetachment getDetachment() {
-        return detachment;
+    public List<ErpDetachment> getDetachments() {
+        return detachments;
     }
 
-    public void setDetachment(ErpDetachment detachment) {
-        this.detachment = detachment;
+    public void setDetachments(List<ErpDetachment> detachments) {
+        this.detachments = detachments;
+    }
+
+    public List<ErpDetachment> getRelieverDetachments() {
+        return relieverDetachments;
+    }
+
+    public void setRelieverDetachments(List<ErpDetachment> relieverDetachments) {
+        this.relieverDetachments = relieverDetachments;
     }
 }

@@ -1,7 +1,9 @@
 package io.eliteblue.erp.core.bean;
 
 import io.eliteblue.erp.core.lazy.LazyErpClientModel;
+import io.eliteblue.erp.core.model.ClientStatus;
 import io.eliteblue.erp.core.model.ErpClient;
+import io.eliteblue.erp.core.service.ClientStatusService;
 import io.eliteblue.erp.core.service.ErpClientService;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -13,9 +15,9 @@ import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import java.awt.event.ActionEvent;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -23,6 +25,9 @@ public class ErpClientListMB implements Serializable {
 
     @Autowired
     private ErpClientService erpClientService;
+
+    @Autowired
+    private ClientStatusService clientStatusService;
 
     private LazyDataModel<ErpClient> lazyErpClients;
 
@@ -32,11 +37,22 @@ public class ErpClientListMB implements Serializable {
 
     private ErpClient selectedClient;
 
+    private String selectedStatus;
+
+    private Map<String, String> statusValues;
+
     @PostConstruct
     public void init() {
         clients = erpClientService.getAll();
+        clients.sort(Comparator.comparing(ErpClient::getName));
         lazyErpClients = new LazyErpClientModel(clients);
         lazyErpClients.setRowCount(10);
+
+        List<ClientStatus> statuses = clientStatusService.getAll();
+        statusValues = new HashMap<>();
+        for (ClientStatus cs: statuses) {
+            statusValues.put(cs.getName(), cs.getName());
+        }
     }
 
     public LazyDataModel<ErpClient> getLazyErpClients() {
@@ -71,12 +87,36 @@ public class ErpClientListMB implements Serializable {
         this.selectedClient = selectedClient;
     }
 
+    public String getSelectedStatus() {
+        return selectedStatus;
+    }
+
+    public void setSelectedStatus(String selectedStatus) {
+        this.selectedStatus = selectedStatus;
+    }
+
+    public Map<String, String> getStatusValues() {
+        return statusValues;
+    }
+
+    public void setStatusValues(Map<String, String> statusValues) {
+        this.statusValues = statusValues;
+    }
+
     public void onRowSelect(SelectEvent<ErpClient> event) throws Exception {
         FacesContext.getCurrentInstance().getExternalContext().redirect("client-form.xhtml?id="+selectedClient.getId());
     }
 
     public void onRowUnselect(UnselectEvent<ErpClient> event) throws Exception {
         FacesContext.getCurrentInstance().getExternalContext().redirect("client-form.xhtml?id="+selectedClient.getId());
+    }
+
+    public void getClientByStatus() {
+        //System.out.println("STATUS ["+selectedStatus+"] CLIENT NOW IS FILTERED!!!");
+        ClientStatus clientStatus = clientStatusService.findByName(selectedStatus);
+        clients = erpClientService.getByClientStatus(clientStatus);
+        lazyErpClients = new LazyErpClientModel(clients);
+        lazyErpClients.setRowCount(10);
     }
 
     public boolean globalFilterFunction(Object value, Object filter, Locale locale) {

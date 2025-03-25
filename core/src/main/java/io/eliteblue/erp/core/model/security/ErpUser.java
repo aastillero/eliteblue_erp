@@ -28,7 +28,7 @@ public class ErpUser extends CoreEntity {
 
     @Column(name = "PASSWORD", length = 100)
     @NotNull
-    @Size(min = 4, max = 100)
+    @Size(max = 100)
     private String password;
 
     @Column(name = "FIRSTNAME", length = 50)
@@ -69,9 +69,21 @@ public class ErpUser extends CoreEntity {
             inverseJoinColumns = {@JoinColumn(name = "AUTHORITY_ID", referencedColumnName = "ID")})
     private Set<Authority> authorities;
 
-    @ManyToOne
-    @JoinColumn(name = "erp_detachment_id")
-    private ErpDetachment erpDetachment;
+    //@ManyToOne(cascade = CascadeType.ALL)
+    //@JoinColumn(name = "erp_detachment_id")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "USER_DETACHMENT",
+            joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
+            inverseJoinColumns = {@JoinColumn(name = "DETACHMENT_ID", referencedColumnName = "ID")})
+    private Set<ErpDetachment> erpDetachments;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "RELIEVER_DETACHMENT",
+            joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
+            inverseJoinColumns = {@JoinColumn(name = "DETACHMENT_ID", referencedColumnName = "ID")})
+    private Set<ErpDetachment> relieverDetachments;
 
     public Long getId() {
         return id;
@@ -153,11 +165,19 @@ public class ErpUser extends CoreEntity {
         this.locations = locations;
     }
 
-    public ErpDetachment getErpDetachment() {
-        return erpDetachment;
+    public Set<ErpDetachment> getErpDetachments() {
+        return erpDetachments;
     }
 
-    public void setErpDetachment(ErpDetachment erpDetachment) {
-        this.erpDetachment = erpDetachment;
+    public void setErpDetachments(Set<ErpDetachment> erpDetachments) {
+        this.erpDetachments = erpDetachments;
+    }
+
+    public Set<ErpDetachment> getRelieverDetachments() {
+        return relieverDetachments;
+    }
+
+    public void setRelieverDetachments(Set<ErpDetachment> relieverDetachments) {
+        this.relieverDetachments = relieverDetachments;
     }
 }

@@ -27,10 +27,19 @@
     </ui:define>
 
     <ui:define name="body">
+        <f:metadata>
+            <f:viewParam name="status" value="#{erpDTRListMB.status}"/>
+            <f:viewParam name="coverStart" value="#{erpDTRListMB.searchStart}">
+            </f:viewParam>
+            <f:viewParam name="coverEnd" value="#{erpDTRListMB.searchEnd}">
+            </f:viewParam>
+            <f:event type="preRenderView" listener="#{erpDTRListMB.init}"/>
+        </f:metadata>
+
         <h:form id="form">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <sec:authorize access="hasAnyRole('DETACHMENT_COM')">
+                    <sec:authorize access="hasAnyRole('DETACHMENT_COM','SYS_ADMIN','HR','PAYROLL')">
                         <div id="main-buttons" class="hidden-sm hidden-xs">
                             <p:commandButton action="dtr-form?faces-redirect=true" icon="fa fa-plus"
                                              value="New DTR" styleClass="btn-primary"/>
@@ -38,7 +47,18 @@
                             <p:commandButton action="#{erpDTRListMB.downloadTemplate}" icon="fa fa-download"
                                              value="Download/Upload" styleClass="btn-success"/>
                             <p:spacer width="5"/>
+                            <sec:authorize access="hasAnyRole('SYS_ADMIN','HR','PAYROLL')">
+                            <p:commandButton value="DTR Download" type="button" icon="pi pi-external-link" onclick="PF('dlg2').show()"/>
+                            <p:spacer width="5"/>
+                            <p:commandButton value="DTR Search" type="button" icon="pi pi-external-link" onclick="PF('dlg3').show()"/>
+                            <p:spacer width="5"/>
+                            </sec:authorize>
                         </div>
+                        <p:splitButton value="New DTR" action="dtr-form?faces-redirect=true"
+                                       icon="fa fa-plus"
+                                       styleClass="hidden-md hidden-lg btn-primary">
+                            <p:menuitem value="Download/Upload" action="#{erpDTRListMB.downloadTemplate}" icon="fa fa-download"/>
+                        </p:splitButton>
                     </sec:authorize>
 
                     <p:dataTable id="dtrTab" var="dtr" value="#{erpDTRListMB.erpDTRs}" selectionMode="single"
@@ -52,19 +72,110 @@
                         <p:ajax event="rowUnselect" listener="#{erpDTRListMB.onRowUnselect}"/>
 
                         <p:column headerText="Cut-off Start Date">
-                            <h:outputText value="#{dtr.cutoffStart}">
+                            <h:outputText value="#{dtr.cutoffStart}" converter="customDateConverter">
                                 <!--<f:convertDateTime type="date" pattern="MM/dd/yyyy" timeZone="GMT-8"/>-->
                             </h:outputText>
                         </p:column>
                         <p:column headerText="Cut-off End Date">
-                            <h:outputText value="#{dtr.cutoffEnd}">
+                            <h:outputText value="#{dtr.cutoffEnd}" converter="customDateConverter">
                                 <!--<f:convertDateTime type="date" pattern="MM/dd/yyyy" />-->
                             </h:outputText>
                         </p:column>
                         <p:column headerText="Status">
                             <h:outputText value="#{dtr.status}" />
                         </p:column>
+                        <p:column headerText="Detachment">
+                            <h:outputText value="#{dtr.erpDetachment.name}" />
+                        </p:column>
                     </p:dataTable>
+
+                    <p:dialog header="DTR Download Window" widgetVar="dlg2" minHeight="60" width="450" showEffect="fade" modal="true">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label for="cutoffStart" class="col-sm-4 control-label">Cover Start</label>
+
+                                <div class="col-sm-4">
+                                    <p:datePicker id="cutoffStart" autocomplete="off" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpDTRListMB.localStart}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label for="cutoffEnd" class="col-sm-4 control-label">Cover End</label>
+
+                                <div class="col-sm-4">
+                                    <p:datePicker id="cutoffEnd" autocomplete="off" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpDTRListMB.localEnd}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label for="detachment" class="col-sm-4 control-label">Detachment</label>
+
+                                <div class="col-sm-4">
+                                    <p:selectOneMenu id="detachment" value="#{erpDTRListMB.detachment.id}" style="width:150px"
+                                                     effect="fade" filter="true" filterMatchMode="startsWith">
+                                        <f:selectItem itemLabel="Select One" itemValue=""/>
+                                        <f:selectItems value="#{erpDTRListMB.detachments}" var="selectedDetachment"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <p:commandButton value="DTR" ajax="false" action="#{erpDTRListMB.downloadFile}" icon="fa fa-download" styleClass="btn-success" update="growl"/>
+                                <p:spacer width="5"/>
+                                <p:commandButton value="Shift Summary" ajax="false" action="#{erpDTRListMB.downloadShiftSummary}" icon="fa fa-download" styleClass="btn-success" update="growl"/>
+                                <p:spacer width="5"/>
+                                <p:commandButton value="Cancel" type="button" onclick="PF('dlg2').hide()"/>
+                            </div>
+                        </div>
+                    </p:dialog>
+
+                    <p:dialog header="DTR Search Filter" widgetVar="dlg3" minHeight="60" width="450" showEffect="fade" modal="true">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label for="dateStart" class="col-sm-4 control-label">Cover Start</label>
+
+                                <div class="col-sm-4">
+                                    <p:datePicker id="dateStart" autocomplete="off" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpDTRListMB.coverStart}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label for="dateEnd" class="col-sm-4 control-label">Cover End</label>
+
+                                <div class="col-sm-4">
+                                    <p:datePicker id="dateEnd" autocomplete="off" class="date-input" monthNavigator="true" yearNavigator="true" value="#{erpDTRListMB.coverEnd}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label for="detachment" class="col-sm-4 control-label">Status</label>
+
+                                <div class="col-sm-4">
+                                    <p:selectOneMenu id="inputGender" value="#{erpDTRListMB.statusSelected}" style="width:150px">
+                                        <f:selectItems value="#{erpDTRListMB.statusValues}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <p:commandButton value="Search" action="#{erpDTRListMB.search}" styleClass="btn-primary"/>
+                                <p:spacer width="5"/>
+                                <p:commandButton value="Cancel" type="button" onclick="PF('dlg2').hide()"/>
+                            </div>
+                        </div>
+                    </p:dialog>
                 </div>
             </div>
         </h:form>

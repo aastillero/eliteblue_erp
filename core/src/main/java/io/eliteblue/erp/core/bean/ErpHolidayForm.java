@@ -1,5 +1,6 @@
 package io.eliteblue.erp.core.bean;
 
+import io.eliteblue.erp.core.constants.HolidayType;
 import io.eliteblue.erp.core.lazy.LazyErpDetachmentModel;
 import io.eliteblue.erp.core.model.ErpClient;
 import io.eliteblue.erp.core.model.ErpDetachment;
@@ -17,9 +18,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static com.github.adminfaces.template.util.Assert.has;
 
@@ -32,6 +31,7 @@ public class ErpHolidayForm implements Serializable {
 
     private Long id;
     private ErpHoliday erpHoliday;
+    private Map<String, HolidayType> holidayTypes;
 
     public void init() {
         if(Faces.isAjaxRequest()) {
@@ -41,6 +41,10 @@ public class ErpHolidayForm implements Serializable {
             erpHoliday = erpHolidayService.findById(Long.valueOf(id));
         } else {
             erpHoliday = new ErpHoliday();
+        }
+        holidayTypes = new HashMap<>();
+        for(HolidayType ht: HolidayType.values()) {
+            holidayTypes.put(ht.name(), ht);
         }
     }
 
@@ -58,6 +62,14 @@ public class ErpHolidayForm implements Serializable {
 
     public void setErpHoliday(ErpHoliday erpHoliday) {
         this.erpHoliday = erpHoliday;
+    }
+
+    public Map<String, HolidayType> getHolidayTypes() {
+        return holidayTypes;
+    }
+
+    public void setHolidayTypes(Map<String, HolidayType> holidayTypes) {
+        this.holidayTypes = holidayTypes;
     }
 
     public void clear() {

@@ -27,6 +27,15 @@
     </ui:define>
 
     <ui:define name="body">
+        <f:metadata>
+            <f:viewParam name="status" value="#{workScheduleListMB.status}"/>
+            <f:viewParam name="coverStart" value="#{workScheduleListMB.searchStart}">
+            </f:viewParam>
+            <f:viewParam name="coverEnd" value="#{workScheduleListMB.searchEnd}">
+            </f:viewParam>
+            <f:event type="preRenderView" listener="#{workScheduleListMB.init}"/>
+        </f:metadata>
+
         <h:form id="form">
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -38,7 +47,18 @@
                             <p:commandButton action="#{workScheduleListMB.downloadTemplate}" icon="fa fa-download"
                                              value="Download/Upload" styleClass="btn-success"/>
                             <p:spacer width="5"/>
+                            <sec:authorize access="hasAnyRole('SYS_ADMIN','HR','PAYROLL')">
+                                <p:commandButton value="WorkSchedule Download" type="button" icon="pi pi-external-link" onclick="PF('dlg2').show()"/>
+                                <p:spacer width="5"/>
+                                <p:commandButton value="WorkSchedule Search" type="button" icon="pi pi-external-link" onclick="PF('dlg3').show()"/>
+                                <p:spacer width="5"/>
+                            </sec:authorize>
                         </div>
+                        <p:splitButton value="New Work Schedule" action="workschedule-form?faces-redirect=true"
+                                       icon="fa fa-plus"
+                                       styleClass="hidden-md hidden-lg btn-primary">
+                            <p:menuitem value="Download/Upload" action="#{workScheduleListMB.downloadTemplate}" icon="fa fa-download"/>
+                        </p:splitButton>
                     </sec:authorize>
 
                     <p:dataTable id="workScheduleTab" var="workschedule" value="#{workScheduleListMB.workSchedules}" selectionMode="single"
@@ -64,19 +84,108 @@
                             <h:outputText value="#{workschedule.description}" />
                         </p:column>
                         <p:column headerText="Start Date">
-                            <h:outputText value="#{workschedule.startDate}">
+                            <h:outputText value="#{workschedule.startDate}" converter="customDateConverter">
                                 <!--<f:convertDateTime type="date" pattern="MM/dd/yyyy" timeZone="GMT-8"/>-->
                             </h:outputText>
                         </p:column>
                         <p:column headerText="End Date">
-                            <h:outputText value="#{workschedule.stopDate}">
+                            <h:outputText value="#{workschedule.stopDate}" converter="customDateConverter">
                                 <!--<f:convertDateTime type="date" pattern="MM/dd/yyyy" />-->
                             </h:outputText>
                         </p:column>
                         <p:column headerText="Status">
                             <h:outputText value="#{workschedule.status}" />
                         </p:column>
+                        <p:column headerText="Detachment">
+                            <h:outputText value="#{workschedule.erpDetachment.name}" />
+                        </p:column>
                     </p:dataTable>
+
+                    <p:dialog header="WorkSchedule Download Window" widgetVar="dlg2" minHeight="60" width="450" showEffect="fade" modal="true">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label for="cutoffStart" class="col-sm-4 control-label">Cover Start</label>
+
+                                <div class="col-sm-4">
+                                    <p:datePicker id="cutoffStart" autocomplete="off" class="date-input" monthNavigator="true" yearNavigator="true" value="#{workScheduleListMB.localStart}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label for="cutoffEnd" class="col-sm-4 control-label">Cover End</label>
+
+                                <div class="col-sm-4">
+                                    <p:datePicker id="cutoffEnd" autocomplete="off" class="date-input" monthNavigator="true" yearNavigator="true" value="#{workScheduleListMB.localEnd}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label for="detachment" class="col-sm-4 control-label">Detachment</label>
+
+                                <div class="col-sm-4">
+                                    <p:selectOneMenu id="detachment" value="#{workScheduleListMB.detachment.id}" style="width:150px"
+                                                     effect="fade" filter="true" filterMatchMode="startsWith">
+                                        <f:selectItem itemLabel="Select One" itemValue=""/>
+                                        <f:selectItems value="#{workScheduleListMB.detachments}" var="selectedDetachment"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <p:commandButton value="Workschedule" ajax="false" action="#{workScheduleListMB.downloadFile}" icon="fa fa-download" styleClass="btn-success" update="growl"/>
+                                <p:spacer width="5"/>
+                                <p:commandButton value="Cancel" type="button" onclick="PF('dlg2').hide()"/>
+                            </div>
+                        </div>
+                    </p:dialog>
+
+                    <p:dialog header="Workschedule Search Filter" widgetVar="dlg3" minHeight="60" width="450" showEffect="fade" modal="true">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label for="dateStart" class="col-sm-4 control-label">Cover Start</label>
+
+                                <div class="col-sm-4">
+                                    <p:datePicker id="dateStart" autocomplete="off" class="date-input" monthNavigator="true" yearNavigator="true" value="#{workScheduleListMB.coverStart}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label for="dateEnd" class="col-sm-4 control-label">Cover End</label>
+
+                                <div class="col-sm-4">
+                                    <p:datePicker id="dateEnd" autocomplete="off" class="date-input" monthNavigator="true" yearNavigator="true" value="#{workScheduleListMB.coverEnd}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label for="detachment" class="col-sm-4 control-label">Status</label>
+
+                                <div class="col-sm-4">
+                                    <p:selectOneMenu id="inputGender" value="#{workScheduleListMB.statusSelected}" style="width:150px">
+                                        <f:selectItems value="#{workScheduleListMB.statusValues}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                        </div>
+                        <p:spacer width="5"/>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <p:commandButton value="Search" action="#{workScheduleListMB.search}" styleClass="btn-primary"/>
+                                <p:spacer width="5"/>
+                                <p:commandButton value="Cancel" type="button" onclick="PF('dlg2').hide()"/>
+                            </div>
+                        </div>
+                    </p:dialog>
                 </div>
             </div>
         </h:form>

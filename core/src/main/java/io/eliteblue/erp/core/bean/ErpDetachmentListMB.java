@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,7 +35,8 @@ public class ErpDetachmentListMB implements Serializable {
 
     @PostConstruct
     public void init() {
-        detachments = erpDetachmentService.getAll();
+        detachments = erpDetachmentService.getAllFilteredDetachment();
+        detachments.sort(Comparator.comparing(ErpDetachment::getName));
         lazyErpDetachments = new LazyErpDetachmentModel(detachments);
         lazyErpDetachments.setRowCount(10);
     }
