@@ -38,7 +38,7 @@ EliteBlue ERP is a web-based Enterprise Resource Planning (ERP) system built usi
 
 These instructions assume you have the following prerequisites installed:
 
-*   Java Development Kit (JDK): [**SPECIFY JDK VERSION** - e.g., JDK 11, JDK 17] (Check your `pom.xml` for the required Java version.)
+*   Java Development Kit (JDK 17)
 *   Maven
 *   PostgreSQL (and it's running)
 *   Your chosen Application Server (e.g., Tomcat, GlassFish, etc.) - already installed and configured.
